@@ -1,0 +1,35 @@
+version: '3'
+services:
+  workflowdb:
+    image: postgres:13
+    container_name: workflowdb
+    volumes:
+      - ./init_db_dev.sh:/docker-entrypoint-initdb.d/init.sh
+      - workflowdb:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      default:
+        aliases:
+          - workflowdb
+  workflowdbtest:
+    image: postgres:13
+    container_name: workflowdbtest
+    volumes:
+      - ./init_db_devtest.sh:/docker-entrypoint-initdb.d/init.sh
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      default:
+        aliases:
+          - workflowdbtest
+
+volumes:
+  workflowdb:
+
+networks:
+  default:

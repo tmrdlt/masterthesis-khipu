@@ -1,0 +1,37 @@
+*.class
+*.log
+alembic/**/*.pyc
+.DS_Store
+
+tempdata/*
+!tempdata/empty
+temp/s3filedownload/**/*
+
+tempconditionsheet/*
+!tempconditionsheet/empty
+
+# sbt specific
+.cache/
+.history/
+.lib/
+dist/*
+target/
+
+# emacs files
+.ensime
+.ensime_cache/
+.bloop
+.metals
+metals.sbt
+
+# JetBrains IDE
+.idea/
+*.iml
+
+# Eclipse / Scala-IDE
+.classpath
+.project
+.settings/
+.cache-main
+
+.bsp
