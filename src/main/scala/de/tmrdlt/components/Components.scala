@@ -11,5 +11,5 @@ class Components(system: ActorSystem) {
   private val actors = new Actors(system, dbs)
 
   val health = new HealthRoute(new HealthController(actors.healthActor))
-  val fetchTrelloBoard = new fetchTrelloBoardRoute(new fetchTrelloBoardController(dbs.boardDB))
+  val fetchTrelloBoard = new fetchTrelloBoardRoute(new fetchTrelloBoardController(dbs.workflowListDB))
 }

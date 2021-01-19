@@ -1,18 +1,20 @@
 package de.tmrdlt.database
 
-import de.tmrdlt.database.tables.BoardTable
+import de.tmrdlt.database.nestingrelation.NestingRelationTable
+import de.tmrdlt.database.workflowlist.WorkflowListTable
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import slick.lifted.TableQuery
 
 
-object WorkflowDB {
+object MyDB {
 
   private val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig("workflow.postgres")
 
   val db: JdbcProfile#Backend#Database = dbConfig.db
 
 
-  val boardQuery = TableQuery[BoardTable]
+  val workflowListQuery = TableQuery[WorkflowListTable]
+  val nestingRelationQuery = TableQuery[NestingRelationTable]
 }
 
