@@ -3,7 +3,7 @@ wartremoverErrors in (Compile, compile) += Wart.OptionPartial
 wartremoverErrors in (Compile, compile) += Wart.TraversableOps
 
 lazy val commonSettings = Seq(
-  name := "masterthesis-wip",
+  name := "masterthesis-khipu",
   organization := "de.timoerdelt",
   version := "VERSIONTAG",
   scalaVersion := "2.13.4",
