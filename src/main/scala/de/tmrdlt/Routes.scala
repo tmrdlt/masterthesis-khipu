@@ -20,7 +20,8 @@ class Routes(components: Components)
   def endPoints: Route = handleExceptions(exceptionHandler) {
     concat(
       path("health")(components.health.route),
-      path("fetchTrelloBoard")(components.fetchTrelloBoard.route)
+      path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
+      path("workflowList")(components.workflowList.route)
     )
   }
 }

@@ -8,7 +8,7 @@ import de.tmrdlt.utils.SimpleNameLogger
 
 import scala.util.{Failure, Success}
 
-class fetchTrelloBoardRoute(controller: fetchTrelloBoardController)
+class FetchTrelloBoardRoute(controller: FetchTrelloBoardController)
   extends SimpleNameLogger {
 
   val route: Route =

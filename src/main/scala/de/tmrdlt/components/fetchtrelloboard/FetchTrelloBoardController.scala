@@ -6,7 +6,7 @@ import de.tmrdlt.utils.SimpleNameLogger
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class fetchTrelloBoardController(workflowListDB: WorkflowListDB)
+class FetchTrelloBoardController(workflowListDB: WorkflowListDB)
   extends SimpleNameLogger {
 
   def fetchData(boardId: String): Future[Boolean] = {

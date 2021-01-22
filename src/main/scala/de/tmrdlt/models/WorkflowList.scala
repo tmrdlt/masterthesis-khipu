@@ -19,8 +19,13 @@ case class WorkflowListEntity(UUID: UUID,
     }
 }
 
-trait WorkflowElementJsonSupport extends JsonSupport {
+case class CreateWorkflowListEntity(title: String,
+                                    description: Option[String])
 
-  implicit val listFormat: RootJsonFormat[WorkflowListEntity] =
+trait WorkflowListJsonSupport extends JsonSupport {
+
+  implicit val workflowListFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity, "uuid", "children", "title", "description")))
+
+  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat2(CreateWorkflowListEntity)
 }
