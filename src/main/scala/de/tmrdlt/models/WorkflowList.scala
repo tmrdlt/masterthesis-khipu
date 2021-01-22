@@ -22,10 +22,12 @@ case class WorkflowListEntity(UUID: UUID,
 case class CreateWorkflowListEntity(title: String,
                                     description: Option[String])
 
+case class UpdateWorkflowListEntity(parentId: Long) // TODO enhance with other fields
+
 trait WorkflowListJsonSupport extends JsonSupport {
 
   implicit val workflowListFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity, "uuid", "children", "title", "description")))
-
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat2(CreateWorkflowListEntity)
+  implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat1(UpdateWorkflowListEntity)
 }

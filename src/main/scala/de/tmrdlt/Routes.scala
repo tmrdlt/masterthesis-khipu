@@ -21,7 +21,8 @@ class Routes(components: Components)
     concat(
       path("health")(components.health.route),
       path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
-      path("workflowList")(components.workflowList.route)
+      path("workflowList")(components.workflowList.route),
+      path("workflowList" / LongNumber) {workflowListId => components.workflowListId.route(workflowListId)}
     )
   }
 }
