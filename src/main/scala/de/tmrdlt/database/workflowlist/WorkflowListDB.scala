@@ -11,5 +11,4 @@ class WorkflowListDB
 
   private def insertWorkflowListQuery(workflowList: WorkflowList) =
     (workflowListQuery returning workflowListQuery) += workflowList
-
 }
