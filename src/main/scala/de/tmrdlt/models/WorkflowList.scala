@@ -3,12 +3,17 @@ package de.tmrdlt.models
 import de.tmrdlt.models.UserType.UserType
 import spray.json.{JsonFormat, RootJsonFormat}
 
+import java.time.LocalDateTime
 import java.util.UUID
 
-case class WorkflowListEntity(UUID: UUID,
-                              children: Seq[WorkflowListEntity],
+case class WorkflowListEntity(id: Long,
+                              uuid: UUID,
                               title: String,
-                              description: Option[String]) {
+                              description: Option[String],
+                              children: Seq[WorkflowListEntity],
+                              createdAt: LocalDateTime,
+                              updatedAt: LocalDateTime
+                             ) {
   def getUserType: UserType =
     if (children.isEmpty) {
       UserType.TASK
@@ -27,7 +32,14 @@ case class UpdateWorkflowListEntity(parentId: Long) // TODO enhance with other f
 trait WorkflowListJsonSupport extends JsonSupport {
 
   implicit val workflowListFormat: RootJsonFormat[WorkflowListEntity] =
-    rootFormat(lazyFormat(jsonFormat(WorkflowListEntity, "uuid", "children", "title", "description")))
+    rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
+      "id",
+      "uuid",
+      "title",
+      "description",
+      "children",
+      "createdAt",
+      "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat2(CreateWorkflowListEntity)
   implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat1(UpdateWorkflowListEntity)
 }

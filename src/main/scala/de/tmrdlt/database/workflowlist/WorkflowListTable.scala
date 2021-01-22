@@ -2,6 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.models.WorkflowListEntity
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
@@ -16,6 +17,9 @@ import java.util.UUID
  *                    when the real db id is not desired.
  * @param title       TBD
  * @param description TBD
+ * @param parentId    TBD
+ * @param createdAt   TBD
+ * @param updatedAt   TBD
  */
 case class WorkflowList(id: Long,
                         uuid: UUID,
@@ -23,7 +27,19 @@ case class WorkflowList(id: Long,
                         description: Option[String],
                         parentId: Option[Long],
                         createdAt: LocalDateTime,
-                        updatedAt: LocalDateTime)
+                        updatedAt: LocalDateTime) {
+
+  def toWorkflowListEntity(children: Seq[WorkflowListEntity]): WorkflowListEntity =
+    WorkflowListEntity(
+      id = id,
+      uuid = uuid,
+      title = title,
+      description = description,
+      children = children,
+      createdAt = createdAt,
+      updatedAt = updatedAt
+    )
+}
 
 class WorkflowListTable(tag: Tag)
   extends BaseTableLong[WorkflowList](tag, "workflow_list") {

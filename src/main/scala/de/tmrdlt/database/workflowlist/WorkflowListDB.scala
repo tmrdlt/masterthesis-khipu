@@ -50,6 +50,10 @@ class WorkflowListDB
     )
   }
 
+  def getWorkflowLists: Future[Seq[WorkflowList]] = {
+    db.run(workflowListQuery.result)
+  }
+
   private def getWorkflowListQuery(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.id === workflowListId).result.headOption
 }
