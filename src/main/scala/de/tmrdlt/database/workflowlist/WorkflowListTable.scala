@@ -2,7 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.WorkflowListEntity
+import de.tmrdlt.models.{UsageType, WorkflowListEntity}
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
@@ -36,6 +36,7 @@ case class WorkflowList(id: Long,
       title = title,
       description = description,
       children = children,
+      usageType = UsageType.getUsageType(children),
       createdAt = createdAt,
       updatedAt = updatedAt
     )
