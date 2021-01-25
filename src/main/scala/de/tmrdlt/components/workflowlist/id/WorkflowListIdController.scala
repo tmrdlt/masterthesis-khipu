@@ -9,6 +9,10 @@ class WorkflowListIdController(workflowListDB: WorkflowListDB) {
 
   def updateWorkflowList(workflowListId: Long,
                          updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] = {
-    workflowListDB.assignParentToWorkflowList(workflowListId, updateWorkflowListEntity.parentId)
+    updateWorkflowListEntity.newParentId match {
+      case Some(parentId) => workflowListDB.assignParentToWorkflowList(workflowListId, parentId)
+      case None => Future.successful(0)
+    }
+    // TODO Add logic to update other fields
   }
 }
