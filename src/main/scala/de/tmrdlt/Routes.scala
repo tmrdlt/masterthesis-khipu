@@ -4,11 +4,11 @@ import akka.http.scaladsl.model.StatusCodes.InternalServerError
 import akka.http.scaladsl.server.Directives.{complete, extractUri, path, _}
 import akka.http.scaladsl.server._
 import de.tmrdlt.components.Components
-import de.tmrdlt.utils.SimpleNameLogger
+import de.tmrdlt.utils.{PreflightUtil, SimpleNameLogger}
 
 
 class Routes(components: Components)
-  extends SimpleNameLogger {
+  extends SimpleNameLogger with PreflightUtil {
 
   val exceptionHandler: ExceptionHandler = ExceptionHandler {
     case e: Exception => extractUri { uri =>
@@ -18,12 +18,14 @@ class Routes(components: Components)
   }
 
   def endPoints: Route = handleExceptions(exceptionHandler) {
-    concat(
-      path("health")(components.health.route),
-      path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
-      path("workflowList")(components.workflowList.route),
-      path("workflowList" / LongNumber) {workflowListId => components.workflowListId.route(workflowListId)},
-      path("workflowList" / LongNumber / "convert") {workflowListId => components.workflowListIdConvert.route(workflowListId)}
-    )
+    addAccessControlHeaders {
+      concat(
+        path("health")(components.health.route),
+        path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
+        path("workflowList")(components.workflowList.route),
+        path("workflowList" / LongNumber) { workflowListId => components.workflowListId.route(workflowListId) },
+        path("workflowList" / LongNumber / "convert") { workflowListId => components.workflowListIdConvert.route(workflowListId) }
+      )
+    }
   }
 }
