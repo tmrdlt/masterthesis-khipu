@@ -25,7 +25,7 @@ class WorkflowListDB
           uuid = java.util.UUID.randomUUID,
           title = createWorkflowListEntity.title,
           description = createWorkflowListEntity.description,
-          parentId = None, // TODO pass as parameter
+          parentId = createWorkflowListEntity.parentId,
           createdAt = now,
           updatedAt = now
         )

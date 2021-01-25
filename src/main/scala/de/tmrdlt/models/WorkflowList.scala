@@ -16,9 +16,12 @@ case class WorkflowListEntity(id: Long,
                               updatedAt: LocalDateTime)
 
 case class CreateWorkflowListEntity(title: String,
-                                    description: Option[String])
+                                    description: Option[String],
+                                    parentId: Option[Long])
 
 case class UpdateWorkflowListEntity(parentId: Long) // TODO enhance with other fields
+
+case class ConvertWorkflowListEntity(convertTo: UsageType)
 
 trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
 
@@ -32,6 +35,7 @@ trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
       "usageType",
       "createdAt",
       "updatedAt")))
-  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat2(CreateWorkflowListEntity)
+  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat3(CreateWorkflowListEntity)
   implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat1(UpdateWorkflowListEntity)
+  implicit val convertWorkflowListEntityFormat: RootJsonFormat[ConvertWorkflowListEntity] = jsonFormat1(ConvertWorkflowListEntity)
 }
