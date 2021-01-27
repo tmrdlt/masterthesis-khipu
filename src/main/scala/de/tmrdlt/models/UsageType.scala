@@ -11,15 +11,15 @@ trait UsageTypeJsonSupport extends JsonSupport {
 object UsageType extends Enumeration {
 
   type UsageType = Value
-  val TASK, LIST, PROJECT = Value
+  val ITEM, LIST, BOARD = Value
 
   def getUsageType(children: Seq[WorkflowListEntity]): UsageType = {
     if (children.isEmpty) {
-      UsageType.TASK
+      UsageType.ITEM
     } else if (children.forall(l => l.children.isEmpty)) {
       UsageType.LIST
     } else {
-      UsageType.PROJECT
+      UsageType.BOARD
     }
   }
 }
