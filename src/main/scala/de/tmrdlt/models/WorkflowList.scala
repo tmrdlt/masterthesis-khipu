@@ -17,7 +17,7 @@ case class WorkflowListEntity(id: Long,
 
 case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
-                                    parentId: Option[Long])
+                                    parentUuid: Option[UUID])
 
 case class UpdateWorkflowListEntity(newTitle: Option[String],
                                     newDescription: Option[String],

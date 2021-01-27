@@ -20,6 +20,7 @@ class Routes(components: Components)
   def endPoints: Route = handleExceptions(exceptionHandler) {
     addAccessControlHeaders {
       concat(
+        preflightRoute,
         path("health")(components.health.route),
         path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
         path("workflowList")(components.workflowList.route),
