@@ -89,9 +89,4 @@ trait AdditionalJsonTypes extends DefaultJsonProtocol {
       case _ => deserializationError("Cannot parse remoteAddress from string: " + value)
     }
   }
-
-  implicit val apiListResultMetaFormat: RootJsonFormat[ApiListResultMeta] = jsonFormat5(ApiListResultMeta)
-
-  implicit def apiListResultFormat[C: JsonFormat, T: JsonFormat]: RootJsonFormat[ApiListResult[C, T]] =
-    jsonFormat3(ApiListResult[C, T])
 }
