@@ -24,8 +24,8 @@ class Routes(components: Components)
         path("health")(components.health.route),
         path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
         path("workflowList")(components.workflowList.route),
-        path("workflowList" / LongNumber) { workflowListId => components.workflowListId.route(workflowListId) },
-        path("workflowList" / LongNumber / "convert") { workflowListId => components.workflowListIdConvert.route(workflowListId) }
+        path("workflowList" / JavaUUID ) { workflowListUUID => components.workflowListId.route(workflowListUUID) },
+        path("workflowList" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) }
       )
     }
   }

@@ -3,12 +3,13 @@ package de.tmrdlt.components.workflowlist.id.convert
 import de.tmrdlt.database.workflowlist.WorkflowListDB
 import de.tmrdlt.models.UsageType.UsageType
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class WorkflowListIdConvertController(workflowListDB: WorkflowListDB) {
 
-  def convertWorkflowList(workfLowListId: Long, convertWorkflowListTo: UsageType): Future[Int] = {
+  def convertWorkflowList(workfLowListId: UUID, convertWorkflowListTo: UsageType): Future[Int] = {
 
       // TODO WIP
       // Board -> Board: Nothing

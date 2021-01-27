@@ -58,7 +58,7 @@ class WorkflowListTable(tag: Tag)
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
 
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
-    foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?)
+    foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?, onDelete=ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =

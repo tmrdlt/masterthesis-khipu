@@ -32,7 +32,7 @@ def upgrade():
                     schema='workflow')
 
     op.create_foreign_key('parent_fk', 'workflow_list', 'workflow_list', ['parent_id'], ['id'],
-                          None, None, None, None, None, 'workflow', 'workflow')
+                        None, 'CASCADE', None, None, None, 'workflow', 'workflow')
 
 
 def downgrade():

@@ -5,6 +5,7 @@ import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.models.CreateWorkflowListEntity
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
+import java.util.UUID
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,26 +18,45 @@ class WorkflowListDB
 
 
   def insertWorkflowListQuery(createWorkflowListEntity: CreateWorkflowListEntity): Future[WorkflowList] = {
-    db.run(
-      (workflowListQuery returning workflowListQuery) += {
-        val now = LocalDateTime.now()
-        WorkflowList(
-          id = 0L,
-          uuid = java.util.UUID.randomUUID,
-          title = createWorkflowListEntity.title,
-          description = createWorkflowListEntity.description,
-          parentId = createWorkflowListEntity.parentId,
-          createdAt = now,
-          updatedAt = now
+    createWorkflowListEntity.parentUuid match {
+      case Some(uuid) =>
+        db.run(
+          for {
+            parent <- getWorkflowListByUuidQuery(uuid)
+            inserted <- (workflowListQuery returning workflowListQuery) += {
+              val now = LocalDateTime.now()
+              WorkflowList(
+                id = 0L,
+                uuid = java.util.UUID.randomUUID,
+                title = createWorkflowListEntity.title,
+                description = createWorkflowListEntity.description,
+                parentId = Some(parent.getOrException("no parent for uuid found").id),
+                createdAt = now,
+                updatedAt = now
+              )
+            }
+          } yield inserted
         )
-      }
-    )
+      case None =>
+        db.run((workflowListQuery returning workflowListQuery) += {
+          val now = LocalDateTime.now()
+          WorkflowList(
+            id = 0L,
+            uuid = java.util.UUID.randomUUID,
+            title = createWorkflowListEntity.title,
+            description = createWorkflowListEntity.description,
+            parentId = None,
+            createdAt = now,
+            updatedAt = now
+          )
+        })
+    }
   }
 
-  def assignParentToWorkflowList(workflowListId: Long, parentId: Long): Future[Int] = {
+  def assignParentToWorkflowList(workflowListUUID: UUID, parentId: Long): Future[Int] = {
     db.run(
       for {
-        workflowListOption <- getWorkflowListQuery(workflowListId)
+        workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
         updated <- workflowListOption match {
           case Some(workflowList) =>
             workflowListQuery
@@ -44,10 +64,22 @@ class WorkflowListDB
               .map(wl => (wl.parentId, wl.updatedAt))
               .update((Some(parentId), LocalDateTime.now()))
           case None =>
-            DBIO.failed(new Exception(s"Cannot update a workflow list, no list with id ${workflowListId} found"))
+            DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} found"))
         }
       } yield updated
     )
+  }
+
+  def deleteWorkflowList(workflowListUUID: UUID): Future[Int] = {
+    db.run {
+      for {
+        workflowListOption <- workflowListQuery.filter(_.uuid === workflowListUUID).result.headOption
+        deleted <- workflowListOption match {
+          case Some(workflowList) => workflowListQuery.filter(_.id === workflowList.id).delete
+          case None => DBIO.failed(new Exception(s"No workflowList for uuid $workflowListUUID found"))
+        }
+      } yield deleted
+    }
   }
 
   def getWorkflowLists: Future[Seq[WorkflowList]] = {
@@ -56,4 +88,7 @@ class WorkflowListDB
 
   private def getWorkflowListQuery(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.id === workflowListId).result.headOption
+
+  private def getWorkflowListByUuidQuery(workflowListUUID: UUID): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
+    workflowListQuery.filter(_.uuid === workflowListUUID).result.headOption
 }

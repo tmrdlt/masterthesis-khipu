@@ -6,6 +6,7 @@ import akka.http.scaladsl.server.Route
 import de.tmrdlt.models.{ApiErrorJsonSupport, ConvertWorkflowListEntity, WorkflowListJsonSupport}
 import de.tmrdlt.utils.SimpleNameLogger
 
+import java.util.UUID
 import scala.util.{Failure, Success}
 
 class WorkflowListIdConvertRoute(controller: WorkflowListIdConvertController)
@@ -13,13 +14,14 @@ class WorkflowListIdConvertRoute(controller: WorkflowListIdConvertController)
     with WorkflowListJsonSupport
     with SimpleNameLogger {
 
-  def route(workflowListId: Long): Route =
+  def route(workflowListUUID: UUID): Route = {
     put {
       entity(as[ConvertWorkflowListEntity]) { convertWorkflowListEntity =>
-        onComplete(controller.convertWorkflowList(workflowListId, convertWorkflowListEntity.convertTo)) {
+        onComplete(controller.convertWorkflowList(workflowListUUID, convertWorkflowListEntity.convertTo)) {
           case Success(_) => complete(OK)
           case Failure(exception) => complete(exception.toResponseMarshallable)
         }
       }
     }
+  }
 }
