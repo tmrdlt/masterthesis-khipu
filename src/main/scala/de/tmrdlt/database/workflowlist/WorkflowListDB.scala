@@ -53,18 +53,19 @@ class WorkflowListDB
     }
   }
 
-  def assignParentToWorkflowList(workflowListUUID: UUID, parentId: Long): Future[Int] = {
+  def assignParentToWorkflowList(workflowListUUID: UUID, parentUuid: UUID): Future[Int] = {
     db.run(
       for {
         workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
-        updated <- workflowListOption match {
-          case Some(workflowList) =>
+        parentWorkflowListOption <- getWorkflowListByUuidQuery(parentUuid)
+        updated <- (workflowListOption, parentWorkflowListOption) match {
+          case (Some(workflowList), Some(parentWorkflowList)) =>
             workflowListQuery
               .filter(_.id === workflowList.id)
               .map(wl => (wl.parentId, wl.updatedAt))
-              .update((Some(parentId), LocalDateTime.now()))
-          case None =>
-            DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} found"))
+              .update((Some(parentWorkflowList.id), LocalDateTime.now()))
+          case (_, _) =>
+            DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} or parentUuid ${parentUuid} found"))
         }
       } yield updated
     )
