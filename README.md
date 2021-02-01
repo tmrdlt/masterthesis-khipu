@@ -8,6 +8,7 @@ Ludwig-Maximilian University of Munich. Its backend is written in the Scala Prog
 - scala (`brew install scala`)
 - sbt (`brew install sbt`)
 - docker (`brew install docker`)
+- python 3.x.x
 - alembic (`pip install alembic`)
 
 ## Development
