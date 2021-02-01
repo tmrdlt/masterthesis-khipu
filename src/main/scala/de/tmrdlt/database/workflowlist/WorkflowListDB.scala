@@ -5,9 +5,9 @@ import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.models.CreateWorkflowListEntity
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
-import java.util.UUID
 
 import java.time.LocalDateTime
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -66,6 +66,23 @@ class WorkflowListDB
               .update((Some(parentWorkflowList.id), LocalDateTime.now()))
           case (_, _) =>
             DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} or parentUuid ${parentUuid} found"))
+        }
+      } yield updated
+    )
+  }
+
+  def updateWorkflowList(workflowListUUID: UUID, newTitle: String, newDescription: Option[String]): Future[Int] = {
+    db.run(
+      for {
+        workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
+        updated <- workflowListOption match {
+          case Some(workflowList) =>
+            workflowListQuery
+              .filter(_.id === workflowList.id)
+              .map(wl => (wl.title, wl.description, wl.updatedAt))
+              .update((newTitle, newDescription, LocalDateTime.now()))
+          case _ =>
+            DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID}"))
         }
       } yield updated
     )
