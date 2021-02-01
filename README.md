@@ -9,7 +9,7 @@ Ludwig-Maximilian University of Munich. Its backend is written in the Scala Prog
 - sbt (`brew install sbt`)
 - docker (`brew install docker`)
 - python 3.x.x
-- alembic (`pip install alembic`)
+- alembic (`pip3 install alembic`)
 
 ## Development
 Run inside `/masterthesis-khipu`
