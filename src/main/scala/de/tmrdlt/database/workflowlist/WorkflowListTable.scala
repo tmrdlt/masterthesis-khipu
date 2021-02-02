@@ -2,6 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.models.UsageType.UsageType
 import de.tmrdlt.models.{UsageType, WorkflowListEntity}
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
@@ -25,6 +26,7 @@ case class WorkflowList(id: Long,
                         uuid: UUID,
                         title: String,
                         description: Option[String],
+                        usageType: UsageType,
                         parentId: Option[Long],
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
@@ -36,7 +38,7 @@ case class WorkflowList(id: Long,
       title = title,
       description = description,
       children = children,
-      usageType = UsageType.getUsageType(children),
+      usageType = usageType,
       createdAt = createdAt,
       updatedAt = updatedAt
     )
@@ -51,6 +53,8 @@ class WorkflowListTable(tag: Tag)
 
   def description: Rep[Option[String]] = column[Option[String]]("description", Nullable)
 
+  def usageType: Rep[UsageType] = column[UsageType]("usage_type", Nullable)
+
   def parentId: Rep[Option[Long]] = column[Option[Long]]("parent_id", Nullable)
 
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
@@ -58,9 +62,9 @@ class WorkflowListTable(tag: Tag)
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
 
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
-    foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?, onDelete=ForeignKeyAction.Cascade)
+    foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =
-    (id, uuid, title, description, parentId, createdAt, updatedAt).mapTo[WorkflowList]
+    (id, uuid, title, description, usageType, parentId, createdAt, updatedAt).mapTo[WorkflowList]
 }

@@ -30,6 +30,7 @@ class WorkflowListDB
                 uuid = java.util.UUID.randomUUID,
                 title = createWorkflowListEntity.title,
                 description = createWorkflowListEntity.description,
+                usageType = createWorkflowListEntity.usageType,
                 parentId = Some(parent.getOrException("no parent for uuid found").id),
                 createdAt = now,
                 updatedAt = now
@@ -45,6 +46,7 @@ class WorkflowListDB
             uuid = java.util.UUID.randomUUID,
             title = createWorkflowListEntity.title,
             description = createWorkflowListEntity.description,
+            usageType = createWorkflowListEntity.usageType,
             parentId = None,
             createdAt = now,
             updatedAt = now
