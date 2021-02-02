@@ -9,15 +9,9 @@ import scala.concurrent.Future
 class WorkflowListIdController(workflowListDB: WorkflowListDB) {
 
   def updateWorkflowList(workflowListUUID: UUID,
-                         uwle: UpdateWorkflowListEntity): Future[Int] = {
-    (uwle.newTitle, uwle.newParentUuid) match {
-      case (None, Some(parentUuid)) => workflowListDB.assignParentToWorkflowList(workflowListUUID, parentUuid)
-      case (Some(newTitle), None) => workflowListDB.updateWorkflowList(workflowListUUID, newTitle, uwle.newDescription)
-      case _ => Future.successful(0)
-    }
-  }
+                         updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] =
+    workflowListDB.updateWorkflowList(workflowListUUID, updateWorkflowListEntity)
 
-  def deleteWorkflowList(workflowListUUID: UUID): Future[Int] = {
+  def deleteWorkflowList(workflowListUUID: UUID): Future[Int] =
     workflowListDB.deleteWorkflowList(workflowListUUID)
-  }
 }

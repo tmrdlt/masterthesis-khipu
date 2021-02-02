@@ -2,7 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.CreateWorkflowListEntity
+import de.tmrdlt.models.{CreateWorkflowListEntity, MoveWorkflowListEntity, UpdateWorkflowListEntity}
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
 
@@ -53,25 +53,43 @@ class WorkflowListDB
     }
   }
 
-  def assignParentToWorkflowList(workflowListUUID: UUID, parentUuid: UUID): Future[Int] = {
-    db.run(
-      for {
-        workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
-        parentWorkflowListOption <- getWorkflowListByUuidQuery(parentUuid)
-        updated <- (workflowListOption, parentWorkflowListOption) match {
-          case (Some(workflowList), Some(parentWorkflowList)) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.parentId, wl.updatedAt))
-              .update((Some(parentWorkflowList.id), LocalDateTime.now()))
-          case (_, _) =>
-            DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} or parentUuid ${parentUuid} found"))
-        }
-      } yield updated
-    )
+  def assignParentToWorkflowList(workflowListUUID: UUID, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] = {
+    moveWorkflowListEntity.newParentUuid match {
+      case Some(uuid) =>
+        db.run(
+          for {
+            workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
+            parentWorkflowListOption <- getWorkflowListByUuidQuery(uuid)
+            updated <- (workflowListOption, parentWorkflowListOption) match {
+              case (Some(workflowList), Some(parentWorkflowList)) =>
+                workflowListQuery
+                  .filter(_.id === workflowList.id)
+                  .map(wl => (wl.parentId, wl.updatedAt))
+                  .update((Some(parentWorkflowList.id), LocalDateTime.now()))
+              case (_, _) =>
+                DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} or parentUuid ${uuid} found"))
+            }
+          } yield updated
+        )
+      case None =>
+        db.run(
+          for {
+            workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
+            updated <- workflowListOption match {
+              case Some(workflowList) =>
+                workflowListQuery
+                  .filter(_.id === workflowList.id)
+                  .map(wl => (wl.parentId, wl.updatedAt))
+                  .update((None, LocalDateTime.now()))
+              case _ =>
+                DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} found"))
+            }
+          } yield updated
+        )
+    }
   }
 
-  def updateWorkflowList(workflowListUUID: UUID, newTitle: String, newDescription: Option[String]): Future[Int] = {
+  def updateWorkflowList(workflowListUUID: UUID, updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] = {
     db.run(
       for {
         workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
@@ -80,7 +98,7 @@ class WorkflowListDB
             workflowListQuery
               .filter(_.id === workflowList.id)
               .map(wl => (wl.title, wl.description, wl.updatedAt))
-              .update((newTitle, newDescription, LocalDateTime.now()))
+              .update((updateWorkflowListEntity.newTitle, updateWorkflowListEntity.newDescription, LocalDateTime.now()))
           case _ =>
             DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID}"))
         }

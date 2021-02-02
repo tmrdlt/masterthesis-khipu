@@ -25,7 +25,8 @@ class Routes(components: Components)
         path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
         path("workflowList")(components.workflowList.route),
         path("workflowList" / JavaUUID ) { workflowListUUID => components.workflowListId.route(workflowListUUID) },
-        path("workflowList" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) }
+        path("workflowList" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) },
+        path("workflowList" / JavaUUID / "move") { workflowListUUID => components.workflowListIdMove.route(workflowListUUID) }
       )
     }
   }

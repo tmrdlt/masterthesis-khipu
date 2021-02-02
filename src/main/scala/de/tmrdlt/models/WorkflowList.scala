@@ -19,11 +19,12 @@ case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
                                     parentUuid: Option[UUID])
 
-case class UpdateWorkflowListEntity(newTitle: Option[String],
-                                    newDescription: Option[String],
-                                    newParentUuid: Option[UUID])
+case class UpdateWorkflowListEntity(newTitle: String,
+                                    newDescription: Option[String])
 
 case class ConvertWorkflowListEntity(convertTo: UsageType)
+
+case class MoveWorkflowListEntity(newParentUuid: Option[UUID])
 
 trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
 
@@ -38,6 +39,8 @@ trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
       "createdAt",
       "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat3(CreateWorkflowListEntity)
-  implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat3(UpdateWorkflowListEntity)
+  implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat2(UpdateWorkflowListEntity)
   implicit val convertWorkflowListEntityFormat: RootJsonFormat[ConvertWorkflowListEntity] = jsonFormat1(ConvertWorkflowListEntity)
+  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat1(MoveWorkflowListEntity)
+
 }
