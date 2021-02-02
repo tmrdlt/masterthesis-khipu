@@ -2,7 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.{CreateWorkflowListEntity, MoveWorkflowListEntity, UpdateWorkflowListEntity}
+import de.tmrdlt.models.{ConvertWorkflowListEntity, CreateWorkflowListEntity, MoveWorkflowListEntity, UpdateWorkflowListEntity}
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
 
@@ -69,7 +69,7 @@ class WorkflowListDB
                   .map(wl => (wl.parentId, wl.updatedAt))
                   .update((Some(parentWorkflowList.id), LocalDateTime.now()))
               case (_, _) =>
-                DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} or parentUuid ${uuid} found"))
+                DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUUID} or parentUuid ${uuid} found"))
             }
           } yield updated
         )
@@ -84,7 +84,7 @@ class WorkflowListDB
                   .map(wl => (wl.parentId, wl.updatedAt))
                   .update((None, LocalDateTime.now()))
               case _ =>
-                DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID} found"))
+                DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUUID} found"))
             }
           } yield updated
         )
@@ -103,6 +103,23 @@ class WorkflowListDB
               .update((updateWorkflowListEntity.newTitle, updateWorkflowListEntity.newDescription, LocalDateTime.now()))
           case _ =>
             DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUUID}"))
+        }
+      } yield updated
+    )
+  }
+
+  def convertWorkflowList(workflowListUUID: UUID, convertWorkflowListEntity: ConvertWorkflowListEntity): Future[Int] = {
+    db.run(
+      for {
+        workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
+        updated <- workflowListOption match {
+          case Some(workflowList) =>
+            workflowListQuery
+              .filter(_.id === workflowList.id)
+              .map(wl => (wl.usageType, wl.updatedAt))
+              .update((convertWorkflowListEntity.newUsageType, LocalDateTime.now()))
+          case _ =>
+            DBIO.failed(new Exception(s"Cannot convert workflow list, no list for uuid ${workflowListUUID}"))
         }
       } yield updated
     )

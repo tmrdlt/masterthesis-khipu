@@ -23,7 +23,7 @@ case class CreateWorkflowListEntity(title: String,
 case class UpdateWorkflowListEntity(newTitle: String,
                                     newDescription: Option[String])
 
-case class ConvertWorkflowListEntity(convertTo: UsageType)
+case class ConvertWorkflowListEntity(newUsageType: UsageType)
 
 case class MoveWorkflowListEntity(newParentUuid: Option[UUID])
 
