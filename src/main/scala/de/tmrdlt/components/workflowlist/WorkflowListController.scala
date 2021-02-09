@@ -25,15 +25,15 @@ class WorkflowListController(workflowListDB: WorkflowListDB) {
     workflowLists
       .filter(_.parentId.isEmpty)
       .map { parent =>
-        parent.toWorkflowListEntity(getChildren(parent.id, workflowLists))
+        parent.toWorkflowListEntity(getChildren(parent.id, workflowLists, 1L), 0L)
       }
   }
 
-  private def getChildren(parentId: Long, workflowLists: Seq[WorkflowList]): Seq[WorkflowListEntity] = {
+  private def getChildren(parentId: Long, workflowLists: Seq[WorkflowList], level: Long): Seq[WorkflowListEntity] = {
     workflowLists
       .filter(_.parentId.contains(parentId))
       .map { child =>
-        child.toWorkflowListEntity(getChildren(child.id, workflowLists))
+        child.toWorkflowListEntity(getChildren(child.id, workflowLists, level+1), level)
       }
   }
 }

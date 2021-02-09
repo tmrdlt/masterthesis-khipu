@@ -31,7 +31,7 @@ case class WorkflowList(id: Long,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
-  def toWorkflowListEntity(children: Seq[WorkflowListEntity]): WorkflowListEntity =
+  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long): WorkflowListEntity =
     WorkflowListEntity(
       id = id,
       uuid = uuid,
@@ -39,6 +39,7 @@ case class WorkflowList(id: Long,
       description = description,
       children = children,
       usageType = usageType,
+      level = level,
       createdAt = createdAt,
       updatedAt = updatedAt
     )
