@@ -23,6 +23,7 @@ class WorkflowListDB
         db.run(
           for {
             parent <- getWorkflowListByUuidQuery(uuid)
+            highestOrderIndexOption <- getHighestOrderIndexByParentId(Some(parent.getOrException("no parent for uuid found").id))
             inserted <- (workflowListQuery returning workflowListQuery) += {
               val now = LocalDateTime.now()
               WorkflowList(
@@ -32,6 +33,10 @@ class WorkflowListDB
                 description = createWorkflowListEntity.description,
                 usageType = createWorkflowListEntity.usageType,
                 parentId = Some(parent.getOrException("no parent for uuid found").id),
+                order = highestOrderIndexOption match {
+                  case Some(order) => order + 1
+                  case None => 0
+                },
                 createdAt = now,
                 updatedAt = now
               )
@@ -39,19 +44,28 @@ class WorkflowListDB
           } yield inserted
         )
       case None =>
-        db.run((workflowListQuery returning workflowListQuery) += {
-          val now = LocalDateTime.now()
-          WorkflowList(
-            id = 0L,
-            uuid = java.util.UUID.randomUUID,
-            title = createWorkflowListEntity.title,
-            description = createWorkflowListEntity.description,
-            usageType = createWorkflowListEntity.usageType,
-            parentId = None,
-            createdAt = now,
-            updatedAt = now
-          )
-        })
+        db.run(
+          for {
+            highestOrderIndexOption <- getHighestOrderIndexByParentId(None)
+            inserted <- (workflowListQuery returning workflowListQuery) += {
+              val now = LocalDateTime.now()
+              WorkflowList(
+                id = 0L,
+                uuid = java.util.UUID.randomUUID,
+                title = createWorkflowListEntity.title,
+                description = createWorkflowListEntity.description,
+                usageType = createWorkflowListEntity.usageType,
+                parentId = None,
+                order = highestOrderIndexOption match {
+                  case Some(order) => order + 1
+                  case None => 0
+                },
+                createdAt = now,
+                updatedAt = now
+              )
+            }
+          } yield inserted
+        )
     }
   }
 
@@ -61,13 +75,17 @@ class WorkflowListDB
         db.run(
           for {
             workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
-            parentWorkflowListOption <- getWorkflowListByUuidQuery(uuid)
-            updated <- (workflowListOption, parentWorkflowListOption) match {
+            parent <- getWorkflowListByUuidQuery(uuid)
+            highestOrderIndexOption <- getHighestOrderIndexByParentId(Some(parent.getOrException("no parent for uuid found").id))
+            updated <- (workflowListOption, parent) match {
               case (Some(workflowList), Some(parentWorkflowList)) =>
                 workflowListQuery
                   .filter(_.id === workflowList.id)
-                  .map(wl => (wl.parentId, wl.updatedAt))
-                  .update((Some(parentWorkflowList.id), LocalDateTime.now()))
+                  .map(wl => (wl.parentId, wl.order, wl.updatedAt))
+                  .update((Some(parentWorkflowList.id), highestOrderIndexOption match {
+                    case Some(order) => order + 1
+                    case None => 0
+                  }, LocalDateTime.now()))
               case (_, _) =>
                 DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUUID} or parentUuid ${uuid} found"))
             }
@@ -77,12 +95,16 @@ class WorkflowListDB
         db.run(
           for {
             workflowListOption <- getWorkflowListByUuidQuery(workflowListUUID)
+            highestOrderIndexOption <- getHighestOrderIndexByParentId(None)
             updated <- workflowListOption match {
               case Some(workflowList) =>
                 workflowListQuery
                   .filter(_.id === workflowList.id)
-                  .map(wl => (wl.parentId, wl.updatedAt))
-                  .update((None, LocalDateTime.now()))
+                  .map(wl => (wl.parentId, wl.order, wl.updatedAt))
+                  .update((None, highestOrderIndexOption match {
+                    case Some(order) => order + 1
+                    case None => 0
+                  }, LocalDateTime.now()))
               case _ =>
                 DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUUID} found"))
             }
@@ -146,4 +168,12 @@ class WorkflowListDB
 
   private def getWorkflowListByUuidQuery(workflowListUUID: UUID): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.uuid === workflowListUUID).result.headOption
+
+  private def getHighestOrderIndexByParentId(parentIdOption: Option[Long]): SqlAction[Option[Long], NoStream, Effect.Read] =
+    workflowListQuery.filterIf(parentIdOption.isEmpty)(_.parentId.isEmpty)
+      .filterOpt(parentIdOption)(_.parentId === _)
+      .sortBy(_.order.desc)
+      .map(_.order)
+      .result
+      .headOption
 }

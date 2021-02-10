@@ -27,12 +27,16 @@ def upgrade():
                     Column('usage_type', Enum('BOARD', 'LIST', 'ITEM', name='usage_type', schema='workflow'),
                            nullable=False),
                     Column('parent_id', BIGINT, nullable=True),
+                    Column('order', BIGINT, nullable=False),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
 
     op.create_foreign_key('parent_fk', 'workflow_list', 'workflow_list', ['parent_id'], ['id'],
                           None, 'CASCADE', None, None, None, 'workflow', 'workflow')
+
+    op.create_index('order_index', 'workflow_list', ['order', 'parent_id'],
+                    schema='workflow', unique=True)
 
 
 def downgrade():

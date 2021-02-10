@@ -4,7 +4,7 @@ import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.models.UsageType.UsageType
 import de.tmrdlt.models.{UsageType, WorkflowListEntity}
-import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
+import slick.lifted.{ForeignKeyQuery, Index, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
 import java.time.LocalDateTime
@@ -19,6 +19,7 @@ import java.util.UUID
  * @param title       TBD
  * @param description TBD
  * @param parentId    TBD
+ * @param order       TBD
  * @param createdAt   TBD
  * @param updatedAt   TBD
  */
@@ -28,6 +29,7 @@ case class WorkflowList(id: Long,
                         description: Option[String],
                         usageType: UsageType,
                         parentId: Option[Long],
+                        order: Long,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
@@ -58,6 +60,8 @@ class WorkflowListTable(tag: Tag)
 
   def parentId: Rep[Option[Long]] = column[Option[Long]]("parent_id", Nullable)
 
+  def order: Rep[Long] = column[Long]("order", NotNull)
+
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -65,7 +69,9 @@ class WorkflowListTable(tag: Tag)
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
+  def sessionTokenIndex: Index = index("order_index", order, unique = true)
+
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =
-    (id, uuid, title, description, usageType, parentId, createdAt, updatedAt).mapTo[WorkflowList]
+    (id, uuid, title, description, usageType, parentId, order, createdAt, updatedAt).mapTo[WorkflowList]
 }
