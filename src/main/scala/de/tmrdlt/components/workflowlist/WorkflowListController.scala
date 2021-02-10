@@ -17,7 +17,7 @@ class WorkflowListController(workflowListDB: WorkflowListDB) {
     for {
       workflowLists <- workflowListDB.getWorkflowLists
     } yield {
-      workflowListsToEntities(workflowLists)
+      workflowListsToEntities(workflowLists).sortBy(_.order)
     }
   }
 

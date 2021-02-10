@@ -39,9 +39,10 @@ case class WorkflowList(id: Long,
       uuid = uuid,
       title = title,
       description = description,
-      children = children,
+      children = children.sortBy(_.order),
       usageType = usageType,
       level = level,
+      order = order,
       createdAt = createdAt,
       updatedAt = updatedAt
     )

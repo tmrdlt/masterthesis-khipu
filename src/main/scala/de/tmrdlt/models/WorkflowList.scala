@@ -13,6 +13,7 @@ case class WorkflowListEntity(id: Long,
                               children: Seq[WorkflowListEntity],
                               usageType: UsageType,
                               level: Long,
+                              order: Long,
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime)
 
@@ -39,6 +40,7 @@ trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
       "children",
       "usageType",
       "level",
+      "order",
       "createdAt",
       "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat4(CreateWorkflowListEntity)
