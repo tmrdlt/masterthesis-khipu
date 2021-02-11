@@ -181,24 +181,25 @@ class WorkflowListDB
       for {
         // ToDo check if illegal newOrderIndex (higher as count of collections)
         workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
-        neighboursUpdated <- workflowListOption match {
-          case Some(list) =>
-            if (list.order < rwle.newOrderIndex) lowerToHigher(list)
-            else if (list.order > rwle.newOrderIndex) higherToLower(list)
-            else DBIO.failed(new Exception(s"New Index equals current index. Nothing will be done"))
-          case _ =>
-            DBIO.failed(new Exception(s"Cannot reorder workflow list, no list for uuid ${workflowListUuid} found"))
-        }
-        elementUpdated <- workflowListOption match {
+        updated <- workflowListOption match {
           case Some(workflowList) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.order, wl.updatedAt))
-              .update((rwle.newOrderIndex, LocalDateTime.now()))
+            for {
+              neighboursUpdated <-
+                if (workflowList.order < rwle.newOrderIndex) lowerToHigher(workflowList)
+                else if (workflowList.order > rwle.newOrderIndex) higherToLower(workflowList)
+                else DBIO.failed(new Exception(s"New Index equals current index. Nothing will be done"))
+              elementUpdated <- workflowListQuery
+                .filter(_.id === workflowList.id)
+                .map(wl => (wl.order, wl.updatedAt))
+                .update((rwle.newOrderIndex, LocalDateTime.now()))
+            } yield {
+              neighboursUpdated.sum + elementUpdated
+            }
           case _ =>
             DBIO.failed(new Exception(s"Cannot reorder workflow list, no list for uuid ${workflowListUuid} found"))
         }
-      } yield neighboursUpdated.sum + elementUpdated
+      } yield updated
+
     db.run(query.transactionally)
   }
 
