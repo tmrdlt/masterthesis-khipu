@@ -2,7 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.{ConvertWorkflowListEntity, CreateWorkflowListEntity, MoveWorkflowListEntity, ReorderWorkflowListEntity, UpdateWorkflowListEntity}
+import de.tmrdlt.models._
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
 
@@ -16,6 +16,10 @@ class WorkflowListDB
   extends SimpleNameLogger
     with OptionExtensions {
 
+
+  def getWorkflowLists: Future[Seq[WorkflowList]] = {
+    db.run(workflowListQuery.result)
+  }
 
   def insertWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
     val query =
@@ -46,6 +50,61 @@ class WorkflowListDB
           )
         }
       } yield inserted
+
+    db.run(query)
+  }
+
+  def updateWorkflowList(workflowListUuid: UUID, uwle: UpdateWorkflowListEntity): Future[Int] = {
+    val query =
+      for {
+        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
+        updated <- workflowListOption match {
+          case Some(workflowList) =>
+            workflowListQuery
+              .filter(_.id === workflowList.id)
+              .map(wl => (wl.title, wl.description, wl.updatedAt))
+              .update((uwle.newTitle, uwle.newDescription, LocalDateTime.now()))
+          case _ =>
+            DBIO.failed(new Exception(s"Cannot update workflow list. No list for uuid ${workflowListUuid}"))
+        }
+      } yield updated
+
+    db.run(query)
+  }
+
+  def deleteWorkflowList(workflowListUuid: UUID): Future[Int] = {
+    val query =
+      for {
+        workflowListOption <- workflowListQuery.filter(_.uuid === workflowListUuid).result.headOption
+        rowsAffected <- workflowListOption match {
+          case Some(workflowList) =>
+            for {
+              neighboursUpdatedOnRemove <- updateNeighboursOnRemove(workflowList)
+              elementDeleted <- workflowListQuery.filter(_.id === workflowList.id).delete
+            } yield {
+              neighboursUpdatedOnRemove.sum + elementDeleted
+            }
+          case None => DBIO.failed(new Exception(s"No workflowList for uuid $workflowListUuid found"))
+        }
+      } yield rowsAffected
+
+    db.run(query.transactionally)
+  }
+
+  def convertWorkflowList(workflowListUuid: UUID, cwle: ConvertWorkflowListEntity): Future[Int] = {
+    val query =
+      for {
+        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
+        updated <- workflowListOption match {
+          case Some(workflowList) =>
+            workflowListQuery
+              .filter(_.id === workflowList.id)
+              .map(wl => (wl.usageType, wl.updatedAt))
+              .update((cwle.newUsageType, LocalDateTime.now()))
+          case _ =>
+            DBIO.failed(new Exception(s"Cannot convert workflow list. No list for uuid ${workflowListUuid}"))
+        }
+      } yield updated
 
     db.run(query)
   }
@@ -81,40 +140,6 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def updateWorkflowList(workflowListUuid: UUID, uwle: UpdateWorkflowListEntity): Future[Int] = {
-    db.run(
-      for {
-        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
-        updated <- workflowListOption match {
-          case Some(workflowList) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.title, wl.description, wl.updatedAt))
-              .update((uwle.newTitle, uwle.newDescription, LocalDateTime.now()))
-          case _ =>
-            DBIO.failed(new Exception(s"Cannot update workflow list. No list for uuid ${workflowListUuid}"))
-        }
-      } yield updated
-    )
-  }
-
-  def convertWorkflowList(workflowListUuid: UUID, cwle: ConvertWorkflowListEntity): Future[Int] = {
-    db.run(
-      for {
-        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
-        updated <- workflowListOption match {
-          case Some(workflowList) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.usageType, wl.updatedAt))
-              .update((cwle.newUsageType, LocalDateTime.now()))
-          case _ =>
-            DBIO.failed(new Exception(s"Cannot convert workflow list. No list for uuid ${workflowListUuid}"))
-        }
-      } yield updated
-    )
-  }
-  
   def reorderWorkflowList(workflowListUuid: UUID, rwle: ReorderWorkflowListEntity): Future[Int] = {
     val query =
       for {
@@ -142,35 +167,8 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def deleteWorkflowList(workflowListUuid: UUID): Future[Int] = {
-    db.run {
-      for {
-        workflowListOption <- workflowListQuery.filter(_.uuid === workflowListUuid).result.headOption
-        rowsAffected <- workflowListOption match {
-          case Some(workflowList) =>
-            for {
-              neighboursUpdatedOnRemove <- updateNeighboursOnRemove(workflowList)
-              elementDeleted <-workflowListQuery.filter(_.id === workflowList.id).delete
-            } yield {
-              neighboursUpdatedOnRemove.sum + elementDeleted
-            }
-          case None => DBIO.failed(new Exception(s"No workflowList for uuid $workflowListUuid found"))
-        }
-      } yield rowsAffected
-    }
-  }
-
-  def getWorkflowLists: Future[Seq[WorkflowList]] = {
-    db.run(workflowListQuery.result)
-  }
-
   private def getWorkflowListByUuidSqlAction(workflowListUuid: UUID): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.uuid === workflowListUuid).result.headOption
-
-  private def getWorkflowListByUuidOptionOrExceptionSqlAction(workflowListUuidOption: Option[UUID]): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
-    workflowListQuery
-      .filterIf(workflowListUuidOption.isEmpty)(_.uuid === UUID.randomUUID())
-      .filterOpt(workflowListUuidOption)(_.uuid === _).result.headOption
 
   private def getWorkflowListsByParentIdQuery(parentIdOption: Option[Long]): Query[WorkflowListTable, WorkflowListTable#TableElementType, Seq] =
     workflowListQuery
