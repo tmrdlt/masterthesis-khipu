@@ -10,14 +10,15 @@ import scala.concurrent.Future
 class WorkflowListController(workflowListDB: WorkflowListDB) {
 
   def createWorkflowList(createWorkflowListEntity: CreateWorkflowListEntity): Future[WorkflowList] = {
-    workflowListDB.insertWorkflowListQuery(createWorkflowListEntity)
+    workflowListDB.insertWorkflowList(createWorkflowListEntity)
   }
 
   def getWorkflowListEntities: Future[Seq[WorkflowListEntity]] = {
     for {
       workflowLists <- workflowListDB.getWorkflowLists
     } yield {
-      workflowListsToEntities(workflowLists)
+      // Important to return the workflow lists in a ordered way!
+      workflowListsToEntities(workflowLists).sortBy(_.order)
     }
   }
 

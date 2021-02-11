@@ -9,5 +9,5 @@ import scala.concurrent.Future
 class WorkflowListIdMoveController(workflowListDB: WorkflowListDB) {
 
   def moveWorkflowList(workfLowListUuid: UUID, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] =
-    workflowListDB.assignParentToWorkflowList(workfLowListUuid, moveWorkflowListEntity)
+    workflowListDB.moveWorkflowList(workfLowListUuid, moveWorkflowListEntity)
 }

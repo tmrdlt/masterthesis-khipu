@@ -3,7 +3,7 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.models.UsageType.UsageType
-import de.tmrdlt.models.{UsageType, WorkflowListEntity}
+import de.tmrdlt.models.WorkflowListEntity
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
@@ -19,6 +19,7 @@ import java.util.UUID
  * @param title       TBD
  * @param description TBD
  * @param parentId    TBD
+ * @param order       TBD
  * @param createdAt   TBD
  * @param updatedAt   TBD
  */
@@ -28,6 +29,7 @@ case class WorkflowList(id: Long,
                         description: Option[String],
                         usageType: UsageType,
                         parentId: Option[Long],
+                        order: Long,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
@@ -37,9 +39,10 @@ case class WorkflowList(id: Long,
       uuid = uuid,
       title = title,
       description = description,
-      children = children,
+      children = children.sortBy(_.order), // Important to return the workflow lists in a ordered way!
       usageType = usageType,
       level = level,
+      order = order,
       createdAt = createdAt,
       updatedAt = updatedAt
     )
@@ -58,6 +61,8 @@ class WorkflowListTable(tag: Tag)
 
   def parentId: Rep[Option[Long]] = column[Option[Long]]("parent_id", Nullable)
 
+  def order: Rep[Long] = column[Long]("order", NotNull)
+
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -67,5 +72,5 @@ class WorkflowListTable(tag: Tag)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =
-    (id, uuid, title, description, usageType, parentId, createdAt, updatedAt).mapTo[WorkflowList]
+    (id, uuid, title, description, usageType, parentId, order, createdAt, updatedAt).mapTo[WorkflowList]
 }
