@@ -22,8 +22,8 @@ class WorkflowListDB
       case Some(uuid) =>
         db.run(
           for {
-            parent <- getWorkflowListByUuidQuery(uuid)
-            highestOrderIndexOption <- getHighestOrderIndexByParentId(Some(parent.getOrException("no parent for uuid found").id))
+            parent <- getWorkflowListByUuidSqlAction(uuid)
+            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(Some(parent.getOrException("no parent for uuid found").id))
             inserted <- (workflowListQuery returning workflowListQuery) += {
               val now = LocalDateTime.now()
               WorkflowList(
@@ -46,7 +46,7 @@ class WorkflowListDB
       case None =>
         db.run(
           for {
-            highestOrderIndexOption <- getHighestOrderIndexByParentId(None)
+            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(None)
             inserted <- (workflowListQuery returning workflowListQuery) += {
               val now = LocalDateTime.now()
               WorkflowList(
@@ -71,30 +71,17 @@ class WorkflowListDB
 
   def assignParentToWorkflowList(workflowListUuid: UUID, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] = {
 
-    def updatePreviousNeighbours(workflowList: WorkflowList) =  for {
-      wflsToUpdate <- workflowListQuery
-        .filterIf(workflowList.parentId.isEmpty)(_.parentId.isEmpty)
-        .filterOpt(workflowList.parentId)(_.parentId === _)
-        .filter(wl => wl.order >= workflowList.order).result
-      updated <- DBIO.sequence(wflsToUpdate.map(w => {
-        workflowListQuery
-          .filter(_.id === w.id)
-          .map(_.order)
-          .update(w.order - 1)
-      }))
-    } yield updated
-
     moveWorkflowListEntity.newParentUuid match {
       case Some(uuid) =>
         val query =
           for {
-            workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
-            parent <- getWorkflowListByUuidQuery(uuid)
-            highestOrderIndexOption <- getHighestOrderIndexByParentId(Some(parent.getOrException("no parent for uuid found").id))
+            workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
+            parent <- getWorkflowListByUuidSqlAction(uuid)
+            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(Some(parent.getOrException("no parent for uuid found").id))
             updated <- (workflowListOption, parent) match {
               case (Some(workflowList), Some(parentWorkflowList)) =>
                 for {
-                  previousNeighboursUpdated <- updatePreviousNeighbours(workflowList)
+                  previousNeighboursUpdated <- updateNeighboursOnRemove(workflowList)
                   elementUpdated <- workflowListQuery
                     .filter(_.id === workflowList.id)
                     .map(wl => (wl.parentId, wl.order, wl.updatedAt))
@@ -115,8 +102,8 @@ class WorkflowListDB
       case None =>
         db.run(
           for {
-            workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
-            highestOrderIndexOption <- getHighestOrderIndexByParentId(None)
+            workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
+            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(None)
             updated <- workflowListOption match {
               case Some(workflowList) =>
                 workflowListQuery
@@ -137,7 +124,7 @@ class WorkflowListDB
   def updateWorkflowList(workflowListUuid: UUID, updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] = {
     db.run(
       for {
-        workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
+        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
         updated <- workflowListOption match {
           case Some(workflowList) =>
             workflowListQuery
@@ -154,7 +141,7 @@ class WorkflowListDB
   def convertWorkflowList(workflowListUuid: UUID, convertWorkflowListEntity: ConvertWorkflowListEntity): Future[Int] = {
     db.run(
       for {
-        workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
+        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
         updated <- workflowListOption match {
           case Some(workflowList) =>
             workflowListQuery
@@ -170,46 +157,16 @@ class WorkflowListDB
 
   // https://softwareengineering.stackexchange.com/questions/304593/how-to-store-ordered-information-in-a-relational-database
   def reorderWorkflowList(workflowListUuid: UUID, rwle: ReorderWorkflowListEntity): Future[Int] = {
-    // update foo set a=a+123 not possible in slick atm
-    // https://github[dot]com/slick/slick/issues/497
-    def lowerToHigher(workflowList: WorkflowList) =
-      for {
-        wflsToUpdate <- workflowListQuery
-          .filterIf(workflowList.parentId.isEmpty)(_.parentId.isEmpty)
-          .filterOpt(workflowList.parentId)(_.parentId === _)
-          .filter(wl => wl.order >= workflowList.order && wl.order <= rwle.newOrderIndex).result
-        updated <- DBIO.sequence(wflsToUpdate.map(w => {
-          workflowListQuery
-            .filter(_.id === w.id)
-            .map(_.order)
-            .update(w.order - 1)
-        }))
-      } yield updated
-
-    def higherToLower(workflowList: WorkflowList) =
-      for {
-        wflsToUpdate <- workflowListQuery
-          .filterIf(workflowList.parentId.isEmpty)(_.parentId.isEmpty)
-          .filterOpt(workflowList.parentId)(_.parentId === _)
-          .filter(wl => wl.order <= workflowList.order && wl.order >= rwle.newOrderIndex).result
-        updated <- DBIO.sequence(wflsToUpdate.map(w => {
-          workflowListQuery
-            .filter(_.id === w.id)
-            .map(_.order)
-            .update(w.order + 1)
-        }))
-      } yield updated
-
     val query =
       for {
         // ToDo check if illegal newOrderIndex (higher as count of collections)
-        workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
+        workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
         updated <- workflowListOption match {
           case Some(workflowList) =>
             for {
               neighboursUpdated <-
-                if (workflowList.order < rwle.newOrderIndex) lowerToHigher(workflowList)
-                else if (workflowList.order > rwle.newOrderIndex) higherToLower(workflowList)
+                if (workflowList.order < rwle.newOrderIndex) updateNeighboursOnReorderLowToHigh(workflowList, rwle.newOrderIndex)
+                else if (workflowList.order > rwle.newOrderIndex) updateNeighboursOnReorderHighToLow(workflowList, rwle.newOrderIndex)
                 else DBIO.failed(new Exception(s"New Index equals current index. Nothing will be done"))
               elementUpdated <- workflowListQuery
                 .filter(_.id === workflowList.id)
@@ -242,17 +199,70 @@ class WorkflowListDB
     db.run(workflowListQuery.result)
   }
 
-  private def getWorkflowListQuery(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
-    workflowListQuery.filter(_.id === workflowListId).result.headOption
-
-  private def getWorkflowListByUuidQuery(workflowListUuid: UUID): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
+  private def getWorkflowListByUuidSqlAction(workflowListUuid: UUID): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.uuid === workflowListUuid).result.headOption
 
-  private def getHighestOrderIndexByParentId(parentIdOption: Option[Long]): SqlAction[Option[Long], NoStream, Effect.Read] =
-    workflowListQuery.filterIf(parentIdOption.isEmpty)(_.parentId.isEmpty)
+  private def getWorkflowListsByParentIdQuery(parentIdOption: Option[Long]): Query[WorkflowListTable, WorkflowListTable#TableElementType, Seq] =
+    workflowListQuery
+      .filterIf(parentIdOption.isEmpty)(_.parentId.isEmpty)
       .filterOpt(parentIdOption)(_.parentId === _)
+
+  private def getHighestOrderIndexByParentIdSqlAction(parentIdOption: Option[Long]): SqlAction[Option[Long], NoStream, Effect.Read] =
+    getWorkflowListsByParentIdQuery(parentIdOption)
       .sortBy(_.order.desc)
       .map(_.order)
       .result
       .headOption
+
+  // Helper functions for order
+  // Please notice: update foo set a=a+123 not possible in slick atm, thats why have to get the collection first
+  // and the update.
+  // https://github[dot]com/slick/slick/issues/497
+
+  /**
+   * When removing a workflow list from a parent (either because of deletion or assignment to new parent), we have to
+   * update the order of the remaining workflow lists in that parent
+   *
+   * @param workflowList
+   * @return
+   */
+  private def updateNeighboursOnRemove(workflowList: WorkflowList)
+  : DBIOAction[Seq[Int], NoStream, Effect.Read with Effect.Write] =
+    for {
+      listsToUpdate <- getWorkflowListsByParentIdQuery(workflowList.parentId)
+        .filter(wl => wl.order >= workflowList.order).result
+      updated <- decrementOrdersUpdate(listsToUpdate)
+    } yield updated
+
+  private def updateNeighboursOnReorderLowToHigh(workflowList: WorkflowList, newOrderIndex: Long)
+  : DBIOAction[Seq[Int], NoStream, Effect.Read with Effect.Write] =
+    for {
+      listsToUpdate <- getWorkflowListsByParentIdQuery(workflowList.parentId)
+        .filter(wl => wl.order >= workflowList.order && wl.order <= newOrderIndex).result
+      updated <- decrementOrdersUpdate(listsToUpdate)
+    } yield updated
+
+  private def updateNeighboursOnReorderHighToLow(workflowList: WorkflowList, newOrderIndex: Long)
+  : DBIOAction[Seq[Int], NoStream, Effect.Read with Effect.Write] =
+    for {
+      listsToUpdate <- getWorkflowListsByParentIdQuery(workflowList.parentId)
+        .filter(wl => wl.order <= workflowList.order && wl.order >= newOrderIndex).result
+      updated <- incrementOrdersUpdate(listsToUpdate)
+    } yield updated
+
+  private def incrementOrdersUpdate(listsToUpdate: Seq[WorkflowList]): DBIOAction[Seq[Int], NoStream, Effect.Write] =
+    DBIO.sequence(listsToUpdate.map(w => {
+      workflowListQuery
+        .filter(_.id === w.id)
+        .map(_.order)
+        .update(w.order + 1)
+    }))
+
+  private def decrementOrdersUpdate(listsToUpdate: Seq[WorkflowList]): DBIOAction[Seq[Int], NoStream, Effect.Write] =
+    DBIO.sequence(listsToUpdate.map(w => {
+      workflowListQuery
+        .filter(_.id === w.id)
+        .map(_.order)
+        .update(w.order - 1)
+    }))
 }
