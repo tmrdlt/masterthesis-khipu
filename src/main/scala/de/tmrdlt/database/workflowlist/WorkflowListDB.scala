@@ -71,54 +71,39 @@ class WorkflowListDB
 
   def assignParentToWorkflowList(workflowListUuid: UUID, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] = {
 
-    moveWorkflowListEntity.newParentUuid match {
-      case Some(uuid) =>
-        val query =
-          for {
-            workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
-            parent <- getWorkflowListByUuidSqlAction(uuid)
-            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(Some(parent.getOrException("no parent for uuid found").id))
-            updated <- (workflowListOption, parent) match {
-              case (Some(workflowList), Some(parentWorkflowList)) =>
-                for {
-                  previousNeighboursUpdated <- updateNeighboursOnRemove(workflowList)
-                  elementUpdated <- workflowListQuery
-                    .filter(_.id === workflowList.id)
-                    .map(wl => (wl.parentId, wl.order, wl.updatedAt))
-                    .update((Some(parentWorkflowList.id), highestOrderIndexOption match {
-                      case Some(order) => order + 1
-                      case None => 0
-                    }, LocalDateTime.now()))
-                } yield {
-                  previousNeighboursUpdated.sum + elementUpdated
-                }
-              case (_, _) =>
-                DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUuid} or parentUuid ${uuid} found"))
-            }
-          } yield {
-            updated
-          }
-        db.run(query.transactionally)
-      case None =>
-        db.run(
-          for {
-            workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
-            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(None)
-            updated <- workflowListOption match {
-              case Some(workflowList) =>
-                workflowListQuery
+    for {
+      newParentIdOption <- moveWorkflowListEntity.newParentUuid match {
+        case Some(uuid) => db.run(getWorkflowListByUuidSqlAction(uuid)).map {
+          case Some(parent) => Some(parent.id)
+          case None => throw new Exception(s"Cannot move workflow list. No parent for uuid {uuid} found.")
+        }
+        case _ => Future.successful(None)
+      }
+      updated <- db.run {
+        for {
+          workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
+          highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(newParentIdOption)
+          updated <- workflowListOption match {
+            case Some(workflowList) =>
+              for {
+                previousNeighboursUpdated <- updateNeighboursOnRemove(workflowList)
+                elementUpdated <- workflowListQuery
                   .filter(_.id === workflowList.id)
                   .map(wl => (wl.parentId, wl.order, wl.updatedAt))
-                  .update((None, highestOrderIndexOption match {
+                  .update(newParentIdOption, highestOrderIndexOption match {
                     case Some(order) => order + 1
                     case None => 0
-                  }, LocalDateTime.now()))
-              case _ =>
-                DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUuid} found"))
-            }
-          } yield updated
-        )
-    }
+                  }, LocalDateTime.now())
+              } yield {
+                previousNeighboursUpdated.sum + elementUpdated
+              }
+            case _ =>
+              DBIO.failed(new Exception(s"Cannot move workflow list. no list for uuid ${workflowListUuid} found."))
+          }
+        } yield updated
+      }
+
+    } yield updated
   }
 
   def updateWorkflowList(workflowListUuid: UUID, updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] = {
@@ -201,6 +186,11 @@ class WorkflowListDB
 
   private def getWorkflowListByUuidSqlAction(workflowListUuid: UUID): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.uuid === workflowListUuid).result.headOption
+
+  private def getWorkflowListByUuidOptionOrExceptionSqlAction(workflowListUuidOption: Option[UUID]): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
+    workflowListQuery
+      .filterIf(workflowListUuidOption.isEmpty)(_.uuid === UUID.randomUUID())
+      .filterOpt(workflowListUuidOption)(_.uuid === _).result.headOption
 
   private def getWorkflowListsByParentIdQuery(parentIdOption: Option[Long]): Query[WorkflowListTable, WorkflowListTable#TableElementType, Seq] =
     workflowListQuery

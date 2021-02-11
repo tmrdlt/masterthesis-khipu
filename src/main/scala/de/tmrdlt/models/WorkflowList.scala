@@ -27,7 +27,8 @@ case class UpdateWorkflowListEntity(newTitle: String,
 
 case class ConvertWorkflowListEntity(newUsageType: UsageType)
 
-case class MoveWorkflowListEntity(newParentUuid: Option[UUID])
+case class MoveWorkflowListEntity(newParentUuid: Option[UUID],
+                                  newOrderIndex: Option[Long])
 
 case class ReorderWorkflowListEntity(newOrderIndex: Long)
 
@@ -48,7 +49,7 @@ trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat4(CreateWorkflowListEntity)
   implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat2(UpdateWorkflowListEntity)
   implicit val convertWorkflowListEntityFormat: RootJsonFormat[ConvertWorkflowListEntity] = jsonFormat1(ConvertWorkflowListEntity)
-  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat1(MoveWorkflowListEntity)
+  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat2(MoveWorkflowListEntity)
   implicit val reorderWorkflowListEntityFormat: RootJsonFormat[ReorderWorkflowListEntity] = jsonFormat1(ReorderWorkflowListEntity)
 
 }
