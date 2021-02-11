@@ -39,7 +39,7 @@ case class WorkflowList(id: Long,
       uuid = uuid,
       title = title,
       description = description,
-      children = children.sortBy(_.order),
+      children = children.sortBy(_.order), // Important to return the workflow lists in a ordered way!
       usageType = usageType,
       level = level,
       order = order,
