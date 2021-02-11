@@ -17,56 +17,37 @@ class WorkflowListDB
     with OptionExtensions {
 
 
-  def insertWorkflowListQuery(createWorkflowListEntity: CreateWorkflowListEntity): Future[WorkflowList] = {
-    createWorkflowListEntity.parentUuid match {
-      case Some(uuid) =>
-        db.run(
-          for {
-            parent <- getWorkflowListByUuidSqlAction(uuid)
-            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(Some(parent.getOrException("no parent for uuid found").id))
-            inserted <- (workflowListQuery returning workflowListQuery) += {
-              val now = LocalDateTime.now()
-              WorkflowList(
-                id = 0L,
-                uuid = java.util.UUID.randomUUID,
-                title = createWorkflowListEntity.title,
-                description = createWorkflowListEntity.description,
-                usageType = createWorkflowListEntity.usageType,
-                parentId = Some(parent.getOrException("no parent for uuid found").id),
-                order = highestOrderIndexOption match {
-                  case Some(order) => order + 1
-                  case None => 0
-                },
-                createdAt = now,
-                updatedAt = now
-              )
-            }
-          } yield inserted
-        )
-      case None =>
-        db.run(
-          for {
-            highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(None)
-            inserted <- (workflowListQuery returning workflowListQuery) += {
-              val now = LocalDateTime.now()
-              WorkflowList(
-                id = 0L,
-                uuid = java.util.UUID.randomUUID,
-                title = createWorkflowListEntity.title,
-                description = createWorkflowListEntity.description,
-                usageType = createWorkflowListEntity.usageType,
-                parentId = None,
-                order = highestOrderIndexOption match {
-                  case Some(order) => order + 1
-                  case None => 0
-                },
-                createdAt = now,
-                updatedAt = now
-              )
-            }
-          } yield inserted
-        )
-    }
+  def insertWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
+    val query =
+      for {
+        parentIdOption <- cwle.parentUuid match {
+          case Some(uuid) => getWorkflowListByUuidSqlAction(uuid).map {
+            case Some(parent) => Some(parent.id)
+            case None => throw new Exception(s"Cannot create workflow list. No parent for uuid ${uuid} found.")
+          }
+          case _ => DBIO.successful(None)
+        }
+        highestOrderIndexOption <- getHighestOrderIndexByParentIdSqlAction(parentIdOption)
+        inserted <- (workflowListQuery returning workflowListQuery) += {
+          val now = LocalDateTime.now()
+          WorkflowList(
+            id = 0L,
+            uuid = java.util.UUID.randomUUID,
+            title = cwle.title,
+            description = cwle.description,
+            usageType = cwle.usageType,
+            parentId = parentIdOption,
+            order = highestOrderIndexOption match {
+              case Some(order) => order + 1
+              case None => 0
+            },
+            createdAt = now,
+            updatedAt = now
+          )
+        }
+      } yield inserted
+
+    db.run(query)
   }
 
   def moveWorkflowList(workflowListUuid: UUID, mwle: MoveWorkflowListEntity): Future[Int] = {
@@ -75,7 +56,7 @@ class WorkflowListDB
         newParentIdOption <- mwle.newParentUuid match {
           case Some(uuid) => getWorkflowListByUuidSqlAction(uuid).map {
             case Some(parent) => Some(parent.id)
-            case None => throw new Exception(s"Cannot move workflow list. No parent for uuid {uuid} found.")
+            case None => throw new Exception(s"Cannot move workflow list. No parent for uuid ${uuid} found.")
           }
           case _ => DBIO.successful(None)
         }
@@ -93,14 +74,14 @@ class WorkflowListDB
               neighboursUpdatedOnRemove.sum + neighboursUpdatedOnInsert.sum + elementUpdated
             }
           case _ =>
-            DBIO.failed(new Exception(s"Cannot move workflow list. no list for uuid ${workflowListUuid} found."))
+            DBIO.failed(new Exception(s"Cannot move workflow list. No list for uuid ${workflowListUuid} found."))
         }
       } yield updated
 
     db.run(query.transactionally)
   }
 
-  def updateWorkflowList(workflowListUuid: UUID, updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] = {
+  def updateWorkflowList(workflowListUuid: UUID, uwle: UpdateWorkflowListEntity): Future[Int] = {
     db.run(
       for {
         workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
@@ -109,15 +90,15 @@ class WorkflowListDB
             workflowListQuery
               .filter(_.id === workflowList.id)
               .map(wl => (wl.title, wl.description, wl.updatedAt))
-              .update((updateWorkflowListEntity.newTitle, updateWorkflowListEntity.newDescription, LocalDateTime.now()))
+              .update((uwle.newTitle, uwle.newDescription, LocalDateTime.now()))
           case _ =>
-            DBIO.failed(new Exception(s"Cannot update workflow list, no list for uuid ${workflowListUuid}"))
+            DBIO.failed(new Exception(s"Cannot update workflow list. No list for uuid ${workflowListUuid}"))
         }
       } yield updated
     )
   }
 
-  def convertWorkflowList(workflowListUuid: UUID, convertWorkflowListEntity: ConvertWorkflowListEntity): Future[Int] = {
+  def convertWorkflowList(workflowListUuid: UUID, cwle: ConvertWorkflowListEntity): Future[Int] = {
     db.run(
       for {
         workflowListOption <- getWorkflowListByUuidSqlAction(workflowListUuid)
@@ -126,9 +107,9 @@ class WorkflowListDB
             workflowListQuery
               .filter(_.id === workflowList.id)
               .map(wl => (wl.usageType, wl.updatedAt))
-              .update((convertWorkflowListEntity.newUsageType, LocalDateTime.now()))
+              .update((cwle.newUsageType, LocalDateTime.now()))
           case _ =>
-            DBIO.failed(new Exception(s"Cannot convert workflow list, no list for uuid ${workflowListUuid}"))
+            DBIO.failed(new Exception(s"Cannot convert workflow list. No list for uuid ${workflowListUuid}"))
         }
       } yield updated
     )
@@ -146,7 +127,7 @@ class WorkflowListDB
               neighboursUpdated <-
                 if (workflowList.order < rwle.newOrderIndex) updateNeighboursOnReorderLowToHigh(workflowList, rwle.newOrderIndex)
                 else if (workflowList.order > rwle.newOrderIndex) updateNeighboursOnReorderHighToLow(workflowList, rwle.newOrderIndex)
-                else DBIO.failed(new Exception(s"New Index equals current index. Nothing will be done"))
+                else DBIO.failed(new Exception(s"Cannot reorder workflow list. New Index equals current index. Nothing will be done"))
               elementUpdated <- workflowListQuery
                 .filter(_.id === workflowList.id)
                 .map(wl => (wl.order, wl.updatedAt))
@@ -155,7 +136,7 @@ class WorkflowListDB
               neighboursUpdated.sum + elementUpdated
             }
           case _ =>
-            DBIO.failed(new Exception(s"Cannot reorder workflow list, no list for uuid ${workflowListUuid} found"))
+            DBIO.failed(new Exception(s"Cannot reorder workflow list. No list for uuid ${workflowListUuid} found"))
         }
       } yield updated
 
@@ -223,11 +204,11 @@ class WorkflowListDB
     }
 
   /**
-   * When removing a workflow list from a parent (either because of deletion or assignment to new parent), we have to
-   * update the order of the remaining workflow lists in that parent
+   * When removing a workflow list from a parent (either because of deletion or move to new parent), we have to
+   * update the order of the remaining workflow lists in that parent.
    *
-   * @param workflowList
-   * @return
+   * @param workflowList WorkflowList that got removed
+   * @return Number of updated rows
    */
   private def updateNeighboursOnRemove(workflowList: WorkflowList)
   : DBIOAction[Seq[Int], NoStream, Effect.Read with Effect.Write] =
@@ -237,6 +218,14 @@ class WorkflowListDB
       updated <- decrementOrdersUpdate(listsToUpdate)
     } yield updated
 
+  /**
+   * When inserting a workflow list into a new parent at a given index (because move to new parent), we have to update
+   * the order of the new neighbours.
+   *
+   * @param newParentId   Parent in which workflow list gets inserted
+   * @param newOrderIndex Index at which workflow list gets inserted
+   * @return Number of updated rows
+   */
   private def updateNeighboursOnInsert(newParentId: Option[Long], newOrderIndex: Long)
   : DBIOAction[Seq[Int], NoStream, Effect.Read with Effect.Write] =
     for {
