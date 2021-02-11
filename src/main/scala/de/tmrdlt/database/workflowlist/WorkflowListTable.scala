@@ -70,8 +70,6 @@ class WorkflowListTable(tag: Tag)
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
-  def sessionTokenIndex: Index = index("order_index", order, unique = true)
-
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =
     (id, uuid, title, description, usageType, parentId, order, createdAt, updatedAt).mapTo[WorkflowList]

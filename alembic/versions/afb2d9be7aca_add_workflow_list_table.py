@@ -35,9 +35,6 @@ def upgrade():
     op.create_foreign_key('parent_fk', 'workflow_list', 'workflow_list', ['parent_id'], ['id'],
                           None, 'CASCADE', None, None, None, 'workflow', 'workflow')
 
-    op.create_index('order_index', 'workflow_list', ['order', 'parent_id'],
-                    schema='workflow', unique=True)
-
 
 def downgrade():
     op.drop_table('workflow_list', schema='workflow')
