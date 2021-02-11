@@ -18,7 +18,7 @@ class WorkflowListIdMoveRoute(controller: WorkflowListIdMoveController)
     post {
       entity(as[MoveWorkflowListEntity]) { moveWorkflowListEntity =>
         onComplete(controller.moveWorkflowList(workflowListUuid, moveWorkflowListEntity)) {
-          case Success(_) => complete(OK)
+          case Success(res) => complete(OK -> res.toString)
           case Failure(exception) => complete(exception.toResponseMarshallable)
         }
       }

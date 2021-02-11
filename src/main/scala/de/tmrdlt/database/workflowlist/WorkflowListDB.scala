@@ -70,27 +70,48 @@ class WorkflowListDB
   }
 
   def assignParentToWorkflowList(workflowListUuid: UUID, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] = {
+
+    def updatePreviousNeighbours(workflowList: WorkflowList) =  for {
+      wflsToUpdate <- workflowListQuery
+        .filterIf(workflowList.parentId.isEmpty)(_.parentId.isEmpty)
+        .filterOpt(workflowList.parentId)(_.parentId === _)
+        .filter(wl => wl.order >= workflowList.order).result
+      updated <- DBIO.sequence(wflsToUpdate.map(w => {
+        workflowListQuery
+          .filter(_.id === w.id)
+          .map(_.order)
+          .update(w.order - 1)
+      }))
+    } yield updated
+
     moveWorkflowListEntity.newParentUuid match {
       case Some(uuid) =>
-        db.run(
+        val query =
           for {
             workflowListOption <- getWorkflowListByUuidQuery(workflowListUuid)
             parent <- getWorkflowListByUuidQuery(uuid)
             highestOrderIndexOption <- getHighestOrderIndexByParentId(Some(parent.getOrException("no parent for uuid found").id))
             updated <- (workflowListOption, parent) match {
               case (Some(workflowList), Some(parentWorkflowList)) =>
-                workflowListQuery
-                  .filter(_.id === workflowList.id)
-                  .map(wl => (wl.parentId, wl.order, wl.updatedAt))
-                  .update((Some(parentWorkflowList.id), highestOrderIndexOption match {
-                    case Some(order) => order + 1
-                    case None => 0
-                  }, LocalDateTime.now()))
+                for {
+                  previousNeighboursUpdated <- updatePreviousNeighbours(workflowList)
+                  elementUpdated <- workflowListQuery
+                    .filter(_.id === workflowList.id)
+                    .map(wl => (wl.parentId, wl.order, wl.updatedAt))
+                    .update((Some(parentWorkflowList.id), highestOrderIndexOption match {
+                      case Some(order) => order + 1
+                      case None => 0
+                    }, LocalDateTime.now()))
+                } yield {
+                  previousNeighboursUpdated.sum + elementUpdated
+                }
               case (_, _) =>
                 DBIO.failed(new Exception(s"Cannot move workflow list, no list for uuid ${workflowListUuid} or parentUuid ${uuid} found"))
             }
-          } yield updated
-        )
+          } yield {
+            updated
+          }
+        db.run(query.transactionally)
       case None =>
         db.run(
           for {
@@ -154,7 +175,8 @@ class WorkflowListDB
     def lowerToHigher(workflowList: WorkflowList) =
       for {
         wflsToUpdate <- workflowListQuery
-          .filter(_.parentId === workflowList.parentId)
+          .filterIf(workflowList.parentId.isEmpty)(_.parentId.isEmpty)
+          .filterOpt(workflowList.parentId)(_.parentId === _)
           .filter(wl => wl.order >= workflowList.order && wl.order <= rwle.newOrderIndex).result
         updated <- DBIO.sequence(wflsToUpdate.map(w => {
           workflowListQuery
@@ -167,7 +189,8 @@ class WorkflowListDB
     def higherToLower(workflowList: WorkflowList) =
       for {
         wflsToUpdate <- workflowListQuery
-          .filter(_.parentId === workflowList.parentId)
+          .filterIf(workflowList.parentId.isEmpty)(_.parentId.isEmpty)
+          .filterOpt(workflowList.parentId)(_.parentId === _)
           .filter(wl => wl.order <= workflowList.order && wl.order >= rwle.newOrderIndex).result
         updated <- DBIO.sequence(wflsToUpdate.map(w => {
           workflowListQuery
