@@ -114,8 +114,7 @@ class WorkflowListDB
       } yield updated
     )
   }
-
-  // https://softwareengineering.stackexchange.com/questions/304593/how-to-store-ordered-information-in-a-relational-database
+  
   def reorderWorkflowList(workflowListUuid: UUID, rwle: ReorderWorkflowListEntity): Future[Int] = {
     val query =
       for {
@@ -147,11 +146,17 @@ class WorkflowListDB
     db.run {
       for {
         workflowListOption <- workflowListQuery.filter(_.uuid === workflowListUuid).result.headOption
-        deleted <- workflowListOption match {
-          case Some(workflowList) => workflowListQuery.filter(_.id === workflowList.id).delete
+        rowsAffected <- workflowListOption match {
+          case Some(workflowList) =>
+            for {
+              neighboursUpdatedOnRemove <- updateNeighboursOnRemove(workflowList)
+              elementDeleted <-workflowListQuery.filter(_.id === workflowList.id).delete
+            } yield {
+              neighboursUpdatedOnRemove.sum + elementDeleted
+            }
           case None => DBIO.failed(new Exception(s"No workflowList for uuid $workflowListUuid found"))
         }
-      } yield deleted
+      } yield rowsAffected
     }
   }
 
