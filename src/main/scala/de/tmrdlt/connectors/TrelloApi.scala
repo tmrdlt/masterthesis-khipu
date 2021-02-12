@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
-import de.tmrdlt.models.{TrelloBoard, TrelloCard, TrelloJsonSupport, TrelloList}
+import de.tmrdlt.models.{TrelloAction, TrelloBoard, TrelloCard, TrelloJsonSupport, TrelloList}
 import de.tmrdlt.utils.WorkflowConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -56,6 +56,19 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[TrelloCard]]
+    } yield {
+      res
+    }
+  }
+
+  def getActionsOfABoard(boardId: String): Future[Seq[TrelloAction]] = {
+    val request = HttpRequest(
+      method = HttpMethods.GET,
+      uri = s"${baseUrl}1/boards/${boardId}/actions${authUrl}"
+    )
+    for {
+      response <- http.singleRequest(request)
+      res <- Unmarshal(response).to[Seq[TrelloAction]]
     } yield {
       res
     }
