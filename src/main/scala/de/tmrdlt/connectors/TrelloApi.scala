@@ -1,10 +1,10 @@
 package de.tmrdlt.connectors
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.{Http, HttpExt}
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import de.tmrdlt.models.{TrelloBoard, TrelloJsonSupport}
+import akka.http.scaladsl.{Http, HttpExt}
+import de.tmrdlt.models.{TrelloBoard, TrelloCard, TrelloJsonSupport, TrelloList}
 import de.tmrdlt.utils.WorkflowConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,7 +22,7 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
 
   val http: HttpExt = Http()
 
-  def getTrelloBoard(boardId: String): Future[TrelloBoard] = {
+  def getBoard(boardId: String): Future[TrelloBoard] = {
     val request = HttpRequest(
       method = HttpMethods.GET,
       uri = s"${baseUrl}1/boards/${boardId}${authUrl}"
@@ -30,6 +30,32 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[TrelloBoard]
+    } yield {
+      res
+    }
+  }
+
+  def getListOnABoard(boardId: String): Future[Seq[TrelloList]] = {
+    val request = HttpRequest(
+      method = HttpMethods.GET,
+      uri = s"${baseUrl}1/boards/${boardId}/lists${authUrl}"
+    )
+    for {
+      response <- http.singleRequest(request)
+      res <- Unmarshal(response).to[Seq[TrelloList]]
+    } yield {
+      res
+    }
+  }
+
+  def getCardsInAList(listId: String): Future[Seq[TrelloCard]] = {
+    val request = HttpRequest(
+      method = HttpMethods.GET,
+      uri = s"${baseUrl}1/lists/${listId}/cards${authUrl}"
+    )
+    for {
+      response <- http.singleRequest(request)
+      res <- Unmarshal(response).to[Seq[TrelloCard]]
     } yield {
       res
     }
