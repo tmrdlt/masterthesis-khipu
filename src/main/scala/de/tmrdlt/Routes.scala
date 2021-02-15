@@ -22,7 +22,7 @@ class Routes(components: Components)
       concat(
         preflightRoute,
         path("health")(components.health.route),
-        path("fetchTrelloBoard")(components.fetchTrelloBoard.route),
+        path("fetch" / "trelloBoards")(components.fetchTrelloBoards.route),
         path("workflowList")(components.workflowList.route),
         path("workflowList" / JavaUUID ) { workflowListUUID => components.workflowListId.route(workflowListUUID) },
         path("workflowList" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) },
