@@ -7,7 +7,7 @@ import spray.json.RootJsonFormat
 import java.time.LocalDateTime
 
 trait TrelloJsonSupport extends JsonSupport {
-  implicit val fetchTrelloBoardsEntityFormat: RootJsonFormat[FetchTrelloBoardsEntity] = jsonFormat1(FetchTrelloBoardsEntity)
+  implicit val fetchDataTrelloEntityFormat: RootJsonFormat[FetchDataTrelloEntity] = jsonFormat1(FetchDataTrelloEntity)
   implicit val trelloBoardFormat: RootJsonFormat[TrelloBoard] = jsonFormat5(TrelloBoard)
   implicit val trelloListFormat: RootJsonFormat[TrelloList] = jsonFormat5(TrelloList)
   implicit val trelloCardFormat: RootJsonFormat[TrelloCard] = jsonFormat7(TrelloCard)
@@ -20,7 +20,7 @@ trait TrelloJsonSupport extends JsonSupport {
   implicit val trelloActionSupportFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
 }
 
-case class FetchTrelloBoardsEntity(boardIds: Seq[String])
+case class FetchDataTrelloEntity(boardIds: Seq[String])
 
 case class TrelloBoard(id: String,
                        name: String,

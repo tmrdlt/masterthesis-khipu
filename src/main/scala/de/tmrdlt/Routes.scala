@@ -22,12 +22,13 @@ class Routes(components: Components)
       concat(
         preflightRoute,
         path("health")(components.health.route),
-        path("fetch" / "trelloBoards")(components.fetchTrelloBoards.route),
-        path("workflowList")(components.workflowList.route),
-        path("workflowList" / JavaUUID ) { workflowListUUID => components.workflowListId.route(workflowListUUID) },
-        path("workflowList" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) },
-        path("workflowList" / JavaUUID / "move") { workflowListUUID => components.workflowListIdMove.route(workflowListUUID) },
-        path("workflowList" / JavaUUID / "reorder") { workflowListUUID => components.workflowListIdReorder.route(workflowListUUID) }
+        path("fetchdata" / "trello")(components.fetchDataTrello.route),
+        path("fetchdata" / "github")(components.fetchDataGitHub.route),
+        path("workflowlist")(components.workflowList.route),
+        path("workflowlist" / JavaUUID ) { workflowListUUID => components.workflowListId.route(workflowListUUID) },
+        path("workflowlist" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) },
+        path("workflowlist" / JavaUUID / "move") { workflowListUUID => components.workflowListIdMove.route(workflowListUUID) },
+        path("workflowlist" / JavaUUID / "reorder") { workflowListUUID => components.workflowListIdReorder.route(workflowListUUID) }
       )
     }
   }

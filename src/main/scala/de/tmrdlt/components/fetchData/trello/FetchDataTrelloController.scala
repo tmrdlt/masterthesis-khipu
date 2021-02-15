@@ -1,4 +1,4 @@
-package de.tmrdlt.components.fetch.trelloboards
+package de.tmrdlt.components.fetchData.trello
 
 import de.tmrdlt.connectors.TrelloApi
 import de.tmrdlt.models.TrelloAction
@@ -8,10 +8,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class FetchTrelloBoardsController(trelloApi: TrelloApi)
+class FetchDataTrelloController(trelloApi: TrelloApi)
   extends SimpleNameLogger {
 
-  def fetchTrelloBoards(boardIds: Seq[String]): Future[Seq[TrelloAction]] = {
+  def fetchDataTrello(boardIds: Seq[String]): Future[Seq[TrelloAction]] = {
     // Defining the futures before the for yield makes them run in parallel
     val boardFuture = Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
     val listsOfBoardFuture = Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b)))
