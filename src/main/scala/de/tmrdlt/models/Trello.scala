@@ -1,5 +1,6 @@
 package de.tmrdlt.models
 
+import de.tmrdlt.database.trello.TrelloActionDBEntity
 import de.tmrdlt.models.TrelloActionType.TrelloActionType
 import de.tmrdlt.utils.EnumJsonConverter
 import spray.json.RootJsonFormat
@@ -8,9 +9,9 @@ import java.time.LocalDateTime
 
 trait TrelloJsonSupport extends JsonSupport {
   implicit val fetchDataTrelloEntityFormat: RootJsonFormat[FetchDataTrelloEntity] = jsonFormat1(FetchDataTrelloEntity)
-  implicit val trelloBoardFormat: RootJsonFormat[TrelloBoard] = jsonFormat5(TrelloBoard)
+  implicit val trelloBoardFormat: RootJsonFormat[TrelloBoard] = jsonFormat4(TrelloBoard)
   implicit val trelloListFormat: RootJsonFormat[TrelloList] = jsonFormat5(TrelloList)
-  implicit val trelloCardFormat: RootJsonFormat[TrelloCard] = jsonFormat7(TrelloCard)
+  implicit val trelloCardFormat: RootJsonFormat[TrelloCard] = jsonFormat8(TrelloCard)
   implicit val trelloBoardSimpleFormat: RootJsonFormat[TrelloBoardSimple] = jsonFormat2(TrelloBoardSimple)
   implicit val trelloListSimpleFormat: RootJsonFormat[TrelloListSimple] = jsonFormat2(TrelloListSimple)
   implicit val trelloCardSimpleFormat: RootJsonFormat[TrelloCardSimple] = jsonFormat2(TrelloCardSimple)
@@ -25,8 +26,7 @@ case class FetchDataTrelloEntity(boardIds: Seq[String])
 case class TrelloBoard(id: String,
                        name: String,
                        desc: String,
-                       closed: Boolean,
-                       url: String)
+                       closed: Boolean)
 
 case class TrelloList(id: String,
                       name: String,
@@ -37,10 +37,11 @@ case class TrelloList(id: String,
 case class TrelloCard(id: String,
                       name: String,
                       desc: String,
+                      pos: Long,
                       closed: Boolean,
-                      dateLastActivity: LocalDateTime,
                       idBoard: String,
-                      idList: String)
+                      idList: String,
+                      dateLastActivity: LocalDateTime)
 
 case class TrelloBoardSimple(id: String,
                              name: String)
@@ -55,8 +56,19 @@ case class TrelloAction(id: String,
                         `type`: TrelloActionType,
                         idMemberCreator: String,
                         date: LocalDateTime,
-                        data: TrelloActionData)
+                        data: TrelloActionData) {
 
+  def toTrelloActionDBEntity: TrelloActionDBEntity = TrelloActionDBEntity(
+    id = id,
+    `type` = `type`.toString,
+    idBoard = data.board.id,
+    idList = data.list.map(_.id),
+    idCard = data.card.map(_.id),
+    date = date
+  )
+
+
+}
 
 case class TrelloActionData(board: TrelloBoardSimple,
                             list: Option[TrelloListSimple],

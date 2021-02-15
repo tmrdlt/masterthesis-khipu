@@ -21,7 +21,7 @@ class Components(system: ActorSystem) {
   private val gitHubApi: GitHubApi = new GitHubApi()(system)
 
   val health = new HealthRoute(new HealthController(actors.healthActor))
-  val fetchDataTrello = new FetchDataTrelloRoute(new FetchDataTrelloController(trelloApi))
+  val fetchDataTrello = new FetchDataTrelloRoute(new FetchDataTrelloController(trelloApi, dbs.trelloDB))
   val fetchDataGitHub = new FetchDataGitHubRoute(new FetchDataGitHubController(gitHubApi))
   val workflowList = new WorkflowListRoute(new WorkflowListController(dbs.workflowListDB))
   val workflowListId = new WorkflowListIdRoute(new WorkflowListIdController(dbs.workflowListDB))

@@ -16,7 +16,7 @@ class FetchDataTrelloRoute(controller: FetchDataTrelloController)
     post {
       entity(as[FetchDataTrelloEntity]) { fetchDataTrelloEntity =>
         onComplete(controller.fetchDataTrello(fetchDataTrelloEntity.boardIds)) {
-          case Success(res) => complete(OK, res)
+          case Success(res) => complete(OK, res.toString)
           case Failure(e) =>
             log.error(e.getMessage)
             complete(InternalServerError)

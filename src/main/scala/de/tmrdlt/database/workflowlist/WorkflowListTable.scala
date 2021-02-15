@@ -1,6 +1,7 @@
 package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.BaseTableLong
+import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.models.UsageType.UsageType
 import de.tmrdlt.models.WorkflowListEntity
@@ -68,7 +69,7 @@ class WorkflowListTable(tag: Tag)
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
 
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
-    foreignKey("parent_fk", parentId, TableQuery[WorkflowListTable])(_.id.?, onDelete = ForeignKeyAction.Cascade)
+    foreignKey("parent_fk", parentId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =
