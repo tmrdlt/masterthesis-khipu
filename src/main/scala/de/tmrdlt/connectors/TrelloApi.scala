@@ -5,13 +5,13 @@ import akka.http.scaladsl.model.{HttpMethods, HttpRequest}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
 import de.tmrdlt.models.{TrelloAction, TrelloBoard, TrelloCard, TrelloJsonSupport, TrelloList}
-import de.tmrdlt.utils.WorkflowConfig
+import de.tmrdlt.utils.{SimpleNameLogger, WorkflowConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with TrelloJsonSupport {
+class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger with WorkflowConfig with TrelloJsonSupport {
 
 
   val trelloApiKey = "a321bfc00e9cd2c02d68dfaa73f9720d"
@@ -31,6 +31,7 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[TrelloBoard]
     } yield {
+      log.info("Got board")
       res
     }
   }
@@ -44,6 +45,7 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[TrelloList]]
     } yield {
+      log.info("Got lists")
       res
     }
   }
@@ -57,6 +59,7 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[TrelloCard]]
     } yield {
+      log.info("Got cards")
       res
     }
   }
@@ -70,6 +73,7 @@ class TrelloApi(implicit system: ActorSystem) extends WorkflowConfig with Trello
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[TrelloAction]]
     } yield {
+      log.info("Got actions")
       res
     }
   }

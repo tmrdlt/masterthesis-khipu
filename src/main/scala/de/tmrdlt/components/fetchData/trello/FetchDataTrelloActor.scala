@@ -17,14 +17,14 @@ class FetchDataTrelloActor(trelloApi: TrelloApi,
 
     case FetchDataTrello(boardIds) => {
       // Defining the futures before the for yield makes them run in parallel
-      val boardFuture = Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
-      val listsOfBoardFuture = Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b))).map(_.flatten)
-      val actionsOfBoardFuture = Future.sequence(boardIds.map(b => trelloApi.getActionsOfABoard(b))).map(_.flatten)
+      // val boardFuture = Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
+      // val listsOfBoardFuture = Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b))).map(_.flatten)
+      // val actionsOfBoardFuture = Future.sequence(boardIds.map(b => trelloApi.getActionsOfABoard(b))).map(_.flatten)
 
       for {
-        boards <- boardFuture
-        listsOfBoard <- listsOfBoardFuture
-        actionsOfBoard <- actionsOfBoardFuture
+        boards <- Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
+        listsOfBoard <- Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b))).map(_.flatten)
+        actionsOfBoard <- Future.sequence(boardIds.map(b => trelloApi.getActionsOfABoard(b))).map(_.flatten)
         cardsOfBoard <- Future.sequence(listsOfBoard.map(l => trelloApi.getCardsInAList(l.id))).map(_.flatten)
 
         insertedBoards <- trelloDB.insertTrelloBoards(boards)
