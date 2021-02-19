@@ -1,7 +1,7 @@
 package de.tmrdlt.components.workflowlist
 
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
-import de.tmrdlt.models.{CreateWorkflowListEntity, WorkflowListEntity}
+import de.tmrdlt.models.{CreateWorkflowListEntity, WorkflowListDataSource, WorkflowListEntity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -18,7 +18,7 @@ class WorkflowListController(workflowListDB: WorkflowListDB) {
       workflowLists <- workflowListDB.getWorkflowLists
     } yield {
       // Important to return the workflow lists in a ordered way!
-      workflowListsToEntities(workflowLists).sortBy(_.order)
+      workflowListsToEntities(workflowLists.filter(_.dataSource == WorkflowListDataSource.Khipu)).sortBy(_.order)
     }
   }
 

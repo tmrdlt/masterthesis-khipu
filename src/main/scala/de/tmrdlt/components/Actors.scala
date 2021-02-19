@@ -16,7 +16,7 @@ class Actors(system: ActorSystem,
   )
 
   val fetchDataTrelloActor: ActorRef = system.actorOf(
-    FetchDataTrelloActor.props(apis.trelloApi, dbs.trelloDB),
+    FetchDataTrelloActor.props(apis.trelloApi, dbs.trelloDB, dbs.workflowListDB),
     FetchDataTrelloActor.name
   )
 }
