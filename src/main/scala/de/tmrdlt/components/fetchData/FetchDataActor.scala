@@ -1,21 +1,20 @@
-package de.tmrdlt.components.fetchData.trello
+package de.tmrdlt.components.fetchData
 
 import akka.actor.{Actor, ActorLogging, Props}
-import de.tmrdlt.components.fetchData.trello.FetchDataTrelloActor.FetchDataTrello
-import de.tmrdlt.connectors.TrelloApi
-import de.tmrdlt.database.trello.TrelloDB
+import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
+import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
 import de.tmrdlt.models.{WorkflowListDataSource, WorkflowListState, WorkflowListType}
 
 import java.time.LocalDateTime
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
-class FetchDataTrelloActor(trelloApi: TrelloApi,
-                           trelloDB: TrelloDB,
-                           workflowListDB: WorkflowListDB) extends Actor with ActorLogging {
+class FetchDataActor(trelloApi: TrelloApi,
+                     gitHubApi: GitHubApi,
+                     workflowListDB: WorkflowListDB) extends Actor with ActorLogging {
 
   override def receive: PartialFunction[Any, Unit] = {
 
@@ -80,6 +79,10 @@ class FetchDataTrelloActor(trelloApi: TrelloApi,
         insertedBoards.length + insertedLists.length + insertedCards.length
       }
     }
+
+    case FetchDataGitHub(orgNames) => {
+
+    }
   }
 
   private def getWorkflowListState(closed: Boolean): WorkflowListState = {
@@ -88,16 +91,18 @@ class FetchDataTrelloActor(trelloApi: TrelloApi,
 }
 
 
-object FetchDataTrelloActor {
+object FetchDataActor {
 
   def props(trelloApi: TrelloApi,
-            trelloDB: TrelloDB,
+            gitHubApi: GitHubApi,
             workflowListDB: WorkflowListDB): Props =
-    Props(new FetchDataTrelloActor(trelloApi, trelloDB, workflowListDB))
+    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB))
 
-  val name = "FetchDataTrelloActor"
+  val name = "FetchDataActor"
 
 
   case class FetchDataTrello(boardIds: Seq[String])
+
+  case class FetchDataGitHub(orgNames: Seq[String])
 
 }
