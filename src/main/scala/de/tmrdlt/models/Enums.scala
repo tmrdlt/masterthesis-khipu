@@ -14,6 +14,16 @@ trait EnumJsonSupport extends JsonSupport {
 object WorkflowListState extends Enumeration {
   type WorkflowListState = Value
   val OPEN, CLOSED = Value
+
+  def getWorkflowListState(state: String): Option[WorkflowListState] =
+    state match {
+      case "open" => Some(WorkflowListState.OPEN)
+      case "closed" => Some(WorkflowListState.CLOSED)
+      case _ => None
+    }
+  def getWorkflowListState(closed: Boolean): WorkflowListState = {
+    if (closed) WorkflowListState.CLOSED else WorkflowListState.OPEN
+  }
 }
 
 object WorkflowListUseCase extends Enumeration {

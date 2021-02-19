@@ -15,7 +15,7 @@ class FetchDataGitHubRoute(controller: FetchDataGitHubController)
     post {
       entity(as[FetchDataGitHubEntity]) { fetchDataGitHubEntity =>
         onComplete(controller.fetchDataGitHub(fetchDataGitHubEntity.orgNames)) {
-          case Success(res) => complete(OK, res)
+          case Success(res) => complete(OK, res.toString)
           case Failure(e) =>
             log.error(e.getMessage)
             complete(InternalServerError)

@@ -4,7 +4,7 @@ import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
-import de.tmrdlt.models.WorkflowListState.WorkflowListState
+import de.tmrdlt.models.WorkflowListState.{WorkflowListState, getWorkflowListState}
 import de.tmrdlt.models.{WorkflowListDataSource, WorkflowListState, WorkflowListType}
 
 import java.time.LocalDateTime
@@ -83,10 +83,6 @@ class FetchDataActor(trelloApi: TrelloApi,
     case FetchDataGitHub(orgNames) => {
 
     }
-  }
-
-  private def getWorkflowListState(closed: Boolean): WorkflowListState = {
-    if (closed) WorkflowListState.CLOSED else WorkflowListState.OPEN
   }
 }
 
