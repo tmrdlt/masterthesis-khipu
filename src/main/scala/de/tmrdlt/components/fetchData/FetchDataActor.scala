@@ -4,8 +4,9 @@ import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
-import de.tmrdlt.models.WorkflowListState.{WorkflowListState, getWorkflowListState}
-import de.tmrdlt.models.{WorkflowListDataSource, WorkflowListState, WorkflowListType}
+import de.tmrdlt.models.WorkflowListState.getWorkflowListState
+import de.tmrdlt.models.{WorkflowListDataSource, WorkflowListState, WorkflowListType, WorkflowListUseCase}
+import de.tmrdlt.utils.OptionExtensions
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,13 +15,11 @@ import scala.concurrent.Future
 
 class FetchDataActor(trelloApi: TrelloApi,
                      gitHubApi: GitHubApi,
-                     workflowListDB: WorkflowListDB) extends Actor with ActorLogging {
+                     workflowListDB: WorkflowListDB) extends Actor with ActorLogging with OptionExtensions {
 
   override def receive: PartialFunction[Any, Unit] = {
 
-    case FetchDataTrello(boardIds) => {
-      val now = LocalDateTime.now()
-
+    case FetchDataTrello(boardIds: Seq[String], now: LocalDateTime) =>
       for {
         boards <- Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
         listsOfBoard <- Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b))).map(_.flatten)
@@ -38,8 +37,8 @@ class FetchDataActor(trelloApi: TrelloApi,
             state = Some(getWorkflowListState(trelloBoard.closed)),
             dataSource = WorkflowListDataSource.Trello,
             useCase = None, // TODO Add to request
-            createdAt = now,
-            updatedAt = now
+            createdAt = now, // TODO how to get real data?
+            updatedAt = now // TODO how to get real data?
           )
         })
         insertedLists <- workflowListDB.insertWorkflowLists(listsOfBoard.map { trelloList =>
@@ -54,8 +53,8 @@ class FetchDataActor(trelloApi: TrelloApi,
             state = Some(getWorkflowListState(trelloList.closed)),
             dataSource = WorkflowListDataSource.Trello,
             useCase = None, // TODO Add to request
-            createdAt = now,
-            updatedAt = now
+            createdAt = now, // TODO how to get real data?
+            updatedAt = now // TODO how to get real data?
           )
         })
         insertedCards <- workflowListDB.insertWorkflowLists(cardsOfBoard.map { trelloCard =>
@@ -70,19 +69,123 @@ class FetchDataActor(trelloApi: TrelloApi,
             state = Some(getWorkflowListState(trelloCard.closed)),
             dataSource = WorkflowListDataSource.Trello,
             useCase = None, // TODO Add to request
-            createdAt = now,
-            updatedAt = now
+            createdAt = now, // TODO how to get real data?
+            updatedAt = now // TODO how to get real data?
           )
         })
+
+        // TODO use and store
         // insertedActions <- trelloDB.insertTrelloActions(actionsOfBoard.map(_.toTrelloActionDBEntity))
       } yield {
-        insertedBoards.length + insertedLists.length + insertedCards.length
+        val inserted = insertedBoards.length + insertedLists.length + insertedCards.length
+        log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
       }
+
+
+    case FetchDataGitHub(orgNames, now) => {
+
+      for {
+        projects <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsOfOrganisation(b))).map(_.flatten)
+        columnsOfProjects <- Future.sequence(projects.map(p => gitHubApi.getColumnsOfProject(p.columns_url))).map(_.flatten)
+        cardsOfColumns <- Future.sequence(columnsOfProjects.map(c => gitHubApi.getCardsOfColumn(c.cards_url))).map(_.flatten)
+        issues <- Future.sequence(
+          cardsOfColumns
+            .map { card =>
+              (card.note, card.content_url) match {
+                case (Some(_), None) => Future.successful(card, None) // Card is a note
+                case (None, Some(content_url)) => gitHubApi.getContentOfNote(content_url).map(i => (card, Some(i))) // Card is an issue
+                case _ => Future.failed(new Exception("Error fetching github data. Card was neither an issue nor a note"))
+              }
+            }
+        )
+
+        insertedProjects <- workflowListDB.insertWorkflowLists(projects.map { gitHubProject =>
+          WorkflowList(
+            id = 0L,
+            apiId = gitHubProject.id.toString,
+            title = gitHubProject.name,
+            description = Some(gitHubProject.body),
+            parentId = None,
+            position = 0,
+            listType = WorkflowListType.BOARD,
+            state = getWorkflowListState(gitHubProject.state),
+            dataSource = WorkflowListDataSource.GitHub,
+            useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+            createdAt = gitHubProject.created_at,
+            updatedAt = gitHubProject.updated_at
+          )
+        })
+
+        insertedColumns <- workflowListDB.insertWorkflowLists(columnsOfProjects.map { gitHubColumn =>
+          WorkflowList(
+            id = 0L,
+            apiId = gitHubColumn.id.toString,
+            title = gitHubColumn.name,
+            description = None,
+            parentId = insertedProjects.find(_.apiId == gitHubColumn.project_url.split("/").last).map(_.id),
+            position = 0, // TODO how to get?
+            listType = WorkflowListType.LIST,
+            state = Some(WorkflowListState.OPEN), // Columns exist on GitHub only in the OPEN state
+            dataSource = WorkflowListDataSource.GitHub,
+            useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+            createdAt = gitHubColumn.created_at,
+            updatedAt = gitHubColumn.updated_at
+          )
+        })
+
+        insertedIssues <- workflowListDB.insertWorkflowLists(issues.map {
+          case (gitHubCard, Some(gitHubIssue)) =>
+            WorkflowList(
+              id = 0L,
+              apiId = gitHubIssue.id.toString,
+              title = gitHubIssue.title,
+              description = gitHubIssue.body,
+              parentId = insertedColumns.find(_.apiId == gitHubCard.column_url.split("/").last).map(_.id),
+              position = 0,
+              listType = WorkflowListType.ITEM,
+              state = getWorkflowListState(gitHubIssue.state),
+              dataSource = WorkflowListDataSource.GitHub,
+              useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+              createdAt = gitHubIssue.created_at,
+              updatedAt = gitHubIssue.updated_at
+            )
+          case (gitHubCard, None) =>
+            WorkflowList(
+              id = 0L,
+              apiId = gitHubCard.id.toString,
+              title = gitHubCard.note.getOrException("Error taking note of card"),
+              description = None,
+              parentId = insertedColumns.find(_.apiId == gitHubCard.column_url.split("/").last).map(_.id),
+              position = 0,
+              listType = WorkflowListType.ITEM,
+              state = Some(WorkflowListState.OPEN), // Notes exist on GitHub only in the OPEN state
+              dataSource = WorkflowListDataSource.GitHub,
+              useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+              createdAt = gitHubCard.created_at,
+              updatedAt = gitHubCard.updated_at
+            )
+        })
+
+        // TODO use and store
+        // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
+      } yield {
+        val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length
+        log.info(s"Fetching GitHub data completed. Inserted a total of ${inserted} rows.")
+      }
+
     }
 
-    case FetchDataGitHub(orgNames) => {
 
-    }
+      // https://docs.github.com/en/developers/webhooks-and-events/issue-event-types
+      def isRelevantEvent(event: String): Boolean = {
+        event match {
+          case "added_to_project" => true
+          case "moved_columns_in_project" => true
+          case "removed_from_project" => true
+          case "renamed" => true
+          case _ => false
+        }
+      }
   }
 }
 
@@ -96,9 +199,8 @@ object FetchDataActor {
 
   val name = "FetchDataActor"
 
+  case class FetchDataTrello(boardIds: Seq[String], now: LocalDateTime)
 
-  case class FetchDataTrello(boardIds: Seq[String])
-
-  case class FetchDataGitHub(orgNames: Seq[String])
+  case class FetchDataGitHub(orgNames: Seq[String], now: LocalDateTime)
 
 }
