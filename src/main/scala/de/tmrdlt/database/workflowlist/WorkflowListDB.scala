@@ -20,6 +20,9 @@ class WorkflowListDB
     db.run(workflowListQuery.result)
   }
 
+  def insertWorkflowLists(workflowLists: Seq[WorkflowList]): Future[Seq[WorkflowList]] =
+    db.run(workflowListQuery returning workflowListQuery ++= workflowLists)
+
   def insertWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
     val query =
       for {

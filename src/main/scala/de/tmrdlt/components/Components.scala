@@ -19,7 +19,7 @@ class Components(system: ActorSystem) {
   private val actors = new Actors(system, dbs, apis)
 
   val health = new HealthRoute(new HealthController(actors.healthActor))
-  val fetchDataTrello = new FetchDataTrelloRoute(new FetchDataTrelloController(apis.trelloApi, dbs.trelloDB, actors.fetchDataTrelloActor))
+  val fetchDataTrello = new FetchDataTrelloRoute(new FetchDataTrelloController(apis.trelloApi, dbs.trelloDB, dbs.workflowListDB, actors.fetchDataTrelloActor))
   val fetchDataGitHub = new FetchDataGitHubRoute(new FetchDataGitHubController(apis.gitHubApi))
   val workflowList = new WorkflowListRoute(new WorkflowListController(dbs.workflowListDB))
   val workflowListId = new WorkflowListIdRoute(new WorkflowListIdController(dbs.workflowListDB))
