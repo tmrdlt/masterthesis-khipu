@@ -1,7 +1,7 @@
 package de.tmrdlt.database
 
 import com.github.tminglei.slickpg.{ExPostgresProfile, PgDate2Support, PgEnumSupport}
-import de.tmrdlt.models.UsageType
+import de.tmrdlt.models.{ActionType, WorkflowListDataSource, WorkflowListState, WorkflowListType, WorkflowListUseCase}
 import de.tmrdlt.utils.SimpleNameLogger
 import slick.util.SlickLogger
 
@@ -17,9 +17,25 @@ trait MyPostgresProfile
   object MyPostgresApi
     extends API
       with DateTimeImplicits {
-    implicit val usageTypeTypeMapper = createEnumJdbcType("usage_type", UsageType)
-    implicit val usageTypeListTypeMapper = createEnumListJdbcType("usage_type", UsageType)
-    implicit val usageTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(UsageType)
+    implicit val workflowListTypeTypeMapper = createEnumJdbcType("list_type", WorkflowListType)
+    implicit val workflowListTypeListTypeMapper = createEnumListJdbcType("list_type", WorkflowListType)
+    implicit val workflowListTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListType)
+
+    implicit val workflowListStateTypeMapper = createEnumJdbcType("state", WorkflowListState)
+    implicit val workflowListStateListTypeMapper = createEnumListJdbcType("state", WorkflowListState)
+    implicit val workflowListStateOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListState)
+
+    implicit val workflowListUseCaseTypeMapper = createEnumJdbcType("use_case", WorkflowListUseCase)
+    implicit val workflowListUseCaseListTypeMapper = createEnumListJdbcType("use_case", WorkflowListUseCase)
+    implicit val workflowListUseCaseOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListUseCase)
+
+    implicit val workflowListDataSourceTypeMapper = createEnumJdbcType("data_source", WorkflowListDataSource)
+    implicit val workflowListDataSourceListTypeMapper = createEnumListJdbcType("data_source", WorkflowListDataSource)
+    implicit val workflowListDataSourceOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListDataSource)
+
+    implicit val actionTypeTypeMapper = createEnumJdbcType("action_type", ActionType)
+    implicit val actionTypeListTypeMapper = createEnumListJdbcType("action_type", ActionType)
+    implicit val actionTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(ActionType)
   }
 
 }

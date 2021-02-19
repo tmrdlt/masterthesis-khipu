@@ -14,18 +14,18 @@ class WorkflowListIdRoute(controller: WorkflowListIdController)
     with WorkflowListJsonSupport
     with SimpleNameLogger {
 
-  def route(workflowListUUID: UUID): Route = {
+  def route(workflowListApiId: String): Route = {
     concat(
       put {
         entity(as[UpdateWorkflowListEntity]) { updateWorkflowListEntity =>
-          onComplete(controller.updateWorkflowList(workflowListUUID, updateWorkflowListEntity)) {
+          onComplete(controller.updateWorkflowList(workflowListApiId, updateWorkflowListEntity)) {
             case Success(_) => complete(OK)
             case Failure(exception) => complete(exception.toResponseMarshallable)
           }
         }
       },
       delete {
-        onComplete(controller.deleteWorkflowList(workflowListUUID)) {
+        onComplete(controller.deleteWorkflowList(workflowListApiId)) {
           case Success(_) => complete(OK)
           case Failure(exception) => complete(exception.toResponseMarshallable)
         }

@@ -25,10 +25,10 @@ class Routes(components: Components)
         path("fetchdata" / "trello")(components.fetchDataTrello.route),
         path("fetchdata" / "github")(components.fetchDataGitHub.route),
         path("workflowlist")(components.workflowList.route),
-        path("workflowlist" / JavaUUID ) { workflowListUUID => components.workflowListId.route(workflowListUUID) },
-        path("workflowlist" / JavaUUID / "convert") { workflowListUUID => components.workflowListIdConvert.route(workflowListUUID) },
-        path("workflowlist" / JavaUUID / "move") { workflowListUUID => components.workflowListIdMove.route(workflowListUUID) },
-        path("workflowlist" / JavaUUID / "reorder") { workflowListUUID => components.workflowListIdReorder.route(workflowListUUID) }
+        path("workflowlist" / Segment / "convert") { workflowListApiId => components.workflowListIdConvert.route(workflowListApiId) },
+        path("workflowlist" / Segment / "move") { workflowListApiId => components.workflowListIdMove.route(workflowListApiId) },
+        path("workflowlist" / Segment / "reorder") { workflowListApiId => components.workflowListIdReorder.route(workflowListApiId) },
+        path("workflowlist" / Segment) { workflowListApiId => components.workflowListId.route(workflowListApiId) }
       )
     }
   }

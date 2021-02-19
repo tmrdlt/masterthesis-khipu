@@ -8,7 +8,7 @@ import scala.concurrent.Future
 
 class WorkflowListIdReorderController(workflowListDB: WorkflowListDB) {
 
-  def reorderWorkflowList(workflowListUuid: UUID, reorderWorkflowListEntity: ReorderWorkflowListEntity): Future[Int] =
-    workflowListDB.reorderWorkflowList(workflowListUuid, reorderWorkflowListEntity)
+  def reorderWorkflowList(workflowListApiId: String, reorderWorkflowListEntity: ReorderWorkflowListEntity): Future[Int] =
+    workflowListDB.reorderWorkflowList(workflowListApiId, reorderWorkflowListEntity)
 
 }

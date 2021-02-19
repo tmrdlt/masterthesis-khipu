@@ -14,10 +14,10 @@ class WorkflowListIdConvertRoute(controller: WorkflowListIdConvertController)
     with WorkflowListJsonSupport
     with SimpleNameLogger {
 
-  def route(workflowListUuid: UUID): Route = {
+  def route(workflowListApiId: String): Route = {
     post {
       entity(as[ConvertWorkflowListEntity]) { convertWorkflowListEntity =>
-        onComplete(controller.convertWorkflowList(workflowListUuid, convertWorkflowListEntity)) {
+        onComplete(controller.convertWorkflowList(workflowListApiId, convertWorkflowListEntity)) {
           case Success(_) => complete(OK)
           case Failure(exception) => complete(exception.toResponseMarshallable)
         }
