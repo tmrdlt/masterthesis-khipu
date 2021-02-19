@@ -83,65 +83,72 @@ class FetchDataActor(trelloApi: TrelloApi,
 
 
     case FetchDataGitHub(orgNames, now) => {
-
+      // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Bla]] data structure is
+      // used together with flatMap and zipWithIndex
       for {
-        projects <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsOfOrganisation(b))).map(_.flatten)
-        columnsOfProjects <- Future.sequence(projects.map(p => gitHubApi.getColumnsOfProject(p.columns_url))).map(_.flatten)
-        cardsOfColumns <- Future.sequence(columnsOfProjects.map(c => gitHubApi.getCardsOfColumn(c.cards_url))).map(_.flatten)
-        issues <- Future.sequence(
-          cardsOfColumns
-            .map { card =>
-              (card.note, card.content_url) match {
-                case (Some(_), None) => Future.successful(card, None) // Card is a note
-                case (None, Some(content_url)) => gitHubApi.getContentOfNote(content_url).map(i => (card, Some(i))) // Card is an issue
-                case _ => Future.failed(new Exception("Error fetching github data. Card was neither an issue nor a note"))
-              }
+        projectsLists <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsOfOrganisation(b)))
+        columnsLists <- Future.sequence(projectsLists.flatten.map(p => gitHubApi.getColumnsOfProject(p.columns_url)))
+        cardsLists <- Future.sequence(columnsLists.flatten.map(c => gitHubApi.getCardsOfColumn(c.cards_url)))
+        cardsAndIssuesLists <- Future.sequence(
+          cardsLists
+            .map { cl =>
+              Future.sequence(
+                cl.map { card =>
+                  (card.note, card.content_url) match {
+                    case (Some(_), None) => Future.successful(card, None) // Card is a note
+                    case (None, Some(content_url)) => gitHubApi.getContentOfNote(content_url).map(i => (card, Some(i))) // Card is an issue
+                    case _ => Future.failed(new Exception("Error fetching github data. Card was neither an issue nor a note"))
+                  }
+                }
+              )
             }
         )
+        
+        insertedProjects <- workflowListDB.insertWorkflowLists(projectsLists.flatMap(_.zipWithIndex.map {
+          case (gitHubProject, index) =>
+            WorkflowList(
+              id = 0L,
+              apiId = gitHubProject.id.toString,
+              title = gitHubProject.name,
+              description = Some(gitHubProject.body),
+              parentId = None,
+              position = index.toLong,
+              listType = WorkflowListType.BOARD,
+              state = getWorkflowListState(gitHubProject.state),
+              dataSource = WorkflowListDataSource.GitHub,
+              useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+              createdAt = gitHubProject.created_at,
+              updatedAt = gitHubProject.updated_at
+            )
+        }))
 
-        insertedProjects <- workflowListDB.insertWorkflowLists(projects.map { gitHubProject =>
-          WorkflowList(
-            id = 0L,
-            apiId = gitHubProject.id.toString,
-            title = gitHubProject.name,
-            description = Some(gitHubProject.body),
-            parentId = None,
-            position = 0,
-            listType = WorkflowListType.BOARD,
-            state = getWorkflowListState(gitHubProject.state),
-            dataSource = WorkflowListDataSource.GitHub,
-            useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
-            createdAt = gitHubProject.created_at,
-            updatedAt = gitHubProject.updated_at
-          )
-        })
+        insertedColumns <- workflowListDB.insertWorkflowLists(columnsLists.flatMap(_.zipWithIndex.map {
+          case (gitHubColumn, index) =>
+            WorkflowList(
+              id = 0L,
+              apiId = gitHubColumn.id.toString,
+              title = gitHubColumn.name,
+              description = None,
+              parentId = insertedProjects.find(_.apiId == gitHubColumn.project_url.split("/").last).map(_.id),
+              position = index.toLong,
+              listType = WorkflowListType.LIST,
+              state = Some(WorkflowListState.OPEN), // Columns exist on GitHub only in the OPEN state
+              dataSource = WorkflowListDataSource.GitHub,
+              useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+              createdAt = gitHubColumn.created_at,
+              updatedAt = gitHubColumn.updated_at
+            )
+        }))
 
-        insertedColumns <- workflowListDB.insertWorkflowLists(columnsOfProjects.map { gitHubColumn =>
-          WorkflowList(
-            id = 0L,
-            apiId = gitHubColumn.id.toString,
-            title = gitHubColumn.name,
-            description = None,
-            parentId = insertedProjects.find(_.apiId == gitHubColumn.project_url.split("/").last).map(_.id),
-            position = 0, // TODO how to get?
-            listType = WorkflowListType.LIST,
-            state = Some(WorkflowListState.OPEN), // Columns exist on GitHub only in the OPEN state
-            dataSource = WorkflowListDataSource.GitHub,
-            useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
-            createdAt = gitHubColumn.created_at,
-            updatedAt = gitHubColumn.updated_at
-          )
-        })
-
-        insertedIssues <- workflowListDB.insertWorkflowLists(issues.map {
-          case (gitHubCard, Some(gitHubIssue)) =>
+        insertedIssues <- workflowListDB.insertWorkflowLists(cardsAndIssuesLists.flatMap(_.zipWithIndex.map {
+          case ((gitHubCard, Some(gitHubIssue)), index) =>
             WorkflowList(
               id = 0L,
               apiId = gitHubIssue.id.toString,
               title = gitHubIssue.title,
               description = gitHubIssue.body,
               parentId = insertedColumns.find(_.apiId == gitHubCard.column_url.split("/").last).map(_.id),
-              position = 0,
+              position = index.toLong,
               listType = WorkflowListType.ITEM,
               state = getWorkflowListState(gitHubIssue.state),
               dataSource = WorkflowListDataSource.GitHub,
@@ -149,14 +156,14 @@ class FetchDataActor(trelloApi: TrelloApi,
               createdAt = gitHubIssue.created_at,
               updatedAt = gitHubIssue.updated_at
             )
-          case (gitHubCard, None) =>
+          case ((gitHubCard, None), index) =>
             WorkflowList(
               id = 0L,
               apiId = gitHubCard.id.toString,
               title = gitHubCard.note.getOrException("Error taking note of card"),
               description = None,
               parentId = insertedColumns.find(_.apiId == gitHubCard.column_url.split("/").last).map(_.id),
-              position = 0,
+              position = index.toLong,
               listType = WorkflowListType.ITEM,
               state = Some(WorkflowListState.OPEN), // Notes exist on GitHub only in the OPEN state
               dataSource = WorkflowListDataSource.GitHub,
@@ -164,7 +171,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               createdAt = gitHubCard.created_at,
               updatedAt = gitHubCard.updated_at
             )
-        })
+        }))
 
         // TODO use and store
         // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
