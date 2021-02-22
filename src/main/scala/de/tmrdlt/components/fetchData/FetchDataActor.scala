@@ -5,7 +5,7 @@ import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchData
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
-import de.tmrdlt.models.{WorkflowListDataSource, WorkflowListState, WorkflowListType, WorkflowListUseCase}
+import de.tmrdlt.models.{TrelloAction, TrelloActionType, WorkflowListDataSource, WorkflowListState, WorkflowListType, WorkflowListUseCase}
 import de.tmrdlt.utils.OptionExtensions
 
 import java.time.LocalDateTime
@@ -20,11 +20,19 @@ class FetchDataActor(trelloApi: TrelloApi,
   override def receive: PartialFunction[Any, Unit] = {
 
     case FetchDataTrello(boardIds: Seq[String], now: LocalDateTime) =>
-      for {
+
+      val desiredActions = Seq(TrelloActionType.createBoard, TrelloActionType.createList, TrelloActionType.createCard)
+      // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
+      // used together with flatMap and zipWithIndex
+      (for {
         boards <- Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
-        listsOfBoard <- Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b))).map(_.flatten)
-        actionsOfBoard <- Future.sequence(boardIds.map(b => trelloApi.getActionsOfABoard(b))).map(_.flatten)
-        cardsOfBoard <- Future.sequence(listsOfBoard.map(l => trelloApi.getCardsInAList(l.id))).map(_.flatten)
+        listsLists <- Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b)))
+        cardsLists <- Future.sequence(listsLists.flatten.map(l => trelloApi.getCardsInAList(l.id)))
+
+        actionsOfBoards <- Future.sequence(boardIds.map(b => trelloApi.getActionsOfABoard(b))).map(_.flatten)
+        actionsOfLists <- Future.sequence(listsLists.flatten.map(l => trelloApi.getActionsOfAList(l.id))).map(_.flatten)
+        // actionsOfCards <- Future.sequence(cardsLists.flatten.map(c => trelloApi.getActionsOfAList(c.id))).map(_.flatten)
+
         insertedBoards <- workflowListDB.insertWorkflowLists(boards.map { trelloBoard =>
           WorkflowList(
             id = 0L,
@@ -37,55 +45,60 @@ class FetchDataActor(trelloApi: TrelloApi,
             state = Some(getWorkflowListState(trelloBoard.closed)),
             dataSource = WorkflowListDataSource.Trello,
             useCase = None, // TODO Add to request
-            createdAt = now, // TODO how to get real data?
-            updatedAt = now // TODO how to get real data?
+            createdAt = actionsOfBoards.find(a => a.`type` == TrelloActionType.createBoard && a.data.board.id == trelloBoard.id).map(_.date).getOrException("Error getting creation date for board"),
+            updatedAt = actionsOfBoards.filter(a => a.data.board.id == trelloBoard.id).sorted(Ordering.by((_:TrelloAction).date).reverse).headOption.map(_.date).getOrException("Error getting update date for board")
           )
         })
-        insertedLists <- workflowListDB.insertWorkflowLists(listsOfBoard.map { trelloList =>
+        insertedLists <- workflowListDB.insertWorkflowLists(listsLists.flatMap(_.zipWithIndex.map {
+          case (trelloList, index) =>
           WorkflowList(
             id = 0L,
             apiId = trelloList.id,
             title = trelloList.name,
             description = None,
             parentId = insertedBoards.find(_.apiId == trelloList.idBoard).map(_.id),
-            position = trelloList.pos,
+            position = index.toLong,
             listType = WorkflowListType.LIST,
             state = Some(getWorkflowListState(trelloList.closed)),
             dataSource = WorkflowListDataSource.Trello,
             useCase = None, // TODO Add to request
-            createdAt = now, // TODO how to get real data?
-            updatedAt = now // TODO how to get real data?
+            createdAt = actionsOfLists.filter(a => a.data.list.map(_.id).contains(trelloList.id)).sortBy(_.date).headOption.map(_.date).getOrException("Error getting creation date for list"),
+            updatedAt = actionsOfLists.filter(a => a.data.list.map(_.id).contains(trelloList.id)).sorted(Ordering.by((_:TrelloAction).date).reverse).headOption.map(_.date).getOrException("Error getting update date for list")
           )
-        })
-        insertedCards <- workflowListDB.insertWorkflowLists(cardsOfBoard.map { trelloCard =>
+        }))
+        insertedCards <- workflowListDB.insertWorkflowLists(cardsLists.flatMap(_.zipWithIndex.map {
+          case (trelloCard, index) =>
           WorkflowList(
             id = 0L,
             apiId = trelloCard.id,
             title = trelloCard.name,
             description = Some(trelloCard.desc),
             parentId = insertedLists.find(_.apiId == trelloCard.idList).map(_.id),
-            position = trelloCard.pos,
+            position = index.toLong,
             listType = WorkflowListType.ITEM,
             state = Some(getWorkflowListState(trelloCard.closed)),
             dataSource = WorkflowListDataSource.Trello,
             useCase = None, // TODO Add to request
-            createdAt = now, // TODO how to get real data?
-            updatedAt = now // TODO how to get real data?
+            createdAt = actionsOfLists.find(a => a.`type` == TrelloActionType.createCard && a.data.card.map(_.id).contains(trelloCard.id)).map(_.date).getOrException("Error getting creation date for card"),
+            updatedAt = trelloCard.dateLastActivity
           )
-        })
+        }))
 
         // TODO use and store
         // insertedActions <- trelloDB.insertTrelloActions(actionsOfBoard.map(_.toTrelloActionDBEntity))
       } yield {
         val inserted = insertedBoards.length + insertedLists.length + insertedCards.length
         log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
+      }).recoverWith {
+        case t: Throwable => log.error(t, "error fetching trello data")
+          Future.failed(t)
       }
 
 
     case FetchDataGitHub(orgNames, now) => {
-      // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Bla]] data structure is
+      // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
       // used together with flatMap and zipWithIndex
-      for {
+      (for {
         projectsLists <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsOfOrganisation(b)))
         columnsLists <- Future.sequence(projectsLists.flatten.map(p => gitHubApi.getColumnsOfProject(p.columns_url)))
         cardsLists <- Future.sequence(columnsLists.flatten.map(c => gitHubApi.getCardsOfColumn(c.cards_url)))
@@ -103,7 +116,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               )
             }
         )
-        
+
         insertedProjects <- workflowListDB.insertWorkflowLists(projectsLists.flatMap(_.zipWithIndex.map {
           case (gitHubProject, index) =>
             WorkflowList(
@@ -112,7 +125,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               title = gitHubProject.name,
               description = Some(gitHubProject.body),
               parentId = None,
-              position = index.toLong,
+              position = index.toLong, // For projects this doesn't seem to necessarily match the project order in the frontend but doesn't matter
               listType = WorkflowListType.BOARD,
               state = getWorkflowListState(gitHubProject.state),
               dataSource = WorkflowListDataSource.GitHub,
@@ -178,6 +191,9 @@ class FetchDataActor(trelloApi: TrelloApi,
       } yield {
         val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length
         log.info(s"Fetching GitHub data completed. Inserted a total of ${inserted} rows.")
+      }).recoverWith {
+        case t: Throwable => log.error(t, "error fetching github data")
+          Future.failed(t)
       }
 
     }
