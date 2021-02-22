@@ -1,5 +1,6 @@
 package de.tmrdlt.models
 
+import de.tmrdlt.database.github.GitHubEventDBEntity
 import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
@@ -68,7 +69,15 @@ case class GitHubEvent(id: Long,
                        rename: Option[GitHubRenameEvent], // if rename event
                        column_name: Option[String], // if moved_columns_in_project event
                        previous_column_name: Option[String], // if moved_columns_in_project event
-                       created_at: LocalDateTime)
+                       created_at: LocalDateTime) {
+  def toGitHubEventDBEntity(issueId: String): GitHubEventDBEntity = GitHubEventDBEntity(
+    id = 0L,
+    apiId = id.toString,
+    `type` = event,
+    issueId = issueId,
+    date = created_at
+  )
+}
 
 case class GitHubRenameEvent(from: String,
                              to: String)

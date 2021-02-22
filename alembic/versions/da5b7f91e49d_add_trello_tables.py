@@ -26,7 +26,15 @@ def upgrade():
                     Column('id_card', VARCHAR, nullable=True),
                     Column('date', TIMESTAMP, nullable=False),
                     schema='workflow')
-
+    op.create_table('github_event',
+                    Column('id', BIGINT, primary_key=True),
+                    Column('api_id', VARCHAR, nullable=False),
+                    Column('type', VARCHAR, nullable=False),
+                    Column('issue_id', VARCHAR, nullable=False),
+                    Column('date', TIMESTAMP, nullable=False),
+                    schema='workflow')
 
 def downgrade():
     op.drop_table('trello_action', schema='workflow')
+    op.drop_table('github_event', schema='workflow')
+

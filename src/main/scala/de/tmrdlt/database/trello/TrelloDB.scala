@@ -2,7 +2,6 @@ package de.tmrdlt.database.trello
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.{TrelloBoard, TrelloCard, TrelloList}
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 
 import scala.concurrent.ExecutionContext.Implicits.global

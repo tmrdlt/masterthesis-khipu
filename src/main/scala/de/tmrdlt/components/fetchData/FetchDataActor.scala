@@ -3,6 +3,7 @@ package de.tmrdlt.components.fetchData
 import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
+import de.tmrdlt.database.github.GitHubDB
 import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
@@ -17,7 +18,8 @@ import scala.concurrent.Future
 class FetchDataActor(trelloApi: TrelloApi,
                      gitHubApi: GitHubApi,
                      workflowListDB: WorkflowListDB,
-                     trelloDB: TrelloDB) extends Actor with ActorLogging with OptionExtensions {
+                     trelloDB: TrelloDB,
+                     gitHubDB: GitHubDB) extends Actor with ActorLogging with OptionExtensions {
 
   override def receive: PartialFunction[Any, Unit] = {
 
@@ -134,6 +136,14 @@ class FetchDataActor(trelloApi: TrelloApi,
               )
             }
         )
+        events <- Future.sequence(
+          cardsAndIssuesLists
+            .flatten
+            .map{ case (_, i) => i}
+            .filter(_.nonEmpty)
+            .map(i => gitHubApi.getEventsForIssue(i.get.events_url).map(_.map(e => e.toGitHubEventDBEntity(i.get.id.toString)))))
+
+        insertedEvents <- gitHubDB.insertGitHubEvents(events.flatten)
 
         insertedProjects <- workflowListDB.insertWorkflowLists(projectsLists.flatMap(_.zipWithIndex.map {
           case (gitHubProject, index) =>
@@ -207,7 +217,7 @@ class FetchDataActor(trelloApi: TrelloApi,
         // TODO use and store
         // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
       } yield {
-        val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length
+        val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length + insertedEvents
         log.info(s"Fetching GitHub data completed. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, "error fetching github data")
@@ -236,8 +246,9 @@ object FetchDataActor {
   def props(trelloApi: TrelloApi,
             gitHubApi: GitHubApi,
             workflowListDB: WorkflowListDB,
-            trelloDB: TrelloDB): Props =
-    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, trelloDB))
+            trelloDB: TrelloDB,
+            gitHubDB: GitHubDB): Props =
+    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, trelloDB, gitHubDB))
 
   val name = "FetchDataActor"
 
