@@ -13,11 +13,13 @@ import scala.concurrent.Future
 
 class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with WorkflowConfig with GitHubJsonSupport {
 
-  val gitHubPersonalAccessToken = "af9254f3fba08697765c940400061b85c070a0a4"
+  val gitHubPersonalAccessToken = "ddfe1ca4a8bb8b96811f5a042dd602924842de9f"
   val gitHubUsername = "timunkulus"
 
   val projectsAcceptHeaderValue = "application/vnd.github.inertia-preview+json"
-  val baseUrl = "https://api.github.com/"
+  val baseUrl = "https://api.github.com"
+
+  val paginationElementsPerPage = 100
 
   val acceptHeader: HttpHeader = Accept.parseFromValueString(projectsAcceptHeaderValue) match {
     case Right(header) => header
@@ -30,9 +32,25 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
   def getProjectsOfOrganisation(orgName: String): Future[Seq[GitHubProject]] = {
     val request = HttpRequest(
       method = HttpMethods.GET,
-      uri = s"${baseUrl}orgs/${orgName}/projects",
+      uri = s"${baseUrl}/orgs/${orgName}/projects",
       headers = List(acceptHeader)
     )
+    for {
+      response <- http.singleRequest(request)
+      res <- Unmarshal(response).to[Seq[GitHubProject]]
+    } yield {
+      log.info("Got GitHub projects")
+      res
+    }
+  }
+
+  def getProjectsForRepository(repoOwnerString: String): Future[Seq[GitHubProject]] = {
+    val request = HttpRequest(
+      method = HttpMethods.GET,
+      uri = s"${baseUrl}/repos/${repoOwnerString}/projects",
+      headers = List(acceptHeader, authHeader)
+    )
+    log.info(s"URL: ${request.uri}")
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubProject]]
@@ -87,10 +105,10 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getEventsForIssue(events_url: String): Future[Seq[GitHubEvent]] = {
+  def getEventsForIssue(eventsUrl: String, page: Int): Future[Seq[GitHubEvent]] = {
     val request = HttpRequest(
       method = HttpMethods.GET,
-      uri = events_url,
+      uri = s"${eventsUrl}?per_page=${paginationElementsPerPage}&page=${page}",
       headers = List(acceptHeader, authHeader)
     )
     for {

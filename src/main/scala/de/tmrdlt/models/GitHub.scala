@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 trait GitHubJsonSupport extends JsonSupport {
   implicit val fetchDataGitHubEntityFormat: RootJsonFormat[FetchDataGitHubEntity] = jsonFormat1(FetchDataGitHubEntity)
-  implicit val gitHubBoardFormat: RootJsonFormat[GitHubProject] = jsonFormat11(GitHubProject)
+  implicit val gitHubBoardFormat: RootJsonFormat[GitHubProject] = jsonFormat10(GitHubProject)
   implicit val gitHubColumnFormat: RootJsonFormat[GitHubColumn] = jsonFormat8(GitHubColumn)
   implicit val gitHubCardFormat: RootJsonFormat[GitHubCard] = jsonFormat10(GitHubCard)
   implicit val gitHubIssueFormat: RootJsonFormat[GitHubIssue] = jsonFormat11(GitHubIssue)
@@ -27,8 +27,7 @@ case class GitHubProject(id: Long,
                          url: String,
                          columns_url: String,
                          created_at: LocalDateTime,
-                         updated_at: LocalDateTime,
-                         `private`: Boolean)
+                         updated_at: LocalDateTime)
 
 case class GitHubColumn(id: Long,
                         node_id: String,

@@ -31,7 +31,8 @@ class FetchDataActor(trelloApi: TrelloApi,
 
       def getActionsOfABoardRecursively(boardId: String, beforeId: Option[String]): Future[Seq[TrelloAction]] = {
         trelloApi.getActionsOfABoard(boardId, beforeId).flatMap { seq =>
-          if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getActionsOfABoardRecursively(boardId, Some(seq.sortBy(_.date).headOption.map(_.id).getOrException("IMPOSSIBLE EXCEPTION"))), Future.successful(seq))
+          if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(
+            getActionsOfABoardRecursively(boardId, Some(seq.sortBy(_.date).headOption.map(_.id).getOrException("Something almost impossible happened"))), Future.successful(seq))
           else Future.successful(seq)
         }
       }
@@ -116,10 +117,22 @@ class FetchDataActor(trelloApi: TrelloApi,
 
 
     case FetchDataGitHub(orgNames, now) => {
+
+      def getAllEventsOfAIssue(eventsUrl: String): Future[Seq[GitHubEvent]] = {
+        getEventsOfAIssueRecursively(eventsUrl, 0)
+      }
+
+      def getEventsOfAIssueRecursively(eventsUrl: String, page: Int): Future[Seq[GitHubEvent]] = {
+        gitHubApi.getEventsForIssue(eventsUrl, page).flatMap { seq =>
+          if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getEventsOfAIssueRecursively(eventsUrl, page + 1), Future.successful(seq))
+          else Future.successful(seq)
+        }
+      }
+
       // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
       // used together with flatMap and zipWithIndex
       (for {
-        projectsLists <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsOfOrganisation(b)))
+        projectsLists <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsForRepository(b)))
         columnsLists <- Future.sequence(projectsLists.flatten.map(p => gitHubApi.getColumnsOfProject(p.columns_url)))
         cardsLists <- Future.sequence(columnsLists.flatten.map(c => gitHubApi.getCardsOfColumn(c.cards_url)))
         cardsAndIssuesLists <- Future.sequence(
@@ -139,9 +152,9 @@ class FetchDataActor(trelloApi: TrelloApi,
         events <- Future.sequence(
           cardsAndIssuesLists
             .flatten
-            .map{ case (_, i) => i}
+            .map { case (_, i) => i }
             .filter(_.nonEmpty)
-            .map(i => gitHubApi.getEventsForIssue(i.get.events_url).map(_.map(e => e.toGitHubEventDBEntity(i.get.id.toString)))))
+            .map(i => getAllEventsOfAIssue(i.get.events_url).map(_.map(e => e.toGitHubEventDBEntity(i.get.id.toString)))))
 
         insertedEvents <- gitHubDB.insertGitHubEvents(events.flatten)
 
