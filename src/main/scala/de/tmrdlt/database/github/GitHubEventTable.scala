@@ -11,6 +11,7 @@ case class GitHubEventDBEntity(id: Long,
                                apiId: String,
                                `type`: String,
                                issueId: String,
+                               userId: String,
                                date: LocalDateTime)
 
 class GitHubEventTable(tag: Tag) extends BaseTableLong[GitHubEventDBEntity](tag, "github_event") {
@@ -21,9 +22,11 @@ class GitHubEventTable(tag: Tag) extends BaseTableLong[GitHubEventDBEntity](tag,
 
   def issueId: Rep[String] = column[String]("issue_id", NotNull)
 
+  def userId: Rep[String] = column[String]("user_id", NotNull)
+
   def date: Rep[LocalDateTime] = column[LocalDateTime]("date", NotNull)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[GitHubEventDBEntity] =
-    (id, apiId, `type`, issueId, date).mapTo[GitHubEventDBEntity]
+    (id, apiId, `type`, issueId, userId, date).mapTo[GitHubEventDBEntity]
 }

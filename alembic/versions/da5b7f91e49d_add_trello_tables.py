@@ -31,6 +31,7 @@ def upgrade():
                     Column('api_id', VARCHAR, nullable=False),
                     Column('type', VARCHAR, nullable=False),
                     Column('issue_id', VARCHAR, nullable=False),
+                    Column('user_id', VARCHAR, nullable=False),
                     Column('date', TIMESTAMP, nullable=False),
                     schema='workflow')
 

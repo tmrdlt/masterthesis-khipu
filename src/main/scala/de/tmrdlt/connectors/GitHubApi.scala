@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.headers.{Accept, Authorization, BasicHttpCredent
 import akka.http.scaladsl.model.{HttpHeader, HttpMethods, HttpRequest}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
-import de.tmrdlt.models.{GitHubCard, GitHubColumn, GitHubEvent, GitHubIssue, GitHubJsonSupport, GitHubProject}
+import de.tmrdlt.models.{GitHubCard, GitHubColumn, GitHubIssueEvent, GitHubIssue, GitHubJsonSupport, GitHubProject}
 import de.tmrdlt.utils.{SimpleNameLogger, WorkflowConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -105,7 +105,7 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getEventsForIssue(eventsUrl: String, page: Int): Future[Seq[GitHubEvent]] = {
+  def getEventsForIssue(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
     val request = HttpRequest(
       method = HttpMethods.GET,
       uri = s"${eventsUrl}?per_page=${paginationElementsPerPage}&page=${page}",
@@ -113,7 +113,7 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     )
     for {
       response <- http.singleRequest(request)
-      res <- Unmarshal(response).to[Seq[GitHubEvent]]
+      res <- Unmarshal(response).to[Seq[GitHubIssueEvent]]
     } yield {
       log.info("Got GitHub events")
       res

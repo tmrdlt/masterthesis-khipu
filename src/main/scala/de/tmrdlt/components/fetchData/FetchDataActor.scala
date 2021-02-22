@@ -118,11 +118,11 @@ class FetchDataActor(trelloApi: TrelloApi,
 
     case FetchDataGitHub(orgNames, now) => {
 
-      def getAllEventsOfAIssue(eventsUrl: String): Future[Seq[GitHubEvent]] = {
+      def getAllEventsOfAIssue(eventsUrl: String): Future[Seq[GitHubIssueEvent]] = {
         getEventsOfAIssueRecursively(eventsUrl, 0)
       }
 
-      def getEventsOfAIssueRecursively(eventsUrl: String, page: Int): Future[Seq[GitHubEvent]] = {
+      def getEventsOfAIssueRecursively(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
         gitHubApi.getEventsForIssue(eventsUrl, page).flatMap { seq =>
           if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getEventsOfAIssueRecursively(eventsUrl, page + 1), Future.successful(seq))
           else Future.successful(seq)
