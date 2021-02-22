@@ -1,10 +1,16 @@
 package de.tmrdlt.utils
 
-import java.sql.Timestamp
-import java.time.LocalDateTime
+import org.mongodb.scala.bson.BsonObjectId
+
+import java.time.{Instant, LocalDateTime}
+import java.util.TimeZone
 
 
 object DateUtil {
 
-  def timestamp(timestampSeconds: Long): LocalDateTime = new Timestamp(timestampSeconds * 1000).toLocalDateTime
+  def getDateFromObjectIdString(objectId: String): LocalDateTime =
+    LocalDateTime.ofInstant(
+      Instant.ofEpochSecond(BsonObjectId(objectId).getValue.getTimestamp),
+      TimeZone.getDefault.toZoneId
+    )
 }

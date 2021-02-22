@@ -23,7 +23,6 @@ libraryDependencies ++= {
   val postgresVersion       = "42.2.18"
   val logbackVersion        = "1.2.3"
   val uuidGeneratorVersion  = "4.0.1"
-
   // Test dependencies
   val scalaCheckVersion = "1.15.1"
   val scalaTestVersion  = "3.2.3"
@@ -46,6 +45,8 @@ libraryDependencies ++= {
     "org.postgresql"        % "postgresql"            % postgresVersion,
     "ch.qos.logback"        % "logback-classic"       % logbackVersion,
     "com.fasterxml.uuid"    % "java-uuid-generator"   % uuidGeneratorVersion,
+
+    "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0",
 
     "com.typesafe.akka"   %% "akka-testkit"                 % akkaVersion       % "it,test",
     "com.typesafe.akka"   %% "akka-http-testkit"            % akkaHttpVersion   % "it,test",

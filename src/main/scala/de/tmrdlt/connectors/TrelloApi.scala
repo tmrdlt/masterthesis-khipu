@@ -65,45 +65,16 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getActionsOfABoard(boardId: String): Future[Seq[TrelloAction]] = {
+  def getActionsOfABoard(boardId: String, beforeId: Option[String]): Future[Seq[TrelloAction]] = {
     //val filterUrl = s"&filter=${desiredActions.map(_.toString).mkString(",")}"
-    val request = HttpRequest(
-      method = HttpMethods.GET,
-      uri = s"${baseUrl}1/boards/${boardId}/actions${authUrl}"
-    )
-    for {
-      response <- http.singleRequest(request)
-      res <- Unmarshal(response).to[Seq[TrelloAction]]
-    } yield {
-      log.info("Got actions")
-      res
+    val beforeUrl = beforeId match {
+      case Some(string) => s"&before=${string}"
+      case _ => ""
     }
-  }
-
-
-  def getActionsOfAList(listId: String): Future[Seq[TrelloAction]] = {
-    //val filterUrl = s"&filter=${desiredActions.map(_.toString).mkString(",")}"
     val request = HttpRequest(
       method = HttpMethods.GET,
-      uri = s"${baseUrl}1/lists/${listId}/actions${authUrl}"
+      uri = s"${baseUrl}1/boards/${boardId}/actions${authUrl}${beforeUrl}"
     )
-    for {
-      response <- http.singleRequest(request)
-      res <- Unmarshal(response).to[Seq[TrelloAction]]
-    } yield {
-      log.info("Got actions")
-      res
-    }
-  }
-
-
-  def getActionsOfACard(cardId: String): Future[Seq[TrelloAction]] = {
-    //val filterUrl = s"&filter=${desiredActions.map(_.toString).mkString(",")}"
-    val request = HttpRequest(
-      method = HttpMethods.GET,
-      uri = s"${baseUrl}1/cards/${cardId}/actions${authUrl}"
-    )
-    log.info(request.uri.toString())
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[TrelloAction]]
