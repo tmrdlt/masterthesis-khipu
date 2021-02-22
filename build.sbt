@@ -1,6 +1,6 @@
 addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.13" cross CrossVersion.full)
-wartremoverErrors in (Compile, compile) += Wart.OptionPartial
-wartremoverErrors in (Compile, compile) += Wart.TraversableOps
+wartremoverErrors in(Compile, compile) += Wart.OptionPartial
+wartremoverErrors in(Compile, compile) += Wart.TraversableOps
 
 lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
@@ -14,45 +14,40 @@ mainClass := Some("de.timoerdelt.Main")
 
 libraryDependencies ++= {
   // Dependencies
-  val akkaVersion           = "2.6.10"
-  val akkaHttpVersion       = "10.2.1"
-  val slickVersion          = "3.3.3"
-  val slickPgVersion        = "0.19.4"
-  val jwtVersion            = "4.3.0"
+  val akkaVersion = "2.6.10"
+  val akkaHttpVersion = "10.2.1"
+  val slickVersion = "3.3.3"
+  val slickPgVersion = "0.19.4"
+  val postgresVersion = "42.2.18"
+  val logbackVersion = "1.2.3"
+  val mongoDbVersion = "2.9.0"
 
-  val postgresVersion       = "42.2.18"
-  val logbackVersion        = "1.2.3"
-  val uuidGeneratorVersion  = "4.0.1"
   // Test dependencies
   val scalaCheckVersion = "1.15.1"
-  val scalaTestVersion  = "3.2.3"
-  val scalaMockVersion  = "5.0.0"
-
+  val scalaTestVersion = "3.2.3"
+  val scalaMockVersion = "5.0.0"
 
   Seq(
-    "com.typesafe.akka"   %% "akka-actor"           % akkaVersion,
-    "com.typesafe.akka"   %% "akka-stream"          % akkaVersion,
-    "com.typesafe.akka"   %% "akka-slf4j"           % akkaVersion,
-    "com.typesafe.akka"   %% "akka-http"            % akkaHttpVersion,
-    "com.typesafe.akka"   %% "akka-http-core"       % akkaHttpVersion,
-    "com.typesafe.akka"   %% "akka-http-spray-json" % akkaHttpVersion,
-    "com.typesafe.slick"  %% "slick"                % slickVersion,
-    "com.typesafe.slick"  %% "slick-hikaricp"       % slickVersion,
-    "com.github.tminglei" %% "slick-pg"             % slickPgVersion,
-    "com.github.tminglei" %% "slick-pg_spray-json"  % slickPgVersion,
-    "com.pauldijou"       %% "jwt-core"             % jwtVersion,
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+    "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+    "com.typesafe.slick" %% "slick" % slickVersion,
+    "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
+    "com.github.tminglei" %% "slick-pg" % slickPgVersion,
+    "com.github.tminglei" %% "slick-pg_spray-json" % slickPgVersion,
 
-    "org.postgresql"        % "postgresql"            % postgresVersion,
-    "ch.qos.logback"        % "logback-classic"       % logbackVersion,
-    "com.fasterxml.uuid"    % "java-uuid-generator"   % uuidGeneratorVersion,
+    "org.postgresql" % "postgresql" % postgresVersion,
+    "ch.qos.logback" % "logback-classic" % logbackVersion,
+    "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion,
 
-    "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0",
-
-    "com.typesafe.akka"   %% "akka-testkit"                 % akkaVersion       % "it,test",
-    "com.typesafe.akka"   %% "akka-http-testkit"            % akkaHttpVersion   % "it,test",
-    "org.scalacheck"      %% "scalacheck"                   % scalaCheckVersion % "it,test",
-    "org.scalatest"       %% "scalatest"                    % scalaTestVersion  % "it,test",
-    "org.scalamock"       %% "scalamock"                    % scalaMockVersion  % "it,test"
+    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "it,test",
+    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "it,test",
+    "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "it,test",
+    "org.scalatest" %% "scalatest" % scalaTestVersion % "it,test",
+    "org.scalamock" %% "scalamock" % scalaMockVersion % "it,test"
   )
 }
 
@@ -76,10 +71,10 @@ test in assembly := {}
 
 assemblyMergeStrategy in assembly := {
   case PathList("org", "apache", "commons", "logging", xs@_*) => MergeStrategy.first
-  case "application.conf"                                     => MergeStrategy.concat
-  case PathList("META-INF", xs@_*)                            => MergeStrategy.discard
-  case PathList("OSGI-OPT", xs@_*)                            => MergeStrategy.discard
+  case "application.conf" => MergeStrategy.concat
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
+  case PathList("OSGI-OPT", xs@_*) => MergeStrategy.discard
   case x => val baseStrategy = (assemblyMergeStrategy in assembly).value
-            baseStrategy(x)
+    baseStrategy(x)
 }
 
