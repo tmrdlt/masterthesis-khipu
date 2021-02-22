@@ -10,8 +10,8 @@ import java.time.LocalDateTime
 trait TrelloJsonSupport extends JsonSupport {
   implicit val fetchDataTrelloEntityFormat: RootJsonFormat[FetchDataTrelloEntity] = jsonFormat1(FetchDataTrelloEntity)
   implicit val trelloBoardFormat: RootJsonFormat[TrelloBoard] = jsonFormat4(TrelloBoard)
-  implicit val trelloListFormat: RootJsonFormat[TrelloList] = jsonFormat5(TrelloList)
-  implicit val trelloCardFormat: RootJsonFormat[TrelloCard] = jsonFormat8(TrelloCard)
+  implicit val trelloListFormat: RootJsonFormat[TrelloList] = jsonFormat4(TrelloList)
+  implicit val trelloCardFormat: RootJsonFormat[TrelloCard] = jsonFormat7(TrelloCard)
   implicit val trelloBoardSimpleFormat: RootJsonFormat[TrelloBoardSimple] = jsonFormat2(TrelloBoardSimple)
   implicit val trelloListSimpleFormat: RootJsonFormat[TrelloListSimple] = jsonFormat2(TrelloListSimple)
   implicit val trelloCardSimpleFormat: RootJsonFormat[TrelloCardSimple] = jsonFormat2(TrelloCardSimple)
@@ -31,13 +31,11 @@ case class TrelloBoard(id: String,
 case class TrelloList(id: String,
                       name: String,
                       closed: Boolean,
-                      pos: Long,
                       idBoard: String)
 
 case class TrelloCard(id: String,
                       name: String,
                       desc: String,
-                      pos: Long,
                       closed: Boolean,
                       idBoard: String,
                       idList: String,

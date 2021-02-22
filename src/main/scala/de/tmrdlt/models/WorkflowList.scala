@@ -15,7 +15,7 @@ case class WorkflowListEntity(id: Long,
                               level: Long,
                               order: Long,
                               createdAt: LocalDateTime,
-                              updatedAt: LocalDateTime)
+                              updatedAt: LocalDateTime) // TODO add owner
 
 case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],

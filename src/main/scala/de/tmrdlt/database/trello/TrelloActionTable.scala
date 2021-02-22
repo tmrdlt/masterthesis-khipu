@@ -1,10 +1,8 @@
 package de.tmrdlt.database.trello
 
 import de.tmrdlt.database.BaseTableString
-import de.tmrdlt.database.MyDB.trelloBoardQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.TrelloBoard
-import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep, Tag}
+import slick.lifted.{ProvenShape, Rep, Tag}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
 import java.time.LocalDateTime
@@ -27,9 +25,6 @@ class TrelloActionTable(tag: Tag) extends BaseTableString[TrelloActionDBEntity](
   def idCard: Rep[Option[String]] = column[Option[String]]("id_card", Nullable)
 
   def date: Rep[LocalDateTime] = column[LocalDateTime]("date", NotNull)
-
-  def boardForeignKey: ForeignKeyQuery[TrelloBoardTable, TrelloBoard] =
-    foreignKey("board_fk", idBoard, trelloBoardQuery)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[TrelloActionDBEntity] =
