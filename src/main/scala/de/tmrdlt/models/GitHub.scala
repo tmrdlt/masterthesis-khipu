@@ -10,7 +10,7 @@ trait GitHubJsonSupport extends JsonSupport {
   implicit val gitHubBoardFormat: RootJsonFormat[GitHubProject] = jsonFormat11(GitHubProject)
   implicit val gitHubColumnFormat: RootJsonFormat[GitHubColumn] = jsonFormat8(GitHubColumn)
   implicit val gitHubCardFormat: RootJsonFormat[GitHubCard] = jsonFormat10(GitHubCard)
-  implicit val gitHubIssueFormat: RootJsonFormat[GitHubIssue] = jsonFormat10(GitHubIssue)
+  implicit val gitHubIssueFormat: RootJsonFormat[GitHubIssue] = jsonFormat11(GitHubIssue)
   implicit val gitHubRenameEventFormat: RootJsonFormat[GitHubRenameEvent] = jsonFormat2(GitHubRenameEvent)
   implicit val gitHubEventFormat: RootJsonFormat[GitHubEvent] = jsonFormat8(GitHubEvent)
 }
@@ -52,6 +52,7 @@ case class GitHubCard(id: Long,
 case class GitHubIssue(id: Long,
                        node_id: String,
                        title: String,
+                       body: Option[String],
                        number: Long,
                        state: String,
                        locked: Boolean,

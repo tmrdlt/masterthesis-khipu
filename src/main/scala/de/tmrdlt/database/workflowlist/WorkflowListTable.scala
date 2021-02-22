@@ -3,8 +3,11 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.models.UsageType.UsageType
+import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
+import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models.WorkflowListEntity
+import de.tmrdlt.models.WorkflowListState.WorkflowListState
+import de.tmrdlt.models.WorkflowListUseCase.WorkflowListUseCase
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
@@ -14,36 +17,43 @@ import java.util.UUID
 /**
  * Database representation of a workflowList.
  *
- * @param id          Database id
- * @param uuid        UUID (generated upon insert) to be used as a unique identifier
- *                    when the real db id is not desired.
- * @param title       TBD
- * @param description TBD
- * @param parentId    TBD
- * @param order       TBD
- * @param createdAt   TBD
- * @param updatedAt   TBD
+ * @param id               Database id
+ * @param apiId            UUID (generated upon insert) to be used as a unique identifier
+ *                         when the real db id is not desired.
+ * @param title            TBD
+ * @param description      TBD
+ * @param parentId      TBD
+ * @param position TBD
+ * @param listType         TBD
+ * @param state            TBD
+ * @param useCase          TBD
+ * @param dataSource       TBD
+ * @param createdAt        TBD
+ * @param updatedAt        TBD
  */
 case class WorkflowList(id: Long,
-                        uuid: UUID,
+                        apiId: String,
                         title: String,
                         description: Option[String],
-                        usageType: UsageType,
                         parentId: Option[Long],
-                        order: Long,
+                        position: Long,
+                        listType: WorkflowListType,
+                        state: Option[WorkflowListState],
+                        dataSource: WorkflowListDataSource,
+                        useCase: Option[WorkflowListUseCase],
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
   def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long): WorkflowListEntity =
     WorkflowListEntity(
       id = id,
-      uuid = uuid,
+      uuid = apiId,
       title = title,
       description = description,
       children = children.sortBy(_.order), // Important to return the workflow lists in a ordered way!
-      usageType = usageType,
+      usageType = listType,
       level = level,
-      order = order,
+      order = position,
       createdAt = createdAt,
       updatedAt = updatedAt
     )
@@ -52,17 +62,23 @@ case class WorkflowList(id: Long,
 class WorkflowListTable(tag: Tag)
   extends BaseTableLong[WorkflowList](tag, "workflow_list") {
 
-  def uuid: Rep[UUID] = column[UUID]("uuid", NotNull)
+  def apiId: Rep[String] = column[String]("api_id", NotNull)
 
   def title: Rep[String] = column[String]("title", NotNull)
 
   def description: Rep[Option[String]] = column[Option[String]]("description", Nullable)
 
-  def usageType: Rep[UsageType] = column[UsageType]("usage_type", Nullable)
-
   def parentId: Rep[Option[Long]] = column[Option[Long]]("parent_id", Nullable)
 
-  def order: Rep[Long] = column[Long]("order", NotNull)
+  def position: Rep[Long] = column[Long]("position", NotNull)
+
+  def listType: Rep[WorkflowListType] = column[WorkflowListType]("list_type", NotNull)
+
+  def state: Rep[Option[WorkflowListState]] = column[Option[WorkflowListState]]("state", Nullable)
+
+  def dataSource: Rep[WorkflowListDataSource] = column[WorkflowListDataSource]("data_source", NotNull)
+
+  def useCase: Rep[Option[WorkflowListUseCase]] = column[Option[WorkflowListUseCase]]("use_case", Nullable)
 
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
@@ -73,5 +89,5 @@ class WorkflowListTable(tag: Tag)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] =
-    (id, uuid, title, description, usageType, parentId, order, createdAt, updatedAt).mapTo[WorkflowList]
+    (id, apiId, title, description, parentId, position, listType, state, dataSource, useCase, createdAt, updatedAt).mapTo[WorkflowList]
 }

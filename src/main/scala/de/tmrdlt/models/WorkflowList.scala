@@ -1,17 +1,17 @@
 package de.tmrdlt.models
 
-import de.tmrdlt.models.UsageType.UsageType
+import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
 import java.util.UUID
 
 case class WorkflowListEntity(id: Long,
-                              uuid: UUID,
+                              uuid: String,
                               title: String,
                               description: Option[String],
                               children: Seq[WorkflowListEntity],
-                              usageType: UsageType,
+                              usageType: WorkflowListType,
                               level: Long,
                               order: Long,
                               createdAt: LocalDateTime,
@@ -19,20 +19,20 @@ case class WorkflowListEntity(id: Long,
 
 case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
-                                    usageType: UsageType,
-                                    parentUuid: Option[UUID])
+                                    listType: WorkflowListType,
+                                    parentApiId: Option[String])
 
 case class UpdateWorkflowListEntity(newTitle: String,
                                     newDescription: Option[String])
 
-case class ConvertWorkflowListEntity(newUsageType: UsageType)
+case class ConvertWorkflowListEntity(newListType: WorkflowListType)
 
-case class MoveWorkflowListEntity(newParentUuid: Option[UUID],
-                                  newOrderIndex: Option[Long])
+case class MoveWorkflowListEntity(newParentApiId: Option[String],
+                                  newPosition: Option[Long])
 
-case class ReorderWorkflowListEntity(newOrderIndex: Long)
+case class ReorderWorkflowListEntity(newPosition: Long)
 
-trait WorkflowListJsonSupport extends JsonSupport with UsageTypeJsonSupport {
+trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
 
   implicit val workflowListFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,

@@ -6,12 +6,12 @@ import akka.http.scaladsl.model.{HttpHeader, HttpMethods, HttpRequest}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
 import de.tmrdlt.models.{GitHubCard, GitHubColumn, GitHubEvent, GitHubIssue, GitHubJsonSupport, GitHubProject}
-import de.tmrdlt.utils.WorkflowConfig
+import de.tmrdlt.utils.{SimpleNameLogger, WorkflowConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GitHubApi(implicit system: ActorSystem) extends WorkflowConfig with GitHubJsonSupport {
+class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with WorkflowConfig with GitHubJsonSupport {
 
   val gitHubPersonalAccessToken = "af9254f3fba08697765c940400061b85c070a0a4"
   val gitHubUsername = "timunkulus"
@@ -37,6 +37,7 @@ class GitHubApi(implicit system: ActorSystem) extends WorkflowConfig with GitHub
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubProject]]
     } yield {
+      log.info("Got GitHub projects")
       res
     }
   }
@@ -51,6 +52,7 @@ class GitHubApi(implicit system: ActorSystem) extends WorkflowConfig with GitHub
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubColumn]]
     } yield {
+      log.info("Got GitHub columns")
       res
     }
   }
@@ -65,6 +67,7 @@ class GitHubApi(implicit system: ActorSystem) extends WorkflowConfig with GitHub
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubCard]]
     } yield {
+      log.info("Got GitHub cards")
       res
     }
   }
@@ -79,6 +82,7 @@ class GitHubApi(implicit system: ActorSystem) extends WorkflowConfig with GitHub
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[GitHubIssue]
     } yield {
+      log.info("Got GitHub issue")
       res
     }
   }
@@ -93,6 +97,7 @@ class GitHubApi(implicit system: ActorSystem) extends WorkflowConfig with GitHub
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubEvent]]
     } yield {
+      log.info("Got GitHub events")
       res
     }
   }

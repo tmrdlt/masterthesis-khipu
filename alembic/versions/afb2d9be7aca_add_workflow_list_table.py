@@ -21,13 +21,19 @@ depends_on = None
 def upgrade():
     op.create_table('workflow_list',
                     Column('id', BIGINT, primary_key=True),
-                    Column('uuid', UUID, nullable=False),
+                    Column('api_id', VARCHAR, nullable=False),
                     Column('title', VARCHAR, nullable=False),
                     Column('description', VARCHAR, nullable=True),
-                    Column('usage_type', Enum('BOARD', 'LIST', 'ITEM', name='usage_type', schema='workflow'),
-                           nullable=False),
                     Column('parent_id', BIGINT, nullable=True),
-                    Column('order', BIGINT, nullable=False),
+                    Column('position', BIGINT, nullable=False),
+                    Column('list_type', Enum('BOARD', 'LIST', 'ITEM', name='list_type', schema='workflow'),
+                           nullable=False),
+                    Column('state', Enum('OPEN', 'CLOSED', name='state', schema='workflow'),
+                           nullable=True),
+                    Column('data_source', Enum('Khipu', 'GitHub', 'Trello', name='data_source', schema='workflow'),
+                           nullable=False),
+                    Column('use_case', Enum('softwareDevelopment', 'roadmap', 'personal', name='use_case', schema='workflow'),
+                           nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
@@ -38,5 +44,17 @@ def upgrade():
 
 def downgrade():
     op.drop_table('workflow_list', schema='workflow')
-    usage_type_enum = ENUM('BOARD', 'LIST', 'ITEM', name='usage_type', schema='workflow')
-    usage_type_enum.drop(op.get_bind())
+
+    list_type_enum = ENUM('BOARD', 'LIST', 'ITEM', name='list_type', schema='workflow')
+    list_type_enum.drop(op.get_bind())
+
+    state_enum = ENUM('OPEN', 'CLOSED', name='state', schema='workflow')
+    state_enum.drop(op.get_bind())
+
+    data_source_enum = ENUM('Khipu', 'GitHub', 'Trello', name='data_source', schema='workflow')
+    data_source_enum.drop(op.get_bind())
+
+    use_case_enum = ENUM('softwareDevelopment', 'roadmap', 'personal', name='use_case', schema='workflow')
+    use_case_enum.drop(op.get_bind())
+
+

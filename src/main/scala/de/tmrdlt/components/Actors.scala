@@ -1,7 +1,7 @@
 package de.tmrdlt.components
 
 import akka.actor._
-import de.tmrdlt.components.fetchData.trello.FetchDataTrelloActor
+import de.tmrdlt.components.fetchData.FetchDataActor
 import de.tmrdlt.components.health.HealthActor
 import de.tmrdlt.connectors.Apis
 import de.tmrdlt.database.DBs
@@ -15,8 +15,8 @@ class Actors(system: ActorSystem,
     HealthActor.name
   )
 
-  val fetchDataTrelloActor: ActorRef = system.actorOf(
-    FetchDataTrelloActor.props(apis.trelloApi, dbs.trelloDB),
-    FetchDataTrelloActor.name
+  val fetchDataActor: ActorRef = system.actorOf(
+    FetchDataActor.props(apis.trelloApi, apis.gitHubApi, dbs.workflowListDB),
+    FetchDataActor.name
   )
 }

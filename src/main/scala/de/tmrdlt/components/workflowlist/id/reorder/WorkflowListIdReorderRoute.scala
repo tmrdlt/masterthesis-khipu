@@ -14,10 +14,10 @@ class WorkflowListIdReorderRoute(controller: WorkflowListIdReorderController)
     with WorkflowListJsonSupport
     with SimpleNameLogger {
 
-  def route(workflowListUuid: UUID): Route = {
+  def route(workflowListApiId: String): Route = {
     post {
       entity(as[ReorderWorkflowListEntity]) { reorderWorkflowListEntity =>
-        onComplete(controller.reorderWorkflowList(workflowListUuid, reorderWorkflowListEntity)) {
+        onComplete(controller.reorderWorkflowList(workflowListApiId, reorderWorkflowListEntity)) {
           case Success(res) => complete(OK -> res.toString)
           case Failure(exception) => complete(exception.toResponseMarshallable)
         }

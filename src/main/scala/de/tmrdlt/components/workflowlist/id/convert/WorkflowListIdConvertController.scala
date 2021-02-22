@@ -8,6 +8,6 @@ import scala.concurrent.Future
 
 class WorkflowListIdConvertController(workflowListDB: WorkflowListDB) {
 
-  def convertWorkflowList(workfLowListUuid: UUID, convertWorkflowListEntity: ConvertWorkflowListEntity): Future[Int] =
-    workflowListDB.convertWorkflowList(workfLowListUuid, convertWorkflowListEntity)
+  def convertWorkflowList(workflowListApiId: String, convertWorkflowListEntity: ConvertWorkflowListEntity): Future[Int] =
+    workflowListDB.convertWorkflowList(workflowListApiId, convertWorkflowListEntity)
 }

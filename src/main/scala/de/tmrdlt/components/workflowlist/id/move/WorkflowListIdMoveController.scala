@@ -8,6 +8,6 @@ import scala.concurrent.Future
 
 class WorkflowListIdMoveController(workflowListDB: WorkflowListDB) {
 
-  def moveWorkflowList(workfLowListUuid: UUID, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] =
-    workflowListDB.moveWorkflowList(workfLowListUuid, moveWorkflowListEntity)
+  def moveWorkflowList(workflowListApiId: String, moveWorkflowListEntity: MoveWorkflowListEntity): Future[Int] =
+    workflowListDB.moveWorkflowList(workflowListApiId, moveWorkflowListEntity)
 }
