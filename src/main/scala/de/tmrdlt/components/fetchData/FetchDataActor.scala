@@ -3,6 +3,7 @@ package de.tmrdlt.components.fetchData
 import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
+import de.tmrdlt.database.action.{Action, ActionDB}
 import de.tmrdlt.database.github.GitHubDB
 import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
@@ -18,6 +19,7 @@ import scala.concurrent.Future
 class FetchDataActor(trelloApi: TrelloApi,
                      gitHubApi: GitHubApi,
                      workflowListDB: WorkflowListDB,
+                     actionDB: ActionDB,
                      trelloDB: TrelloDB,
                      gitHubDB: GitHubDB) extends Actor with ActorLogging with OptionExtensions {
 
@@ -149,14 +151,25 @@ class FetchDataActor(trelloApi: TrelloApi,
               )
             }
         )
-        events <- Future.sequence(
+        actions <- Future.sequence(
           cardsAndIssuesLists
             .flatten
-            .map { case (_, i) => i }
-            .filter(_.nonEmpty)
-            .map(i => getAllEventsOfAIssue(i.get.events_url).map(_.map(e => e.toGitHubEventDBEntity(i.get.id.toString)))))
-
-        insertedEvents <- gitHubDB.insertGitHubEvents(events.flatten)
+            .flatMap { case (_, i) => i }
+            .map { issue =>
+              getAllEventsOfAIssue(issue.events_url)
+                .map(_.map(gitHubIssueEvent =>
+                  Action(
+                    id = 0L,
+                    apiId = gitHubIssueEvent.id.toString,
+                    actionType = gitHubIssueEvent.event.toString,
+                    workflowListApiId = issue.id.toString,
+                    userApiId = gitHubIssueEvent.actor.id.toString,
+                    date = gitHubIssueEvent.created_at,
+                    dataSource = WorkflowListDataSource.GitHub
+                  )
+                ))
+            }
+        )
 
         insertedProjects <- workflowListDB.insertWorkflowLists(projectsLists.flatMap(_.zipWithIndex.map {
           case (gitHubProject, index) =>
@@ -227,6 +240,9 @@ class FetchDataActor(trelloApi: TrelloApi,
             )
         }))
 
+        insertedEvents <- actionDB.insertActions(actions.flatten)
+
+
         // TODO use and store
         // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
       } yield {
@@ -259,9 +275,10 @@ object FetchDataActor {
   def props(trelloApi: TrelloApi,
             gitHubApi: GitHubApi,
             workflowListDB: WorkflowListDB,
+            actionDB: ActionDB,
             trelloDB: TrelloDB,
             gitHubDB: GitHubDB): Props =
-    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, trelloDB, gitHubDB))
+    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, actionDB, trelloDB, gitHubDB))
 
   val name = "FetchDataActor"
 

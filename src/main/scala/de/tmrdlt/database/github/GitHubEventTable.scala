@@ -1,6 +1,6 @@
 package de.tmrdlt.database.github
 
-import de.tmrdlt.database.{BaseTableLong, BaseTableString}
+import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
 import slick.lifted.{ProvenShape, Rep, Tag}
 import slick.sql.SqlProfile.ColumnOption.NotNull

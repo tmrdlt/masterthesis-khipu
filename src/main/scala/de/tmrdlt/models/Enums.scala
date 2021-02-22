@@ -21,6 +21,7 @@ object WorkflowListState extends Enumeration {
       case "closed" => Some(WorkflowListState.CLOSED)
       case _ => None
     }
+
   def getWorkflowListState(closed: Boolean): WorkflowListState = {
     if (closed) WorkflowListState.CLOSED else WorkflowListState.OPEN
   }
@@ -38,7 +39,7 @@ object WorkflowListDataSource extends Enumeration {
 
 object ActionType extends Enumeration {
   type ActionType = Value
-  val createBoard = Value
+  val createBoard, createList, createItem, updateBoard, updateList, updateItem = Value
 }
 
 object WorkflowListType extends Enumeration {
