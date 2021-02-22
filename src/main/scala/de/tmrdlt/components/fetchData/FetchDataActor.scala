@@ -107,8 +107,22 @@ class FetchDataActor(trelloApi: TrelloApi,
             )
         }))
 
-        // TODO store in a general way
-        insertedActions <- trelloDB.insertTrelloActions(actionsOfBoards.map(_.toTrelloActionDBEntity))
+        insertedActions <- actionDB.insertActions(actionsOfBoards.map { trelloAction =>
+          Action(
+            id = 0L,
+            apiId = trelloAction.id,
+            actionType = trelloAction.`type`.toString,
+            workflowListApiId = (trelloAction.data.card, trelloAction.data.list) match {
+              case (Some(card), _) => card.id
+              case (_, Some(list)) => list.id
+              case (_, _) => trelloAction.data.board.id
+            },
+            userApiId = trelloAction.idMemberCreator,
+            date = trelloAction.date,
+            dataSource = WorkflowListDataSource.Trello
+          )
+
+        })
       } yield {
         val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions
         log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
