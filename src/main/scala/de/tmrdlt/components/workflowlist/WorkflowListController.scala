@@ -10,7 +10,7 @@ import scala.concurrent.Future
 class WorkflowListController(workflowListDB: WorkflowListDB) {
 
   def createWorkflowList(createWorkflowListEntity: CreateWorkflowListEntity): Future[WorkflowList] = {
-    workflowListDB.insertWorkflowList(createWorkflowListEntity)
+    workflowListDB.createWorkflowList(createWorkflowListEntity)
   }
 
   def getWorkflowListEntities: Future[Seq[WorkflowListEntity]] = {

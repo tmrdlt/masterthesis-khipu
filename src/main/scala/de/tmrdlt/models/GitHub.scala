@@ -18,7 +18,8 @@ trait GitHubJsonSupport extends JsonSupport {
   implicit val gitHubIssueEventTypeJsonSupport: EnumJsonConverter[GitHubIssueEventType.type] = new EnumJsonConverter(GitHubIssueEventType)
   implicit val gitHubEventActorFormat: RootJsonFormat[GitHubEventActor] = jsonFormat2(GitHubEventActor)
   implicit val gitHubRenameEventFormat: RootJsonFormat[GitHubRenameEvent] = jsonFormat2(GitHubRenameEvent)
-  implicit val gitHubIssueEventFormat: RootJsonFormat[GitHubIssueEvent] = jsonFormat9(GitHubIssueEvent)
+  implicit val gitHubEventProjectCardFormat: RootJsonFormat[GitHubEventProjectCard] = jsonFormat5(GitHubEventProjectCard)
+  implicit val gitHubIssueEventFormat: RootJsonFormat[GitHubIssueEvent] = jsonFormat8(GitHubIssueEvent)
 }
 
 case class FetchDataGitHubEntity(orgNames: Seq[String])
@@ -71,9 +72,8 @@ case class GitHubIssueEvent(id: Long,
                             event: GitHubIssueEventType,
                             url: String,
                             actor: GitHubEventActor,
-                            rename: Option[GitHubRenameEvent], // if rename event
-                            column_name: Option[String], // if moved_columns_in_project event
-                            previous_column_name: Option[String], // if moved_columns_in_project event
+                            rename: Option[GitHubRenameEvent], // if rename event ???
+                            project_card: Option[GitHubEventProjectCard],
                             created_at: LocalDateTime) {
   def toGitHubEventDBEntity(issueId: String): GitHubEventDBEntity = GitHubEventDBEntity(
     id = 0L,
@@ -87,7 +87,7 @@ case class GitHubIssueEvent(id: Long,
 
 case class GitHubEventProjectCard(id: Long,
                                   url: String,
-                                  project_id: String,
+                                  project_id: Long,
                                   column_name: Option[String], // Present if moved_columns_in_project event
                                   previous_column_name: Option[String] // Present if moved_columns_in_project event
                                  )

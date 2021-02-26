@@ -20,10 +20,13 @@ class WorkflowListDB
     db.run(workflowListQuery.result)
   }
 
+  def insertWorkflowList(workflowList: WorkflowList): Future[WorkflowList] =
+    db.run(workflowListQuery returning workflowListQuery += workflowList)
+
   def insertWorkflowLists(workflowLists: Seq[WorkflowList]): Future[Seq[WorkflowList]] =
     db.run(workflowListQuery returning workflowListQuery ++= workflowLists)
 
-  def insertWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
+  def createWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
     val query =
       for {
         parentIdOption <- cwle.parentApiId match {

@@ -1,7 +1,7 @@
 package de.tmrdlt.components.fetchData
 
 import akka.actor.{Actor, ActorLogging, Props}
-import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
+import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataTrello, FetchGitHubDataForProject}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.action.{Action, ActionDB}
 import de.tmrdlt.database.github.GitHubDB
@@ -145,7 +145,7 @@ class FetchDataActor(trelloApi: TrelloApi,
       }
 
 
-    case FetchDataGitHub(orgNames, now) => {
+    case FetchGitHubDataForProject(gitHubProject, position) => {
 
       def getAllEventsOfAIssue(eventsUrl: String): Future[Seq[GitHubIssueEvent]] = {
         getEventsOfAIssueRecursively(eventsUrl, 0)
@@ -158,12 +158,13 @@ class FetchDataActor(trelloApi: TrelloApi,
         }
       }
 
+      log.info(s"Start fetching GitHub data for project '${gitHubProject.name}'.")
+
       // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
       // used together with flatMap and zipWithIndex
       (for {
-        projectsLists <- Future.sequence(orgNames.map(b => gitHubApi.getProjectsForRepository(b)))
-        columnsLists <- Future.sequence(projectsLists.flatten.map(p => gitHubApi.getColumnsOfProject(p.columns_url)))
-        cardsLists <- Future.sequence(columnsLists.flatten.map(c => gitHubApi.getCardsOfColumn(c.cards_url)))
+        columns <- gitHubApi.getColumnsOfProject(gitHubProject.columns_url)
+        cardsLists <- Future.sequence(columns.map(c => gitHubApi.getCardsOfColumn(c.cards_url)))
         cardsAndIssuesLists <- Future.sequence(
           cardsLists
             .map { cl =>
@@ -178,52 +179,43 @@ class FetchDataActor(trelloApi: TrelloApi,
               )
             }
         )
-        actions <- Future.sequence(
+        cardsAndIssueAndEvents <- Future.sequence(
           cardsAndIssuesLists
             .flatten
-            .flatMap { case (_, i) => i }
-            .map { issue =>
+            .map { case (card, Some(issue)) =>
               getAllEventsOfAIssue(issue.events_url)
-                .map(_.map(gitHubIssueEvent =>
-                  Action(
-                    id = 0L,
-                    apiId = gitHubIssueEvent.id.toString,
-                    actionType = gitHubIssueEvent.event.toString,
-                    workflowListApiId = issue.id.toString,
-                    userApiId = gitHubIssueEvent.actor.id.toString,
-                    date = gitHubIssueEvent.created_at,
-                    dataSource = WorkflowListDataSource.GitHub
-                  )
+                .map(_.map(event =>
+                  (card, issue, event)
                 ))
+            case _ => Future.successful(Seq.empty)
             }
         )
 
-        insertedProjects <- workflowListDB.insertWorkflowLists(projectsLists.flatMap(_.zipWithIndex.map {
-          case (gitHubProject, index) =>
-            WorkflowList(
-              id = 0L,
-              apiId = gitHubProject.id.toString,
-              title = gitHubProject.name,
-              description = Some(gitHubProject.body),
-              parentId = None,
-              position = index.toLong, // For projects this doesn't seem to necessarily match the project order in the frontend but doesn't matter
-              listType = WorkflowListType.BOARD,
-              state = getWorkflowListState(gitHubProject.state),
-              dataSource = WorkflowListDataSource.GitHub,
-              useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
-              createdAt = gitHubProject.created_at,
-              updatedAt = gitHubProject.updated_at
-            )
-        }))
+        insertedProject <- workflowListDB.insertWorkflowList(
+          WorkflowList(
+            id = 0L,
+            apiId = gitHubProject.id.toString,
+            title = gitHubProject.name,
+            description = Some(gitHubProject.body),
+            parentId = None,
+            position = position.toLong, // For projects this doesn't seem to necessarily match the project order in the frontend but doesn't matter
+            listType = WorkflowListType.BOARD,
+            state = getWorkflowListState(gitHubProject.state),
+            dataSource = WorkflowListDataSource.GitHub,
+            useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+            createdAt = gitHubProject.created_at,
+            updatedAt = gitHubProject.updated_at
+          )
+        )
 
-        insertedColumns <- workflowListDB.insertWorkflowLists(columnsLists.flatMap(_.zipWithIndex.map {
+        insertedColumns <- workflowListDB.insertWorkflowLists(columns.zipWithIndex.map {
           case (gitHubColumn, index) =>
             WorkflowList(
               id = 0L,
               apiId = gitHubColumn.id.toString,
               title = gitHubColumn.name,
               description = None,
-              parentId = insertedProjects.find(_.apiId == gitHubColumn.project_url.split("/").last).map(_.id),
+              parentId = Some(insertedProject.id),
               position = index.toLong,
               listType = WorkflowListType.LIST,
               state = Some(WorkflowListState.OPEN), // Columns exist on GitHub only in the OPEN state
@@ -232,7 +224,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               createdAt = gitHubColumn.created_at,
               updatedAt = gitHubColumn.updated_at
             )
-        }))
+        })
 
         insertedCards <- workflowListDB.insertWorkflowLists(cardsAndIssuesLists.flatMap(_.zipWithIndex.map {
           case ((gitHubCard, Some(gitHubIssue)), index) =>
@@ -267,18 +259,41 @@ class FetchDataActor(trelloApi: TrelloApi,
             )
         }))
 
-        insertedEvents <- actionDB.insertActions(actions.flatten)
 
-        // moveActions <-
+        insertedEvents <- actionDB.insertActions(cardsAndIssueAndEvents.flatten.map {
+          case (gitHubCard, gitHubIssue, gitHubIssueEvent) =>
+            Action(
+              id = 0L,
+              apiId = gitHubIssueEvent.id.toString,
+              actionType = gitHubIssueEvent.event.toString,
+              workflowListApiId = gitHubCard.id.toString,
+              userApiId = gitHubIssueEvent.actor.id.toString,
+              date = gitHubIssueEvent.created_at,
+              dataSource = WorkflowListDataSource.GitHub
+            )
+        })
 
-
-        // TODO use and store
-        // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
+        moveEvents = cardsAndIssueAndEvents.flatten.filter { case (_, _, e) => e.event == GitHubIssueEventType.moved_columns_in_project }
+        insertedMoveEvents <- actionDB.insertMoveActions(moveEvents.map {
+          case (gitHubCard, gitHubIssue, gitHubIssueEvent) =>
+            val projectCard = gitHubIssueEvent.project_card.getOrException(s"Could not get project_card fpr ${gitHubIssueEvent.id}")
+            MoveAction(
+              id = 0L,
+              actionId = insertedEvents.find(_.apiId == gitHubIssueEvent.id.toString)
+                .getOrException(s"Could not find apiId ${gitHubIssueEvent.id} in inserted Actions").id,
+              oldListApiId = insertedColumns
+                .find(wl => wl.title == projectCard.previous_column_name.getOrException(s"Could not get previous_column_name for ${gitHubIssueEvent.id}"))
+                .getOrException(s"Could not find oldListApiId for ${gitHubIssueEvent.id}").apiId,
+              newListApiId = insertedColumns
+                .find(wl => wl.title == projectCard.column_name.getOrException("Could not get old column name"))
+                .getOrException(s"Could not find newListApiId for ${gitHubIssueEvent.id}").apiId
+            )
+        })
       } yield {
-        val inserted = insertedProjects.length + insertedColumns.length + insertedCards.length + insertedEvents.length
-        log.info(s"Fetching GitHub data completed. Inserted a total of ${inserted} rows.")
+        val inserted = 1 + insertedColumns.length + insertedCards.length + insertedMoveEvents.length
+        log.info(s"Completed fetching GitHub data for project '${gitHubProject.name}'. Inserted a total of ${inserted} rows.")
       }).recoverWith {
-        case t: Throwable => log.error(t, "error fetching github data")
+        case t: Throwable => log.error(t, s"Error fetching GitHub data for project '${gitHubProject.name}''")
           Future.failed(t)
       }
 
@@ -313,6 +328,6 @@ object FetchDataActor {
 
   case class FetchDataTrello(boardIds: Seq[String], now: LocalDateTime)
 
-  case class FetchDataGitHub(orgNames: Seq[String], now: LocalDateTime)
+  case class FetchGitHubDataForProject(gitHubProject: GitHubProject, position: Int)
 
 }

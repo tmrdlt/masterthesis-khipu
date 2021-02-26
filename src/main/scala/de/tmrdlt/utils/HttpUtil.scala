@@ -17,7 +17,6 @@ object HttpUtil {
               path: String,
               parameters: Seq[(String, String)] = Seq.empty): HttpRequest = {
     val uri = Uri(path).withQuery(Query(parameters: _*))
-
     HttpRequest(method = method, headers = headers).withUri(uri)
   }
 
