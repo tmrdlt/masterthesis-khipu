@@ -6,23 +6,23 @@ import akka.http.scaladsl.model.{HttpHeader, HttpMethods}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{HttpUtil, SimpleNameLogger, WorkflowConfig}
+import de.tmrdlt.utils.{FutureUtil, HttpUtil, SimpleNameLogger, WorkflowConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with WorkflowConfig with GitHubJsonSupport {
-  val http: HttpExt = Http()
+  private val http: HttpExt = Http()
 
   // Base URL
   // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#schema
-  val baseUrl = "https://api.github.com"
+  private val baseUrl = "https://api.github.com"
 
   // Authentication
   // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication
-  val gitHubPersonalAccessToken = "ddfe1ca4a8bb8b96811f5a042dd602924842de9f"
-  val gitHubUsername = "timunkulus"
-  val authHeader: HttpHeader = Authorization(BasicHttpCredentials(gitHubUsername, gitHubPersonalAccessToken))
+  private val gitHubPersonalAccessToken = "ddfe1ca4a8bb8b96811f5a042dd602924842de9f"
+  private val gitHubUsername = "timunkulus"
+  private val authHeader: HttpHeader = Authorization(BasicHttpCredentials(gitHubUsername, gitHubPersonalAccessToken))
 
   // Required Headers
 
@@ -32,7 +32,7 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
   // without advance notice. Please see the blog post for full details.
   // To access the API during the preview period, you most provide a custom media type in the Accept header:
   // application/vnd.github.inertia-preview+json"
-  val projectsApiAcceptHeader: HttpHeader =
+  private val projectsApiAcceptHeader: HttpHeader =
   HttpUtil.parseAcceptHeader("application/vnd.github.inertia-preview+json")
 
   // https://docs.github.com/en/rest/reference/issues#list-issue-events
@@ -42,14 +42,14 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
   // To receive the project_card attribute, project boards must be enabled for a repository, and you must provide a
   // custom media type in the Accept header:
   //application/vnd.github.starfox-preview+json"
-  val eventsApiAcceptHeader: HttpHeader =
+  private val eventsApiAcceptHeader: HttpHeader =
   HttpUtil.parseAcceptHeader("application/vnd.github.starfox-preview+json")
 
   // Pagination
   // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#pagination
-  val paginationElementsPerPage = 100
+  private val paginationElementsPerPage = 100
 
-  def gitHubPaginationParams(page: Int): Seq[(String, String)] =
+  private def gitHubPaginationParams(page: Int): Seq[(String, String)] =
     Seq(("per_page", s"$paginationElementsPerPage"), ("page", s"$page"))
 
 
@@ -99,22 +99,6 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  // ToDo add pagination
-  def getCardsOfColumn(cardsUrl: String): Future[Seq[GitHubCard]] = {
-    val request = HttpUtil.request(
-      method = HttpMethods.GET,
-      headers = List(projectsApiAcceptHeader, authHeader),
-      path = cardsUrl,
-    )
-    for {
-      response <- http.singleRequest(request)
-      res <- Unmarshal(response).to[Seq[GitHubCard]]
-    } yield {
-      log.info("Got GitHub cards")
-      res
-    }
-  }
-
   def getContentOfNote(contentUrl: String): Future[GitHubIssue] = {
     val request = HttpUtil.request(
       method = HttpMethods.GET,
@@ -130,7 +114,46 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getEventsForIssue(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
+  def getAllCardsOfColumn(cardsUrl: String): Future[Seq[GitHubCard]] = {
+    getCardsOfColumnRecursively(cardsUrl, 0)
+  }
+
+  def getAllEventsOfIssue(eventsUrl: String): Future[Seq[GitHubIssueEvent]] = {
+    getEventsOfIssueRecursively(eventsUrl, 0)
+  }
+
+  private def getCardsOfColumnRecursively(cardsUrl: String, page: Int): Future[Seq[GitHubCard]] = {
+    getCardsOfColumn(cardsUrl, page).flatMap { seq =>
+      if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getCardsOfColumnRecursively(cardsUrl, page + 1), Future.successful(seq))
+      else Future.successful(seq)
+    }
+  }
+
+  private def getCardsOfColumn(cardsUrl: String, page: Int): Future[Seq[GitHubCard]] = {
+    val request = HttpUtil.request(
+      method = HttpMethods.GET,
+      headers = List(projectsApiAcceptHeader, authHeader),
+      path = cardsUrl,
+      parameters = gitHubPaginationParams(page)
+    )
+    for {
+      response <- http.singleRequest(request)
+      res <- Unmarshal(response).to[Seq[GitHubCard]]
+    } yield {
+      log.info("Got GitHub cards")
+      res
+    }
+  }
+
+  private def getEventsOfIssueRecursively(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
+    getEventsOfIssue(eventsUrl, page).flatMap { seq =>
+      if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getEventsOfIssueRecursively(eventsUrl, page + 1), Future.successful(seq))
+      else Future.successful(seq)
+    }
+  }
+
+
+  private def getEventsOfIssue(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
     val request = HttpUtil.request(
       method = HttpMethods.GET,
       headers = List(eventsApiAcceptHeader, authHeader),

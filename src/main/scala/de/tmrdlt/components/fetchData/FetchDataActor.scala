@@ -28,26 +28,14 @@ class FetchDataActor(trelloApi: TrelloApi,
 
     case FetchDataTrello(boardIds: Seq[String], now: LocalDateTime) =>
 
-      def getAllActionsOfABoard(boardId: String): Future[Seq[TrelloAction]] = {
-        getActionsOfABoardRecursively(boardId, None)
-      }
-
-      def getActionsOfABoardRecursively(boardId: String, beforeId: Option[String]): Future[Seq[TrelloAction]] = {
-        trelloApi.getActionsOfABoard(boardId, beforeId).flatMap { seq =>
-          if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(
-            getActionsOfABoardRecursively(boardId, Some(seq.sortBy(_.date).headOption.map(_.id).getOrException("Something almost impossible happened"))), Future.successful(seq))
-          else Future.successful(seq)
-        }
-      }
-
       val desiredActions = Seq(TrelloActionType.createBoard, TrelloActionType.createList, TrelloActionType.createCard)
       // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
       // used together with flatMap and zipWithIndex
       (for {
         boards <- Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
-        listsLists <- Future.sequence(boardIds.map(b => trelloApi.getListOnABoard(b)))
-        cardsLists <- Future.sequence(listsLists.flatten.map(l => trelloApi.getCardsInAList(l.id)))
-        actionsOfBoards <- Future.sequence(boardIds.map(b => getAllActionsOfABoard(b))).map(_.flatten)
+        listsLists <- Future.sequence(boardIds.map(b => trelloApi.getListsOfBoard(b)))
+        cardsLists <- Future.sequence(listsLists.flatten.map(l => trelloApi.getAllCardsOfList(l.id)))
+        actionsOfBoards <- Future.sequence(boardIds.map(b => trelloApi.getAllActionsOfBoard(b))).map(_.flatten)
 
         insertedBoards <- workflowListDB.insertWorkflowLists(boards.map { trelloBoard =>
           WorkflowList(
@@ -147,24 +135,13 @@ class FetchDataActor(trelloApi: TrelloApi,
 
     case FetchGitHubDataForProject(gitHubProject, position) => {
 
-      def getAllEventsOfAIssue(eventsUrl: String): Future[Seq[GitHubIssueEvent]] = {
-        getEventsOfAIssueRecursively(eventsUrl, 0)
-      }
-
-      def getEventsOfAIssueRecursively(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
-        gitHubApi.getEventsForIssue(eventsUrl, page).flatMap { seq =>
-          if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getEventsOfAIssueRecursively(eventsUrl, page + 1), Future.successful(seq))
-          else Future.successful(seq)
-        }
-      }
-
       log.info(s"Start fetching GitHub data for project '${gitHubProject.name}'.")
 
       // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
       // used together with flatMap and zipWithIndex
       (for {
         columns <- gitHubApi.getColumnsOfProject(gitHubProject.columns_url)
-        cardsLists <- Future.sequence(columns.map(c => gitHubApi.getCardsOfColumn(c.cards_url)))
+        cardsLists <- Future.sequence(columns.map(c => gitHubApi.getAllCardsOfColumn(c.cards_url)))
         cardsAndIssuesLists <- Future.sequence(
           cardsLists
             .map { cl =>
@@ -183,7 +160,7 @@ class FetchDataActor(trelloApi: TrelloApi,
           cardsAndIssuesLists
             .flatten
             .map { case (card, Some(issue)) =>
-              getAllEventsOfAIssue(issue.events_url)
+              gitHubApi.getAllEventsOfIssue(issue.events_url)
                 .map(_.map(event =>
                   (card, issue, event)
                 ))
