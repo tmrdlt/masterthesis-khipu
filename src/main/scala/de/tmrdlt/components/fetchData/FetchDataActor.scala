@@ -120,8 +120,8 @@ class FetchDataActor(trelloApi: TrelloApi,
                 id = 0L,
                 actionId = insertedActions.find(_.apiId == trelloAction.id)
                   .getOrException(s"Could not find apiId ${trelloAction.id} in inserted Actions").id,
-                oldListApiId = trelloAction.data.listBefore.getOrException("Could not get oldListApiId").id,
-                newListApiId = trelloAction.data.listAfter.getOrException("Could not get oldListApiId").id
+                oldParentApiId = trelloAction.data.listBefore.getOrException("Could not get oldListApiId").id,
+                newParentApiId = trelloAction.data.listAfter.getOrException("Could not get oldListApiId").id
               )
             })
       } yield {
@@ -258,12 +258,12 @@ class FetchDataActor(trelloApi: TrelloApi,
               id = 0L,
               actionId = insertedEvents.find(_.apiId == gitHubIssueEvent.id.toString)
                 .getOrException(s"Could not find apiId ${gitHubIssueEvent.id} in inserted Actions").id,
-              oldListApiId = insertedColumns
+              oldParentApiId = insertedColumns
                 .find(wl => wl.title == projectCard.previous_column_name.getOrException(s"Could not get previous_column_name for ${gitHubIssueEvent.id}"))
-                .getOrException(s"Could not find oldListApiId for ${gitHubIssueEvent.id}").apiId,
-              newListApiId = insertedColumns
+                .getOrException(s"Could not find oldParentApiId for ${gitHubIssueEvent.id}").apiId,
+              newParentApiId = insertedColumns
                 .find(wl => wl.title == projectCard.column_name.getOrException("Could not get old column name"))
-                .getOrException(s"Could not find newListApiId for ${gitHubIssueEvent.id}").apiId
+                .getOrException(s"Could not find newParentApiId for ${gitHubIssueEvent.id}").apiId
             )
         })
       } yield {

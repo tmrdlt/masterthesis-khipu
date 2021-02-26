@@ -9,21 +9,21 @@ import slick.sql.SqlProfile.ColumnOption.NotNull
 
 case class MoveAction(id: Long,
                       actionId: Long,
-                      oldListApiId: String, // TODO make Long and foreign key
-                      newListApiId: String) // TODO make Long and foreign key)
+                      oldParentApiId: String, // TODO make Long and foreign key
+                      newParentApiId: String) // TODO make Long and foreign key)
 
 class MoveActionTable(tag: Tag) extends BaseTableLong[MoveAction](tag, "move_action") {
 
   def actionId: Rep[Long] = column[Long]("action_id", NotNull)
 
-  def oldListApiId: Rep[String] = column[String]("old_list_api_id", NotNull)
+  def oldParentApiId: Rep[String] = column[String]("old_parent_api_id", NotNull)
 
-  def newListApiId: Rep[String] = column[String]("new_list_api_id", NotNull)
+  def newParentApiId: Rep[String] = column[String]("new_parent_api_id", NotNull)
 
   def actionForeignKey: ForeignKeyQuery[ActionTable, Action] =
     foreignKey("action_fk", actionId, actionQuery)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[MoveAction] =
-    (id, actionId, oldListApiId, newListApiId).mapTo[MoveAction]
+    (id, actionId, oldParentApiId, newParentApiId).mapTo[MoveAction]
 }

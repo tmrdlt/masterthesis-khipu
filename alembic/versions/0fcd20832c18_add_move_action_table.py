@@ -22,8 +22,8 @@ def upgrade():
     op.create_table('move_action',
                     Column('id', BIGINT, primary_key=True),
                     Column('action_id', BIGINT, nullable=False),
-                    Column('old_list_api_id', VARCHAR, nullable=False),
-                    Column('new_list_api_id', VARCHAR, nullable=False),
+                    Column('old_parent_api_id', VARCHAR, nullable=False),
+                    Column('new_parent_api_id', VARCHAR, nullable=False),
                     schema='workflow')
 
     op.create_foreign_key('action_fk', 'move_action', 'action', ['action_id'], ['id'],
