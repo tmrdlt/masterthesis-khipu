@@ -5,6 +5,7 @@ import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchData
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.action.{Action, ActionDB}
 import de.tmrdlt.database.github.GitHubDB
+import de.tmrdlt.database.moveaction.MoveAction
 import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
@@ -121,10 +122,22 @@ class FetchDataActor(trelloApi: TrelloApi,
             date = trelloAction.date,
             dataSource = WorkflowListDataSource.Trello
           )
-
         })
+
+        insertedMoveActions <- actionDB.insertMoveActions(
+          actionsOfBoards
+            .filter(_.isMoveCardToNewColumnAction)
+            .map { trelloAction =>
+              MoveAction(
+                id = 0L,
+                actionId = insertedActions.find(_.apiId == trelloAction.id)
+                  .getOrException(s"Could not find apiId ${trelloAction.id} in inserted Actions").id,
+                oldListApiId = trelloAction.data.listBefore.getOrException("Could not get oldListApiId").id,
+                newListApiId = trelloAction.data.listAfter.getOrException("Could not get oldListApiId").id
+              )
+            })
       } yield {
-        val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions
+        val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions.length
         log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, "error fetching trello data")
@@ -260,7 +273,7 @@ class FetchDataActor(trelloApi: TrelloApi,
         // TODO use and store
         // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
       } yield {
-        val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length + insertedEvents
+        val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length + insertedEvents.length
         log.info(s"Fetching GitHub data completed. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, "error fetching github data")

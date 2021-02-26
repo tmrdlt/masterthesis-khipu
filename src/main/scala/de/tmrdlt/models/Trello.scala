@@ -17,7 +17,7 @@ trait TrelloJsonSupport extends JsonSupport {
   implicit val trelloCardSimpleFormat: RootJsonFormat[TrelloCardSimple] = jsonFormat2(TrelloCardSimple)
   implicit val trelloActionTypeJsonSupport: EnumJsonConverter[TrelloActionType.type] = new EnumJsonConverter(TrelloActionType)
   implicit val trelloActionUpdateOldFormat: RootJsonFormat[TrelloActionUpdateOld] = jsonFormat2(TrelloActionUpdateOld)
-  implicit val trelloActionDataSFormat: RootJsonFormat[TrelloActionData] = jsonFormat5(TrelloActionData)
+  implicit val trelloActionDataSFormat: RootJsonFormat[TrelloActionData] = jsonFormat7(TrelloActionData)
   implicit val trelloActionSupportFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
 }
 
@@ -56,6 +56,9 @@ case class TrelloAction(id: String,
                         date: LocalDateTime,
                         data: TrelloActionData) {
 
+  def isMoveCardToNewColumnAction: Boolean =
+    `type` == TrelloActionType.updateCard && data.listAfter.isDefined && data.listBefore.isDefined
+
   def toTrelloActionDBEntity: TrelloActionDBEntity = TrelloActionDBEntity(
     id = id,
     `type` = `type`.toString,
@@ -72,7 +75,10 @@ case class TrelloActionData(board: TrelloBoardSimple,
                             list: Option[TrelloListSimple],
                             card: Option[TrelloCardSimple],
                             text: Option[String],
-                            old: Option[TrelloActionUpdateOld])
+                            old: Option[TrelloActionUpdateOld],
+                            listBefore: Option[TrelloListSimple], // If is move to new column
+                            listAfter: Option[TrelloListSimple] // If is move to new column
+                           )
 
 case class TrelloActionUpdateOld(name: Option[String],
                                  desc: Option[String])

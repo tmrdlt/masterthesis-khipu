@@ -8,7 +8,7 @@ Create Date: 2021-02-12 15:34:38.252253
 from alembic import op
 
 from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, VARCHAR, BOOLEAN)
+from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, VARCHAR)
 
 # revision identifiers, used by Alembic.
 revision = 'da5b7f91e49d'
@@ -35,7 +35,7 @@ def upgrade():
                     Column('date', TIMESTAMP, nullable=False),
                     schema='workflow')
 
+
 def downgrade():
     op.drop_table('trello_action', schema='workflow')
     op.drop_table('github_event', schema='workflow')
-

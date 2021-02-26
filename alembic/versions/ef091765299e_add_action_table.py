@@ -8,7 +8,7 @@ Create Date: 2021-02-22 15:02:52.541431
 from alembic import op
 
 from sqlalchemy import Column, func, Enum
-from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, VARCHAR, BOOLEAN)
+from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, VARCHAR)
 
 # revision identifiers, used by Alembic.
 revision = 'ef091765299e'
@@ -32,4 +32,3 @@ def upgrade():
 
 def downgrade():
     op.drop_table('action', schema='workflow')
-
