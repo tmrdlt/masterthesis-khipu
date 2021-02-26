@@ -1,39 +1,63 @@
 package de.tmrdlt.connectors
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.headers.{Accept, Authorization, BasicHttpCredentials}
-import akka.http.scaladsl.model.{HttpHeader, HttpMethods, HttpRequest}
+import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
+import akka.http.scaladsl.model.{HttpHeader, HttpMethods}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
-import de.tmrdlt.models.{GitHubCard, GitHubColumn, GitHubIssueEvent, GitHubIssue, GitHubJsonSupport, GitHubProject}
-import de.tmrdlt.utils.{SimpleNameLogger, WorkflowConfig}
+import de.tmrdlt.models._
+import de.tmrdlt.utils.{HttpUtil, SimpleNameLogger, WorkflowConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with WorkflowConfig with GitHubJsonSupport {
-
-  val gitHubPersonalAccessToken = "ddfe1ca4a8bb8b96811f5a042dd602924842de9f"
-  val gitHubUsername = "timunkulus"
-
-  val projectsAcceptHeaderValue = "application/vnd.github.inertia-preview+json"
-  val baseUrl = "https://api.github.com"
-
-  val paginationElementsPerPage = 100
-
-  val acceptHeader: HttpHeader = Accept.parseFromValueString(projectsAcceptHeaderValue) match {
-    case Right(header) => header
-    case Left(_) => throw new Exception("Error parsing accept header")
-  }
-  val authHeader: HttpHeader = Authorization(BasicHttpCredentials(gitHubUsername, gitHubPersonalAccessToken))
-
   val http: HttpExt = Http()
 
+  // Base URL
+  // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#schema
+  val baseUrl = "https://api.github.com"
+
+  // Authentication
+  // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication
+  val gitHubPersonalAccessToken = "ddfe1ca4a8bb8b96811f5a042dd602924842de9f"
+  val gitHubUsername = "timunkulus"
+  val authHeader: HttpHeader = Authorization(BasicHttpCredentials(gitHubUsername, gitHubPersonalAccessToken))
+
+  // Required Headers
+
+  // https://docs.github.com/en/rest/reference/projects
+  // Preview notice:
+  // "The Projects API is currently available for developers to preview. During the preview period, the API may change
+  // without advance notice. Please see the blog post for full details.
+  // To access the API during the preview period, you most provide a custom media type in the Accept header:
+  // application/vnd.github.inertia-preview+json"
+  val projectsApiAcceptHeader: HttpHeader =
+  HttpUtil.parseAcceptHeader("application/vnd.github.inertia-preview+json")
+
+  // https://docs.github.com/en/rest/reference/issues#list-issue-events
+  // Preview notice:
+  // "Project card details are now shown in REST API v3 responses for project-related issue and timeline events. This
+  // feature is now available for developers to preview. For details, see the blog post.
+  // To receive the project_card attribute, project boards must be enabled for a repository, and you must provide a
+  // custom media type in the Accept header:
+  //application/vnd.github.starfox-preview+json"
+  val eventsApiAcceptHeader: HttpHeader =
+  HttpUtil.parseAcceptHeader("application/vnd.github.starfox-preview+json")
+
+  // Pagination
+  // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#pagination
+  val paginationElementsPerPage = 100
+
+  def gitHubPaginationParams(page: Int): Seq[(String, String)] =
+    Seq(("per_page", s"$paginationElementsPerPage"), ("page", s"$page"))
+
+
   def getProjectsOfOrganisation(orgName: String): Future[Seq[GitHubProject]] = {
-    val request = HttpRequest(
+    val request = HttpUtil.request(
       method = HttpMethods.GET,
-      uri = s"${baseUrl}/orgs/${orgName}/projects",
-      headers = List(acceptHeader)
+      headers = List(projectsApiAcceptHeader),
+      path = s"${baseUrl}/orgs/${orgName}/projects",
     )
     for {
       response <- http.singleRequest(request)
@@ -45,10 +69,10 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
   }
 
   def getProjectsForRepository(repoOwnerString: String): Future[Seq[GitHubProject]] = {
-    val request = HttpRequest(
+    val request = HttpUtil.request(
       method = HttpMethods.GET,
-      uri = s"${baseUrl}/repos/${repoOwnerString}/projects",
-      headers = List(acceptHeader, authHeader)
+      headers = List(projectsApiAcceptHeader, authHeader),
+      path = s"${baseUrl}/repos/${repoOwnerString}/projects",
     )
     log.info(s"URL: ${request.uri}")
     for {
@@ -60,11 +84,11 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getColumnsOfProject(columns_url: String): Future[Seq[GitHubColumn]] = {
-    val request = HttpRequest(
+  def getColumnsOfProject(columnsUrl: String): Future[Seq[GitHubColumn]] = {
+    val request = HttpUtil.request(
       method = HttpMethods.GET,
-      uri = columns_url,
-      headers = List(acceptHeader, authHeader)
+      headers = List(projectsApiAcceptHeader, authHeader),
+      path = columnsUrl,
     )
     for {
       response <- http.singleRequest(request)
@@ -75,11 +99,12 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getCardsOfColumn(cards_url: String): Future[Seq[GitHubCard]] = {
-    val request = HttpRequest(
+  // ToDo add pagination
+  def getCardsOfColumn(cardsUrl: String): Future[Seq[GitHubCard]] = {
+    val request = HttpUtil.request(
       method = HttpMethods.GET,
-      uri = cards_url,
-      headers = List(acceptHeader, authHeader)
+      headers = List(projectsApiAcceptHeader, authHeader),
+      path = cardsUrl,
     )
     for {
       response <- http.singleRequest(request)
@@ -90,11 +115,11 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getContentOfNote(content_url: String): Future[GitHubIssue] = {
-    val request = HttpRequest(
+  def getContentOfNote(contentUrl: String): Future[GitHubIssue] = {
+    val request = HttpUtil.request(
       method = HttpMethods.GET,
-      uri = content_url,
-      headers = List(acceptHeader, authHeader)
+      headers = List(projectsApiAcceptHeader, authHeader),
+      path = contentUrl
     )
     for {
       response <- http.singleRequest(request)
@@ -106,10 +131,11 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
   }
 
   def getEventsForIssue(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
-    val request = HttpRequest(
+    val request = HttpUtil.request(
       method = HttpMethods.GET,
-      uri = s"${eventsUrl}?per_page=${paginationElementsPerPage}&page=${page}",
-      headers = List(acceptHeader, authHeader)
+      headers = List(eventsApiAcceptHeader, authHeader),
+      path = eventsUrl,
+      parameters = gitHubPaginationParams(page)
     )
     for {
       response <- http.singleRequest(request)

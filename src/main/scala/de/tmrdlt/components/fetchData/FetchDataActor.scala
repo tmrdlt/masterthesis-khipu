@@ -234,11 +234,11 @@ class FetchDataActor(trelloApi: TrelloApi,
             )
         }))
 
-        insertedIssues <- workflowListDB.insertWorkflowLists(cardsAndIssuesLists.flatMap(_.zipWithIndex.map {
+        insertedCards <- workflowListDB.insertWorkflowLists(cardsAndIssuesLists.flatMap(_.zipWithIndex.map {
           case ((gitHubCard, Some(gitHubIssue)), index) =>
             WorkflowList(
               id = 0L,
-              apiId = gitHubIssue.id.toString,
+              apiId = gitHubCard.id.toString, // always take card Id as events also refer to this
               title = gitHubIssue.title,
               description = gitHubIssue.body,
               parentId = insertedColumns.find(_.apiId == gitHubCard.column_url.split("/").last).map(_.id),
@@ -253,8 +253,8 @@ class FetchDataActor(trelloApi: TrelloApi,
           case ((gitHubCard, None), index) =>
             WorkflowList(
               id = 0L,
-              apiId = gitHubCard.id.toString,
-              title = gitHubCard.note.getOrException("Error taking note of card"),
+              apiId = gitHubCard.id.toString, // always take card Id as actions also refer to this
+              title = gitHubCard.note.getOrException("Couldn't get note of card"),
               description = None,
               parentId = insertedColumns.find(_.apiId == gitHubCard.column_url.split("/").last).map(_.id),
               position = index.toLong,
@@ -269,11 +269,13 @@ class FetchDataActor(trelloApi: TrelloApi,
 
         insertedEvents <- actionDB.insertActions(actions.flatten)
 
+        // moveActions <-
+
 
         // TODO use and store
         // events <- Future.sequence(issues.map(i => gitHubApi.getEventsForIssue(i.events_url))).map(_.flatten)
       } yield {
-        val inserted = insertedProjects.length + insertedColumns.length + insertedIssues.length + insertedEvents.length
+        val inserted = insertedProjects.length + insertedColumns.length + insertedCards.length + insertedEvents.length
         log.info(s"Fetching GitHub data completed. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, "error fetching github data")

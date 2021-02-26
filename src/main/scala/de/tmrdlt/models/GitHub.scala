@@ -85,6 +85,13 @@ case class GitHubIssueEvent(id: Long,
   )
 }
 
+case class GitHubEventProjectCard(id: Long,
+                                  url: String,
+                                  project_id: String,
+                                  column_name: Option[String], // Present if moved_columns_in_project event
+                                  previous_column_name: Option[String] // Present if moved_columns_in_project event
+                                 )
+
 case class GitHubEventActor(id: Long,
                             login: String)
 
