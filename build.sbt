@@ -2,10 +2,11 @@ addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.13" cross CrossVersi
 wartremoverErrors in(Compile, compile) += Wart.OptionPartial
 wartremoverErrors in(Compile, compile) += Wart.TraversableOps
 
-lazy val root = Seq(
+lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
   organization := "de.timoerdelt",
-  scalaVersion := "2.13.4",
+  version := "0.1",
+  scalaVersion := "2.13.5",
   scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
 
@@ -49,3 +50,8 @@ libraryDependencies ++= {
     "org.scalamock" %% "scalamock" % scalaMockVersion % "it,test"
   )
 }
+
+lazy val root =
+  (project in file("."))
+    .settings(commonSettings: _*)
+    .withId("workflow-api")
