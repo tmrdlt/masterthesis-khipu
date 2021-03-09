@@ -5,7 +5,7 @@ wartremoverErrors in(Compile, compile) += Wart.TraversableOps
 lazy val root = Seq(
   name := "masterthesis-khipu",
   organization := "de.timoerdelt",
-  scalaVersion := "2.13.4",
+  scalaVersion := "2.12.13",
   scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
 
@@ -25,6 +25,7 @@ libraryDependencies ++= {
   val scalaCheckVersion = "1.15.1"
   val scalaTestVersion = "3.2.3"
   val scalaMockVersion = "5.0.0"
+  val sparkVersion = "3.1.1"
 
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -41,6 +42,9 @@ libraryDependencies ++= {
     "org.postgresql" % "postgresql" % postgresVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion,
+    "org.apache.spark" %% "spark-core" % sparkVersion
+      // Prevents warning "SLF4J: Class path contains multiple SLF4J bindings."
+      exclude("org.slf4j","*"),
 
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "it,test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "it,test",

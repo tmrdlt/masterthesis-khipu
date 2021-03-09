@@ -13,4 +13,7 @@ object DateUtil {
       Instant.ofEpochSecond(BsonObjectId(objectId).getValue.getTimestamp),
       TimeZone.getDefault.toZoneId
     )
+
+  implicit def localDateTimeOrdering: Ordering[LocalDateTime] = _ compareTo _
+
 }

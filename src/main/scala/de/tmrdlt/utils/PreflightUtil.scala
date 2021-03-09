@@ -15,7 +15,7 @@ trait PreflightUtil {
   // Handles preflight OPTIONS requests from web browsers
   def preflightRoute: Route =
     options {
-      complete(HttpResponse(OK).withHeaders(Seq.empty))
+      complete(HttpResponse(OK).withHeaders())
     }
 
 

@@ -10,7 +10,8 @@ import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{DateUtil, FutureUtil, OptionExtensions}
+import de.tmrdlt.utils.DateUtil.localDateTimeOrdering
+import de.tmrdlt.utils.{DateUtil, OptionExtensions}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
