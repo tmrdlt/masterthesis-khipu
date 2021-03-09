@@ -28,6 +28,16 @@ services:
         aliases:
           - workflowdbtest
 
+  jupyter-almond:
+    image: almondsh/almond:0.10.9
+    container_name: jupyter-almond
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks/:/home/jovyan/notebooks
+      - ./target/:/home/jovyan/target:ro
+    working_dir: /home/jovyan/
+
 volumes:
   workflowdb:
 
