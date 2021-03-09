@@ -2,10 +2,9 @@ addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.13" cross CrossVersi
 wartremoverErrors in(Compile, compile) += Wart.OptionPartial
 wartremoverErrors in(Compile, compile) += Wart.TraversableOps
 
-lazy val commonSettings = Seq(
+lazy val root = Seq(
   name := "masterthesis-khipu",
   organization := "de.timoerdelt",
-  version := "VERSIONTAG",
   scalaVersion := "2.13.4",
   scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
@@ -14,13 +13,13 @@ mainClass := Some("de.timoerdelt.Main")
 
 libraryDependencies ++= {
   // Dependencies
-  val akkaVersion = "2.6.10"
-  val akkaHttpVersion = "10.2.1"
+  val akkaVersion = "2.6.13"
+  val akkaHttpVersion = "10.2.4"
   val slickVersion = "3.3.3"
-  val slickPgVersion = "0.19.4"
-  val postgresVersion = "42.2.18"
+  val slickPgVersion = "0.19.5"
+  val postgresVersion = "42.2.19"
   val logbackVersion = "1.2.3"
-  val mongoDbVersion = "2.9.0"
+  val mongoDbVersion = "4.2.2"
 
   // Test dependencies
   val scalaCheckVersion = "1.15.1"
@@ -50,31 +49,3 @@ libraryDependencies ++= {
     "org.scalamock" %% "scalamock" % scalaMockVersion % "it,test"
   )
 }
-
-coverageMinimum := 80
-coverageFailOnMinimum := false
-coverageHighlighting := scalaBinaryVersion.value == "2.13"
-
-lazy val IntegrationTest = config("it") extend Test
-
-parallelExecution in Test := false
-
-lazy val root =
-  (project in file("."))
-    .configs(IntegrationTest)
-    .settings(commonSettings: _*)
-    .settings(Defaults.itSettings: _*)
-    .withId("workflow-api")
-
-
-test in assembly := {}
-
-assemblyMergeStrategy in assembly := {
-  case PathList("org", "apache", "commons", "logging", xs@_*) => MergeStrategy.first
-  case "application.conf" => MergeStrategy.concat
-  case PathList("META-INF", xs@_*) => MergeStrategy.discard
-  case PathList("OSGI-OPT", xs@_*) => MergeStrategy.discard
-  case x => val baseStrategy = (assemblyMergeStrategy in assembly).value
-    baseStrategy(x)
-}
-
