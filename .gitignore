@@ -35,3 +35,6 @@ metals.sbt
 .cache-main
 
 .bsp
+
+# Jupyter
+notebooks/.ipynb_checkpoints

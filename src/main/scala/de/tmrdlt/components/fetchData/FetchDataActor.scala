@@ -10,7 +10,7 @@ import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{DateUtil, FutureUtil, OptionExtensions}
+import de.tmrdlt.utils.{DateUtil, OptionExtensions}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -106,6 +106,8 @@ class FetchDataActor(trelloApi: TrelloApi,
               case (_, Some(list)) => list.id
               case (_, _) => trelloAction.data.board.id
             },
+            parentApiId = if (trelloAction.`type` == TrelloActionType.createCard || trelloAction.`type` == TrelloActionType.deleteCard)
+              Some(trelloAction.data.list.getOrException("Could not get parentApiId").id) else None,
             userApiId = trelloAction.idMemberCreator,
             date = trelloAction.date,
             dataSource = WorkflowListDataSource.Trello
@@ -125,7 +127,8 @@ class FetchDataActor(trelloApi: TrelloApi,
               )
             })
       } yield {
-        val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions.length
+        val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions.length +
+          insertedMoveActions.length
         log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, "error fetching trello data")
@@ -244,6 +247,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               apiId = gitHubIssueEvent.id.toString,
               actionType = gitHubIssueEvent.event.toString,
               workflowListApiId = gitHubCard.id.toString,
+              parentApiId = None, // TODO check
               userApiId = gitHubIssueEvent.actor.id.toString,
               date = gitHubIssueEvent.created_at,
               dataSource = WorkflowListDataSource.GitHub

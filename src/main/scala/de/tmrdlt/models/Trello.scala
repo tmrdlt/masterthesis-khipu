@@ -59,6 +59,9 @@ case class TrelloAction(id: String,
   def isMoveCardToNewColumnAction: Boolean =
     `type` == TrelloActionType.updateCard && data.listAfter.isDefined && data.listBefore.isDefined
 
+  def isCreateCardAction: Boolean =
+    `type` == TrelloActionType.createCard
+
   def toTrelloActionDBEntity: TrelloActionDBEntity = TrelloActionDBEntity(
     id = id,
     `type` = `type`.toString,
