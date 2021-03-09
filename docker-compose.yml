@@ -35,7 +35,7 @@ services:
       - "8888:8888"
     volumes:
       - ./notebooks/:/home/jovyan/notebooks
-      - ./target/:/home/jovyan/target:ro
+      - ./target/scala-2.13/masterthesis-khipu_2.13-0.1.jar:/home/jovyan/jar/masterthesis-khipu_2.13-0.1.jar
     working_dir: /home/jovyan/
 
 volumes:

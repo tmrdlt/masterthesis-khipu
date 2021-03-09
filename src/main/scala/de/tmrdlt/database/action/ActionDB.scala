@@ -17,4 +17,11 @@ class ActionDB
   def insertMoveActions(moveActions: Seq[MoveAction]): Future[Seq[MoveAction]] =
     db.run(moveActionQuery returning moveActionQuery ++= moveActions)
 
+  def getActions: Future[Seq[Action]] =
+    db.run(actionQuery.result)
+
+  def getMoveActions: Future[Seq[MoveAction]] =
+    db.run(moveActionQuery.result)
+
+
 }
