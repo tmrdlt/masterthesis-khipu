@@ -58,6 +58,7 @@ lazy val root =
 
 // The almond Docker container has to use a different DB url to access the DB container so for sbt assembly the config
 // is changed
+// https://stackoverflow.com/questions/36058600/rename-file-using-sbt-assembly
 assemblyMergeStrategy in assembly := {
   case PathList("application.conf") => MergeStrategy.discard
   case PathList("almond.conf") => new MyMergeStrategy()
