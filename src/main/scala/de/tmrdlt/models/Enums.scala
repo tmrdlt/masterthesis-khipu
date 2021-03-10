@@ -39,7 +39,7 @@ object WorkflowListDataSource extends Enumeration {
 
 object ActionType extends Enumeration {
   type ActionType = Value
-  val createBoard, createList, createItem, updateBoard, updateList, updateItem = Value
+  val createWorkflowList, deleteWorkflowList, moveToNewParent = Value
 }
 
 object WorkflowListType extends Enumeration {

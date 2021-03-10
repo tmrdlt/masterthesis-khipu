@@ -2,6 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.database.action.Action
 import de.tmrdlt.models._
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
@@ -27,6 +28,7 @@ class WorkflowListDB
     db.run(workflowListQuery returning workflowListQuery ++= workflowLists)
 
   def createWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
+    val now = LocalDateTime.now()
     val query =
       for {
         parentIdOption <- cwle.parentApiId match {
@@ -37,8 +39,7 @@ class WorkflowListDB
           case _ => DBIO.successful(None)
         }
         highestPositionOption <- getHighestPositionByParentIdSqlAction(parentIdOption)
-        inserted <- (workflowListQuery returning workflowListQuery) += {
-          val now = LocalDateTime.now()
+        workflowList <- (workflowListQuery returning workflowListQuery) += {
           WorkflowList(
             id = 0L,
             apiId = java.util.UUID.randomUUID.toString,
@@ -57,9 +58,23 @@ class WorkflowListDB
             updatedAt = now
           )
         }
-      } yield inserted
+        _ <- (actionQuery returning actionQuery) += {
+          Action(
+            id = 0L,
+            apiId = java.util.UUID.randomUUID.toString,
+            actionType = ActionType.createWorkflowList.toString,
+            workflowListApiId = workflowList.apiId,
+            parentApiId = cwle.parentApiId,
+            oldParentApiId = None,
+            newParentApiId = None,
+            userApiId = "Tmrdlt", // TODO change when we have a user model
+            date = now,
+            dataSource = WorkflowListDataSource.Khipu
+          )
+        }
+      } yield workflowList
 
-    db.run(query)
+    db.run(query.transactionally)
   }
 
   def updateWorkflowList(workflowListApiId: String, uwle: UpdateWorkflowListEntity): Future[Int] = {
@@ -81,14 +96,33 @@ class WorkflowListDB
   }
 
   def deleteWorkflowList(workflowListApiId: String): Future[Int] = {
+    val now = LocalDateTime.now()
     val query =
       for {
         workflowListOption <- workflowListQuery.filter(_.apiId === workflowListApiId).result.headOption
         rowsAffected <- workflowListOption match {
           case Some(workflowList) =>
             for {
+              parentOption <- workflowList.parentId match {
+                case Some(id) => getWorkflowListByIdSqlAction(id)
+                case _ => DBIO.successful(None)
+              }
               neighboursUpdatedOnRemove <- updateNeighboursOnRemove(workflowList)
               elementDeleted <- workflowListQuery.filter(_.id === workflowList.id).delete
+              _ <- (actionQuery returning actionQuery) += {
+                Action(
+                  id = 0L,
+                  apiId = java.util.UUID.randomUUID.toString,
+                  actionType = ActionType.deleteWorkflowList.toString,
+                  workflowListApiId = workflowList.apiId,
+                  parentApiId = parentOption.map(_.apiId),
+                  oldParentApiId = None,
+                  newParentApiId = None,
+                  userApiId = "Tmrdlt", // TODO change when we have a user model
+                  date = now,
+                  dataSource = WorkflowListDataSource.Khipu
+                )
+              } // TODO what about the cascade delete? I would probably want an action for every deleted child then
             } yield {
               neighboursUpdatedOnRemove.sum + elementDeleted
             }
@@ -118,11 +152,12 @@ class WorkflowListDB
   }
 
   def moveWorkflowList(workflowListApiId: String, mwle: MoveWorkflowListEntity): Future[Int] = {
+    val now = LocalDateTime.now()
     val query =
       for {
-        newParentIdOption <- mwle.newParentApiId match {
+        newParentOption <- mwle.newParentApiId match {
           case Some(uuid) => getWorkflowListByApiIdSqlAction(uuid).map {
-            case Some(parent) => Some(parent.id)
+            case Some(parent) => Some(parent)
             case None => throw new Exception(s"Cannot move workflow list. No parent for uuid ${uuid} found.")
           }
           case _ => DBIO.successful(None)
@@ -133,10 +168,28 @@ class WorkflowListDB
             for {
               neighboursUpdatedOnRemove <- updateNeighboursOnRemove(workflowList)
               neighboursUpdatedOnInsert <- mwle.newPosition match {
-                case Some(newOrderIndex) => updateNeighboursOnInsert(newParentIdOption, newOrderIndex)
+                case Some(newOrderIndex) => updateNeighboursOnInsert(newParentOption.map(_.id), newOrderIndex)
                 case _ => DBIO.successful(Seq(0))
               }
-              elementUpdated <- updateElementOnInsert(workflowList, newParentIdOption, mwle.newPosition)
+              elementUpdated <- updateElementOnInsert(workflowList, newParentOption.map(_.id), mwle.newPosition)
+              oldParentOption <- workflowList.parentId match {
+                case Some(id) => getWorkflowListByIdSqlAction(id)
+                case _ => DBIO.successful(None)
+              }
+              _ <- (actionQuery returning actionQuery) += {
+                Action(
+                  id = 0L,
+                  apiId = java.util.UUID.randomUUID.toString,
+                  actionType = ActionType.moveToNewParent.toString,
+                  workflowListApiId = workflowList.apiId,
+                  parentApiId = None,
+                  oldParentApiId = oldParentOption.map(_.apiId),
+                  newParentApiId = newParentOption.map(_.apiId),
+                  userApiId = "Tmrdlt", // TODO change when we have a user model
+                  date = now,
+                  dataSource = WorkflowListDataSource.Khipu
+                )
+              }
             } yield {
               neighboursUpdatedOnRemove.sum + neighboursUpdatedOnInsert.sum + elementUpdated
             }
@@ -174,6 +227,9 @@ class WorkflowListDB
 
     db.run(query.transactionally)
   }
+
+  private def getWorkflowListByIdSqlAction(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
+    workflowListQuery.filter(_.id === workflowListId).result.headOption
 
   private def getWorkflowListByApiIdSqlAction(workflowListApiId: String): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
     workflowListQuery.filter(_.apiId === workflowListApiId).result.headOption
