@@ -24,10 +24,10 @@ object Main extends App with WorkflowConfig {
 
   val bindingFuture: Future[ServerBinding] = Http().newServerAt(host, port).bind(endPoints)
 
-  val log = Logging(system.eventStream, "workflow")
+  val log = Logging(system.eventStream, "khipu")
   bindingFuture onComplete {
     case Success(serverBinding) =>
-      log.info(s"Workflow API bound to ${serverBinding.localAddress}")
+      log.info(s"Khipu-API bound to ${serverBinding.localAddress}")
     case Failure(ex) =>
       log.error(ex, "Failed to bind to {}:{}", host, port)
       system.terminate()

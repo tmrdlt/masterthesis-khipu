@@ -1,6 +1,5 @@
 package de.tmrdlt.models
 
-import de.tmrdlt.database.trello.TrelloActionDBEntity
 import de.tmrdlt.models.TrelloActionType.TrelloActionType
 import de.tmrdlt.utils.EnumJsonConverter
 import spray.json.RootJsonFormat
@@ -17,8 +16,8 @@ trait TrelloJsonSupport extends JsonSupport {
   implicit val trelloCardSimpleFormat: RootJsonFormat[TrelloCardSimple] = jsonFormat2(TrelloCardSimple)
   implicit val trelloActionTypeJsonSupport: EnumJsonConverter[TrelloActionType.type] = new EnumJsonConverter(TrelloActionType)
   implicit val trelloActionUpdateOldFormat: RootJsonFormat[TrelloActionUpdateOld] = jsonFormat2(TrelloActionUpdateOld)
-  implicit val trelloActionDataSFormat: RootJsonFormat[TrelloActionData] = jsonFormat7(TrelloActionData)
-  implicit val trelloActionSupportFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
+  implicit val trelloActionDataFormat: RootJsonFormat[TrelloActionData] = jsonFormat7(TrelloActionData)
+  implicit val trelloActionFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
 }
 
 case class FetchDataTrelloEntity(boardIds: Seq[String])
@@ -59,16 +58,11 @@ case class TrelloAction(id: String,
   def isMoveCardToNewColumnAction: Boolean =
     `type` == TrelloActionType.updateCard && data.listAfter.isDefined && data.listBefore.isDefined
 
-  def toTrelloActionDBEntity: TrelloActionDBEntity = TrelloActionDBEntity(
-    id = id,
-    `type` = `type`.toString,
-    idBoard = data.board.id,
-    idList = data.list.map(_.id),
-    idCard = data.card.map(_.id),
-    date = date
-  )
+  def isCreateOrDeleteAction: Boolean =
+    `type` == TrelloActionType.createCard || `type` == TrelloActionType.deleteCard
 
-
+  def isCreateCardAction: Boolean =
+    `type` == TrelloActionType.createCard
 }
 
 case class TrelloActionData(board: TrelloBoardSimple,

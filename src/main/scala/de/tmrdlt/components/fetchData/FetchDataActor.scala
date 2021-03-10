@@ -4,13 +4,10 @@ import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataTrello, FetchGitHubDataForProject}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.action.{Action, ActionDB}
-import de.tmrdlt.database.github.GitHubDB
-import de.tmrdlt.database.moveaction.MoveAction
-import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{DateUtil, FutureUtil, OptionExtensions}
+import de.tmrdlt.utils.{DateUtil, OptionExtensions}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,9 +17,7 @@ import scala.concurrent.Future
 class FetchDataActor(trelloApi: TrelloApi,
                      gitHubApi: GitHubApi,
                      workflowListDB: WorkflowListDB,
-                     actionDB: ActionDB,
-                     trelloDB: TrelloDB,
-                     gitHubDB: GitHubDB) extends Actor with ActorLogging with OptionExtensions {
+                     actionDB: ActionDB) extends Actor with ActorLogging with OptionExtensions {
 
   override def receive: PartialFunction[Any, Unit] = {
 
@@ -106,24 +101,21 @@ class FetchDataActor(trelloApi: TrelloApi,
               case (_, Some(list)) => list.id
               case (_, _) => trelloAction.data.board.id
             },
+            parentApiId =
+              if (trelloAction.isCreateOrDeleteAction)
+                Some(trelloAction.data.list.getOrException("Could not get parentApiId").id)
+              else None,
+            oldParentApiId =
+              if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listBefore.getOrException("Could not get oldListApiId").id)
+              else None,
+            newParentApiId =
+              if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listAfter.getOrException("Could not get oldListApiId").id)
+              else None,
             userApiId = trelloAction.idMemberCreator,
             date = trelloAction.date,
             dataSource = WorkflowListDataSource.Trello
           )
         })
-
-        insertedMoveActions <- actionDB.insertMoveActions(
-          actionsOfBoards
-            .filter(_.isMoveCardToNewColumnAction)
-            .map { trelloAction =>
-              MoveAction(
-                id = 0L,
-                actionId = insertedActions.find(_.apiId == trelloAction.id)
-                  .getOrException(s"Could not find apiId ${trelloAction.id} in inserted Actions").id,
-                oldParentApiId = trelloAction.data.listBefore.getOrException("Could not get oldListApiId").id,
-                newParentApiId = trelloAction.data.listAfter.getOrException("Could not get oldListApiId").id
-              )
-            })
       } yield {
         val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions.length
         log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
@@ -239,35 +231,36 @@ class FetchDataActor(trelloApi: TrelloApi,
 
         insertedEvents <- actionDB.insertActions(cardsAndIssueAndEvents.flatten.map {
           case (gitHubCard, gitHubIssue, gitHubIssueEvent) =>
+            val projectCard = gitHubIssueEvent.project_card.getOrException(s"Could not get project_card fpr ${gitHubIssueEvent.id}")
             Action(
               id = 0L,
               apiId = gitHubIssueEvent.id.toString,
               actionType = gitHubIssueEvent.event.toString,
               workflowListApiId = gitHubCard.id.toString,
+              parentApiId = None, // TODO check
+              oldParentApiId =
+                if (gitHubIssueEvent.isMoveToNewColumnEvent)
+                  Some(
+                    insertedColumns
+                      .find(wl => wl.title == projectCard.previous_column_name.getOrException(s"Could not get previous_column_name"))
+                      .getOrException(s"Could not find oldParentApiId for ${gitHubIssueEvent.id}").apiId
+                  )
+                else None,
+              newParentApiId =
+                if (gitHubIssueEvent.isMoveToNewColumnEvent)
+                  Some(
+                    insertedColumns
+                      .find(wl => wl.title == projectCard.column_name.getOrException("Could not current new column_name"))
+                      .getOrException(s"Could not find newParentApiId for ${gitHubIssueEvent.id}").apiId
+                  )
+                else None,
               userApiId = gitHubIssueEvent.actor.id.toString,
               date = gitHubIssueEvent.created_at,
               dataSource = WorkflowListDataSource.GitHub
             )
         })
-
-        moveEvents = cardsAndIssueAndEvents.flatten.filter { case (_, _, e) => e.event == GitHubIssueEventType.moved_columns_in_project }
-        insertedMoveEvents <- actionDB.insertMoveActions(moveEvents.map {
-          case (gitHubCard, gitHubIssue, gitHubIssueEvent) =>
-            val projectCard = gitHubIssueEvent.project_card.getOrException(s"Could not get project_card fpr ${gitHubIssueEvent.id}")
-            MoveAction(
-              id = 0L,
-              actionId = insertedEvents.find(_.apiId == gitHubIssueEvent.id.toString)
-                .getOrException(s"Could not find apiId ${gitHubIssueEvent.id} in inserted Actions").id,
-              oldParentApiId = insertedColumns
-                .find(wl => wl.title == projectCard.previous_column_name.getOrException(s"Could not get previous_column_name for ${gitHubIssueEvent.id}"))
-                .getOrException(s"Could not find oldParentApiId for ${gitHubIssueEvent.id}").apiId,
-              newParentApiId = insertedColumns
-                .find(wl => wl.title == projectCard.column_name.getOrException("Could not get old column name"))
-                .getOrException(s"Could not find newParentApiId for ${gitHubIssueEvent.id}").apiId
-            )
-        })
       } yield {
-        val inserted = 1 + insertedColumns.length + insertedCards.length + insertedMoveEvents.length
+        val inserted = 1 + insertedColumns.length + insertedCards.length
         log.info(s"Completed fetching GitHub data for project '${gitHubProject.name}'. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, s"Error fetching GitHub data for project '${gitHubProject.name}''")
@@ -296,10 +289,8 @@ object FetchDataActor {
   def props(trelloApi: TrelloApi,
             gitHubApi: GitHubApi,
             workflowListDB: WorkflowListDB,
-            actionDB: ActionDB,
-            trelloDB: TrelloDB,
-            gitHubDB: GitHubDB): Props =
-    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, actionDB, trelloDB, gitHubDB))
+            actionDB: ActionDB): Props =
+    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, actionDB))
 
   val name = "FetchDataActor"
 

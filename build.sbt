@@ -4,13 +4,13 @@ wartremoverErrors in(Compile, compile) += Wart.TraversableOps
 
 lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
-  organization := "de.timoerdelt",
+  organization := "de.tmrdlt",
   version := "0.1",
   scalaVersion := "2.13.5",
   scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
 
-mainClass := Some("de.timoerdelt.Main")
+mainClass := Some("de.tmrdlt.Main")
 
 libraryDependencies ++= {
   // Dependencies
@@ -23,9 +23,9 @@ libraryDependencies ++= {
   val mongoDbVersion = "4.2.2"
 
   // Test dependencies
-  val scalaCheckVersion = "1.15.1"
-  val scalaTestVersion = "3.2.3"
-  val scalaMockVersion = "5.0.0"
+  val scalaCheckVersion = "1.15.3"
+  val scalaTestVersion = "3.2.6"
+  val scalaMockVersion = "5.1.0"
 
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -43,19 +43,25 @@ libraryDependencies ++= {
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion,
 
-    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "it,test",
-    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "it,test",
-    "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "it,test",
-    "org.scalatest" %% "scalatest" % scalaTestVersion % "it,test",
-    "org.scalamock" %% "scalamock" % scalaMockVersion % "it,test"
+    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
+    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test",
+    "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
+    "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+    "org.scalamock" %% "scalamock" % scalaMockVersion % "test"
   )
 }
 
-lazy val IntegrationTest = config("it") extend Test
-
 lazy val root =
   (project in file("."))
-    .configs(IntegrationTest)
     .settings(commonSettings: _*)
-    .settings(Defaults.itSettings: _*)
-    .withId("workflow-api")
+    .withId("khipu-api")
+
+// The almond Docker container has to use a different DB url to access the DB container so for sbt assembly the config
+// is changed
+assemblyMergeStrategy in assembly := {
+  case PathList("application.conf") => MergeStrategy.discard
+  case PathList("almond.conf") => new MyMergeStrategy()
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}

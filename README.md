@@ -13,9 +13,9 @@ Ludwig-Maximilian University of Munich. Its backend is written in the Scala Prog
 
 ## Development
 Run inside `/masterthesis-khipu`
-- Setup db:
+- Run PostgreSQL DB & Jupyter Notebook:
   ```
-  docker-compose up -d
+  docker-compose up
   ```
 - Run db migration:
   ```
@@ -25,3 +25,8 @@ Run inside `/masterthesis-khipu`
   ```
   sbt run
   ```
+- Create a fat `.jar` to use inside Jupyter Notebook:
+  ```
+  sbt assembly
+  ```
+- Access Jupyter Notebook at http://localhost:8888. The link with token is also printed by `docker-compose up`.
