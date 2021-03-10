@@ -2,7 +2,6 @@ package de.tmrdlt.database
 
 import de.tmrdlt.database.action.ActionTable
 import de.tmrdlt.database.github.GitHubEventTable
-import de.tmrdlt.database.moveaction.MoveActionTable
 import de.tmrdlt.database.trello.TrelloActionTable
 import de.tmrdlt.database.workflowlist.WorkflowListTable
 import slick.basic.DatabaseConfig
@@ -18,9 +17,6 @@ object MyDB {
 
   val workflowListQuery = TableQuery[WorkflowListTable]
   val actionQuery = TableQuery[ActionTable]
-  val moveActionQuery = TableQuery[MoveActionTable]
   val trelloActionQuery = TableQuery[TrelloActionTable]
   val gitHubEventQuery = TableQuery[GitHubEventTable]
-
 }
-

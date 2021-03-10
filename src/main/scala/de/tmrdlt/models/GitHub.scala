@@ -75,6 +75,10 @@ case class GitHubIssueEvent(id: Long,
                             rename: Option[GitHubRenameEvent], // if rename event ???
                             project_card: Option[GitHubEventProjectCard],
                             created_at: LocalDateTime) {
+
+  def isMoveToNewColumnEvent: Boolean =
+    event == GitHubIssueEventType.moved_columns_in_project
+
   def toGitHubEventDBEntity(issueId: String): GitHubEventDBEntity = GitHubEventDBEntity(
     id = 0L,
     apiId = id.toString,

@@ -59,6 +59,9 @@ case class TrelloAction(id: String,
   def isMoveCardToNewColumnAction: Boolean =
     `type` == TrelloActionType.updateCard && data.listAfter.isDefined && data.listBefore.isDefined
 
+  def isCreateOrDeleteAction: Boolean =
+    `type` == TrelloActionType.createCard || `type` == TrelloActionType.deleteCard
+
   def isCreateCardAction: Boolean =
     `type` == TrelloActionType.createCard
 
@@ -70,8 +73,6 @@ case class TrelloAction(id: String,
     idCard = data.card.map(_.id),
     date = date
   )
-
-
 }
 
 case class TrelloActionData(board: TrelloBoardSimple,

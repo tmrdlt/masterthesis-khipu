@@ -24,6 +24,8 @@ def upgrade():
                     Column('action_type', VARCHAR, nullable=False),
                     Column('workflow_list_api_id', VARCHAR, nullable=False),
                     Column('parent_api_id', VARCHAR, nullable=True),
+                    Column('old_parent_api_id', VARCHAR, nullable=True),
+                    Column('new_parent_api_id', VARCHAR, nullable=True),
                     Column('user_api_id', VARCHAR, nullable=True),
                     Column('date', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('data_source', Enum('Khipu', 'GitHub', 'Trello', name='data_source', schema='workflow'),
