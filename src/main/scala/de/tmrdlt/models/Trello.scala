@@ -1,6 +1,5 @@
 package de.tmrdlt.models
 
-import de.tmrdlt.database.trello.TrelloActionDBEntity
 import de.tmrdlt.models.TrelloActionType.TrelloActionType
 import de.tmrdlt.utils.EnumJsonConverter
 import spray.json.RootJsonFormat
@@ -64,15 +63,6 @@ case class TrelloAction(id: String,
 
   def isCreateCardAction: Boolean =
     `type` == TrelloActionType.createCard
-
-  def toTrelloActionDBEntity: TrelloActionDBEntity = TrelloActionDBEntity(
-    id = id,
-    `type` = `type`.toString,
-    idBoard = data.board.id,
-    idList = data.list.map(_.id),
-    idCard = data.card.map(_.id),
-    date = date
-  )
 }
 
 case class TrelloActionData(board: TrelloBoardSimple,

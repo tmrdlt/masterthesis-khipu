@@ -4,8 +4,6 @@ import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataTrello, FetchGitHubDataForProject}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.action.{Action, ActionDB}
-import de.tmrdlt.database.github.GitHubDB
-import de.tmrdlt.database.trello.TrelloDB
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
@@ -19,9 +17,7 @@ import scala.concurrent.Future
 class FetchDataActor(trelloApi: TrelloApi,
                      gitHubApi: GitHubApi,
                      workflowListDB: WorkflowListDB,
-                     actionDB: ActionDB,
-                     trelloDB: TrelloDB,
-                     gitHubDB: GitHubDB) extends Actor with ActorLogging with OptionExtensions {
+                     actionDB: ActionDB) extends Actor with ActorLogging with OptionExtensions {
 
   override def receive: PartialFunction[Any, Unit] = {
 
@@ -293,10 +289,8 @@ object FetchDataActor {
   def props(trelloApi: TrelloApi,
             gitHubApi: GitHubApi,
             workflowListDB: WorkflowListDB,
-            actionDB: ActionDB,
-            trelloDB: TrelloDB,
-            gitHubDB: GitHubDB): Props =
-    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, actionDB, trelloDB, gitHubDB))
+            actionDB: ActionDB): Props =
+    Props(new FetchDataActor(trelloApi, gitHubApi, workflowListDB, actionDB))
 
   val name = "FetchDataActor"
 

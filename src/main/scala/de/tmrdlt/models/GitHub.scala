@@ -1,6 +1,5 @@
 package de.tmrdlt.models
 
-import de.tmrdlt.database.github.GitHubEventDBEntity
 import de.tmrdlt.models.GitHubIssueEventType.GitHubIssueEventType
 import de.tmrdlt.utils.EnumJsonConverter
 import spray.json.RootJsonFormat
@@ -78,15 +77,6 @@ case class GitHubIssueEvent(id: Long,
 
   def isMoveToNewColumnEvent: Boolean =
     event == GitHubIssueEventType.moved_columns_in_project
-
-  def toGitHubEventDBEntity(issueId: String): GitHubEventDBEntity = GitHubEventDBEntity(
-    id = 0L,
-    apiId = id.toString,
-    `type` = event.toString,
-    issueId = issueId,
-    userId = actor.id.toString,
-    date = created_at
-  )
 }
 
 case class GitHubEventProjectCard(id: Long,
