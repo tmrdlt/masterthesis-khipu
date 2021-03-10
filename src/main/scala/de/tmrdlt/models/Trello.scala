@@ -16,8 +16,8 @@ trait TrelloJsonSupport extends JsonSupport {
   implicit val trelloCardSimpleFormat: RootJsonFormat[TrelloCardSimple] = jsonFormat2(TrelloCardSimple)
   implicit val trelloActionTypeJsonSupport: EnumJsonConverter[TrelloActionType.type] = new EnumJsonConverter(TrelloActionType)
   implicit val trelloActionUpdateOldFormat: RootJsonFormat[TrelloActionUpdateOld] = jsonFormat2(TrelloActionUpdateOld)
-  implicit val trelloActionDataSFormat: RootJsonFormat[TrelloActionData] = jsonFormat7(TrelloActionData)
-  implicit val trelloActionSupportFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
+  implicit val trelloActionDataFormat: RootJsonFormat[TrelloActionData] = jsonFormat7(TrelloActionData)
+  implicit val trelloActionFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
 }
 
 case class FetchDataTrelloEntity(boardIds: Seq[String])

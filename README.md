@@ -25,8 +25,8 @@ Run inside `/masterthesis-khipu`
   ```
   sbt run
   ```
-- Create `.jar` to use inside Jupyter Notebook:
+- Create a fat `.jar` to use inside Jupyter Notebook:
   ```
-  sbt package
+  sbt assembly
   ```
 - Access Jupyter Notebook at http://localhost:8888. The link with token is also printed by `docker-compose up`.
