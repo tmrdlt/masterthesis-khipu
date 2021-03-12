@@ -18,9 +18,11 @@ libraryDependencies ++= {
   val akkaHttpVersion = "10.2.4"
   val slickVersion = "3.3.3"
   val slickPgVersion = "0.19.5"
+  val mongoDbVersion = "4.2.2"
+  val scalaCsvVersion = "1.3.7"
+
   val postgresVersion = "42.2.19"
   val logbackVersion = "1.2.3"
-  val mongoDbVersion = "4.2.2"
 
   // Test dependencies
   val scalaCheckVersion = "1.15.3"
@@ -38,10 +40,12 @@ libraryDependencies ++= {
     "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
     "com.github.tminglei" %% "slick-pg" % slickPgVersion,
     "com.github.tminglei" %% "slick-pg_spray-json" % slickPgVersion,
+    "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion,
+    "com.github.tototoshi" %% "scala-csv" % scalaCsvVersion,
 
     "org.postgresql" % "postgresql" % postgresVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
-    "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion,
+
 
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test",

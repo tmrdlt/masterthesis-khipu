@@ -7,7 +7,7 @@ import de.tmrdlt.database.action.{Action, ActionDB}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{DateUtil, OptionExtensions}
+import de.tmrdlt.utils.{CsvUtil, DateUtil, OptionExtensions}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -116,6 +116,10 @@ class FetchDataActor(trelloApi: TrelloApi,
             dataSource = WorkflowListDataSource.Trello
           )
         })
+
+        _ <- CsvUtil.writeWorkflowListsToCsv(insertedBoards ++ insertedLists ++ insertedCards)
+        _ <- CsvUtil.writeActionsToCsv(insertedActions)
+
       } yield {
         val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions.length
         log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
@@ -259,8 +263,12 @@ class FetchDataActor(trelloApi: TrelloApi,
               dataSource = WorkflowListDataSource.GitHub
             )
         })
+
+        _ <- CsvUtil.writeWorkflowListsToCsv(Seq(insertedProject) ++ insertedColumns ++ insertedCards)
+        _ <- CsvUtil.writeActionsToCsv(insertedEvents)
+
       } yield {
-        val inserted = 1 + insertedColumns.length + insertedCards.length
+        val inserted = 1 + insertedColumns.length + insertedCards.length + insertedEvents.length
         log.info(s"Completed fetching GitHub data for project '${gitHubProject.name}'. Inserted a total of ${inserted} rows.")
       }).recoverWith {
         case t: Throwable => log.error(t, s"Error fetching GitHub data for project '${gitHubProject.name}''")
