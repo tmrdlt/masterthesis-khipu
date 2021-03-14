@@ -20,12 +20,12 @@ class FetchDataActor(trelloApi: TrelloApi,
 
   override def receive: PartialFunction[Any, Unit] = {
 
-    case FetchDataTrello(boardIds: Seq[String]) =>
+    case FetchDataTrello(boardIds: Seq[String]) => {
 
-      val desiredActions = Seq(TrelloActionType.createBoard, TrelloActionType.createList, TrelloActionType.createCard)
+      FutureUtil.linearize(boardIds)(fetchDataForTrelloBoard)
 
       def fetchDataForTrelloBoard(boardId: String) = {
-        log.info(s"Start fetching Trello data for boardId $boardId...")
+        log.info(s"Start fetching Trello data for board with ID '$boardId'.")
         (for {
           board <- trelloApi.getBoard(boardId)
           lists <- trelloApi.getListsOfBoard(boardId)
@@ -126,12 +126,10 @@ class FetchDataActor(trelloApi: TrelloApi,
           log.info(s"Fetching Trello for Board ${insertedBoard.title} data completed. Inserted a total of ${inserted} rows.")
         }).recoverWith {
           case t: Throwable => log.error(t, "error fetching trello data")
-            Future.failed(t)
+            Future.successful(true)
         }
       }
-
-      FutureUtil.linearize(boardIds)(fetchDataForTrelloBoard)
-
+    }
 
     case FetchGitHubDataForProject(gitHubProject, position) => {
 

@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.HttpMethods
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.{Http, HttpExt}
+import de.tmrdlt.models.TrelloActionType.TrelloActionType
 import de.tmrdlt.models._
 import de.tmrdlt.utils.{DateUtil, FutureUtil, HttpUtil, OptionExtensions, SimpleNameLogger, WorkflowConfig}
 
@@ -28,6 +29,15 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
   private val trelloApiToken = "89ad3e0de3fa575edc26a6d748e2d2bdb5440130398363ef8998c935c3ea4552"
   private val trelloAuthParams = Seq(("key", trelloApiKey), ("token", trelloApiToken))
 
+  private val applyActionFilter = true
+  private val trelloActionTypesToFetch = Seq(
+    TrelloActionType.createBoard,
+    TrelloActionType.createList,
+    TrelloActionType.createCard,
+    TrelloActionType.deleteCard,
+    TrelloActionType.updateCard
+  )
+
   // Pagination
   // https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#paging
   private def trelloPaginationParam(beforeId: Option[String]): Seq[(String, String)] =
@@ -35,6 +45,12 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
       case Some(string) => Seq(("before", string))
       case _ => Seq.empty
     }
+
+  private def trelloActionFilterParam: Seq[(String,String)] = {
+    if (applyActionFilter) Seq(("filter", trelloActionTypesToFetch.map(_.toString).mkString(",")))
+    else Seq.empty
+  }
+
 
   def getBoard(boardId: String): Future[TrelloBoard] = {
     val request = HttpUtil.request(
@@ -70,10 +86,6 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
     getCardsOfBoardRecursively(boardId, None)
   }
 
-  def getAllActionsOfBoard(boardId: String): Future[Seq[TrelloAction]] = {
-    getActionsOfBoardRecursively(boardId, None)
-  }
-
   private def getCardsOfBoardRecursively(boardId: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
     Thread.sleep(250)
     getCardsOfBoard(boardId, beforeId).flatMap { seq =>
@@ -98,6 +110,10 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
     }
   }
 
+  def getAllActionsOfBoard(boardId: String): Future[Seq[TrelloAction]] = {
+    getActionsOfBoardRecursively(boardId, None)
+  }
+
   private def getActionsOfBoardRecursively(boardId: String, beforeId: Option[String]): Future[Seq[TrelloAction]] = {
     Thread.sleep(250)
     getActionsOfBoard(boardId, beforeId).flatMap { seq =>
@@ -108,11 +124,10 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
   }
 
   private def getActionsOfBoard(boardId: String, beforeId: Option[String]): Future[Seq[TrelloAction]] = {
-    //val filterUrl = s"&filter=${desiredActions.map(_.toString).mkString(",")}"
     val request = HttpUtil.request(
       method = HttpMethods.GET,
       path = s"${baseUrl}/boards/${boardId}/actions",
-      parameters = trelloAuthParams ++ trelloPaginationParam(beforeId)
+      parameters = trelloAuthParams ++ trelloPaginationParam(beforeId) ++ trelloActionFilterParam
     )
     log.info(s"URL: ${request.uri}")
     for {
