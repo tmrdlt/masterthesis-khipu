@@ -23,6 +23,7 @@ def upgrade():
                     Column('api_id', VARCHAR, nullable=False),
                     Column('action_type', VARCHAR, nullable=False),
                     Column('workflow_list_api_id', VARCHAR, nullable=False),
+                    Column('board_api_id', VARCHAR, nullable=True),
                     Column('parent_api_id', VARCHAR, nullable=True),
                     Column('old_parent_api_id', VARCHAR, nullable=True),
                     Column('new_parent_api_id', VARCHAR, nullable=True),

@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 object CsvUtil {
 
-  def writeWorkflowListsToCsv(workflowLists: Seq[WorkflowList]): Future[File] = {
+  def writeWorkflowListsToCsv(boardName: String, workflowLists: Seq[WorkflowList]): Future[File] = {
     val header = Seq(classOf[WorkflowList].getDeclaredFields.map(_.getName).toSeq)
     val data = workflowLists.map(wl =>
       Seq(
@@ -29,11 +29,11 @@ object CsvUtil {
         wl.updatedAt.toString
       )
     )
-    writeCSV("workflow_lists", header ++ data)
+    writeCSV("workflow_lists_" ++ boardName, header ++ data)
   }
 
 
-  def writeActionsToCsv(actions: Seq[Action]): Future[File] = {
+  def writeActionsToCsv(boardName: String, actions: Seq[Action]): Future[File] = {
     val header = Seq(classOf[Action].getDeclaredFields.map(_.getName).toSeq)
     val data = actions.map(a =>
       Seq(
@@ -49,7 +49,7 @@ object CsvUtil {
         a.dataSource.toString,
       )
     )
-    writeCSV("actions", header ++ data)
+    writeCSV("actions_" ++ boardName, header ++ data)
   }
 
   def writeCSV(filePrefix: String = "data",

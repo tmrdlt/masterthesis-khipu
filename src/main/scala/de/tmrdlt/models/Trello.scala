@@ -12,11 +12,12 @@ trait TrelloJsonSupport extends JsonSupport {
   implicit val trelloListFormat: RootJsonFormat[TrelloList] = jsonFormat4(TrelloList)
   implicit val trelloCardFormat: RootJsonFormat[TrelloCard] = jsonFormat7(TrelloCard)
   implicit val trelloBoardSimpleFormat: RootJsonFormat[TrelloBoardSimple] = jsonFormat2(TrelloBoardSimple)
+  implicit val trelloListSimpleIdFormat: RootJsonFormat[TrelloListSimpleId] = jsonFormat1(TrelloListSimpleId)
   implicit val trelloListSimpleFormat: RootJsonFormat[TrelloListSimple] = jsonFormat2(TrelloListSimple)
   implicit val trelloCardSimpleFormat: RootJsonFormat[TrelloCardSimple] = jsonFormat2(TrelloCardSimple)
   implicit val trelloActionTypeJsonSupport: EnumJsonConverter[TrelloActionType.type] = new EnumJsonConverter(TrelloActionType)
   implicit val trelloActionUpdateOldFormat: RootJsonFormat[TrelloActionUpdateOld] = jsonFormat2(TrelloActionUpdateOld)
-  implicit val trelloActionDataFormat: RootJsonFormat[TrelloActionData] = jsonFormat7(TrelloActionData)
+  implicit val trelloActionDataFormat: RootJsonFormat[TrelloActionData] = jsonFormat6(TrelloActionData)
   implicit val trelloActionFormat: RootJsonFormat[TrelloAction] = jsonFormat5(TrelloAction)
 }
 
@@ -41,10 +42,19 @@ case class TrelloCard(id: String,
                       dateLastActivity: LocalDateTime)
 
 case class TrelloBoardSimple(id: String,
-                             name: String)
+                             name: Option[String])
 
-case class TrelloListSimple(id: String,
-                            name: Option[String]) // Not exactly sure why but this has to be optional
+case class TrelloListSimple(id: Either[String, TrelloListSimpleId],
+                            name: Option[String]) { // Not exactly sure why but this has to be optional
+  def getId: String =
+    id match {
+      case Left(id) => id
+      case Right(idObj) => idObj._id
+    }
+}
+
+
+case class TrelloListSimpleId(_id: String)
 
 case class TrelloCardSimple(id: String,
                             name: Option[String]) // Not exactly sure why but this has to be optional
@@ -69,13 +79,13 @@ case class TrelloActionData(board: TrelloBoardSimple,
                             list: Option[TrelloListSimple],
                             card: Option[TrelloCardSimple],
                             text: Option[String],
-                            old: Option[TrelloActionUpdateOld],
+                            // old: Option[TrelloActionUpdateOld],
                             listBefore: Option[TrelloListSimple], // If is move to new column
                             listAfter: Option[TrelloListSimple] // If is move to new column
                            )
 
 case class TrelloActionUpdateOld(name: Option[String],
-                                 desc: Option[String])
+                                 desc: Option[String]) // Possible to get boolean here, evaluate that
 
 
 object TrelloActionType extends Enumeration {

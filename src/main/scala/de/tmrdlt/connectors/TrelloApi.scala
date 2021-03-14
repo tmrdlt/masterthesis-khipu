@@ -66,26 +66,27 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
     }
   }
 
-  def getAllCardsOfList(boardId: String): Future[Seq[TrelloCard]] = {
-    getCardsOfListRecursively(boardId, None)
+  def getAllCardsOfBoard(boardId: String): Future[Seq[TrelloCard]] = {
+    getCardsOfBoardRecursively(boardId, None)
   }
 
   def getAllActionsOfBoard(boardId: String): Future[Seq[TrelloAction]] = {
     getActionsOfBoardRecursively(boardId, None)
   }
 
-  private def getCardsOfListRecursively(listId: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
-    getCardsOfList(listId, beforeId).flatMap { seq =>
+  private def getCardsOfBoardRecursively(boardId: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
+    Thread.sleep(250)
+    getCardsOfBoard(boardId, beforeId).flatMap { seq =>
       if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(
-        getCardsOfListRecursively(listId, Some(seq.sortBy(c => DateUtil.getDateFromObjectIdString(c.id)).headOption.map(_.id).getOrException("Something almost impossible happened"))), Future.successful(seq))
+        getCardsOfBoardRecursively(boardId, Some(seq.sortBy(c => DateUtil.getDateFromObjectIdString(c.id)).headOption.map(_.id).getOrException("Something almost impossible happened"))), Future.successful(seq))
       else Future.successful(seq)
     }
   }
 
-  private def getCardsOfList(listId: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
+  private def getCardsOfBoard(boardId: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
     val request = HttpUtil.request(
       method = HttpMethods.GET,
-      path = s"${baseUrl}/lists/${listId}/cards",
+      path = s"${baseUrl}/board/${boardId}/cards/all",
       parameters = trelloAuthParams ++ trelloPaginationParam(beforeId)
     )
     for {
@@ -98,6 +99,7 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
   }
 
   private def getActionsOfBoardRecursively(boardId: String, beforeId: Option[String]): Future[Seq[TrelloAction]] = {
+    Thread.sleep(250)
     getActionsOfBoard(boardId, beforeId).flatMap { seq =>
       if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(
         getActionsOfBoardRecursively(boardId, Some(seq.sortBy(_.date).headOption.map(_.id).getOrException("Something almost impossible happened"))), Future.successful(seq))
@@ -112,6 +114,7 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
       path = s"${baseUrl}/boards/${boardId}/actions",
       parameters = trelloAuthParams ++ trelloPaginationParam(beforeId)
     )
+    log.info(s"URL: ${request.uri}")
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[TrelloAction]]

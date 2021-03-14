@@ -12,6 +12,7 @@ case class Action(id: Long,
                   apiId: String,
                   actionType: String, // TODO make Enum: Decide which actions to use
                   workflowListApiId: String, // TODO make Long and foreign key
+                  boardApiId: Option[String], // Only for GitHub & Trello
                   parentApiId: Option[String], // TODO make Long and foreign key // Only for create and delete actions
                   oldParentApiId: Option[String], // TODO make Long and foreign key
                   newParentApiId: Option[String], // Only for move actions
@@ -27,6 +28,8 @@ class ActionTable(tag: Tag) extends BaseTableLong[Action](tag, "action") {
 
   def workflowListApiId: Rep[String] = column[String]("workflow_list_api_id", NotNull)
 
+  def boardApiId: Rep[Option[String]] = column[Option[String]]("board_api_id", Nullable)
+
   def parentApiId: Rep[Option[String]] = column[Option[String]]("parent_api_id", Nullable)
 
   def oldParentApiId: Rep[Option[String]] = column[Option[String]]("old_parent_api_id", Nullable)
@@ -41,5 +44,5 @@ class ActionTable(tag: Tag) extends BaseTableLong[Action](tag, "action") {
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[Action] =
-    (id, apiId, actionType, workflowListApiId, parentApiId, oldParentApiId, newParentApiId, userApiId, date, dataSource).mapTo[Action]
+    (id, apiId, actionType, workflowListApiId, boardApiId, parentApiId, oldParentApiId, newParentApiId, userApiId, date, dataSource).mapTo[Action]
 }

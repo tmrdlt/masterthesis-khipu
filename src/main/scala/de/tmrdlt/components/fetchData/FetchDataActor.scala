@@ -7,9 +7,8 @@ import de.tmrdlt.database.action.{Action, ActionDB}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{CsvUtil, DateUtil, OptionExtensions}
+import de.tmrdlt.utils.{CsvUtil, DateUtil, FutureUtil, OptionExtensions}
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -21,112 +20,117 @@ class FetchDataActor(trelloApi: TrelloApi,
 
   override def receive: PartialFunction[Any, Unit] = {
 
-    case FetchDataTrello(boardIds: Seq[String], now: LocalDateTime) =>
+    case FetchDataTrello(boardIds: Seq[String]) =>
 
       val desiredActions = Seq(TrelloActionType.createBoard, TrelloActionType.createList, TrelloActionType.createCard)
-      // To be able to keep and store the order of the lists retrieved by the API this Seq[Seq[Foo]] data structure is
-      // used together with flatMap and zipWithIndex
-      (for {
-        boards <- Future.sequence(boardIds.map(b => trelloApi.getBoard(b)))
-        listsLists <- Future.sequence(boardIds.map(b => trelloApi.getListsOfBoard(b)))
-        cardsLists <- Future.sequence(listsLists.flatten.map(l => trelloApi.getAllCardsOfList(l.id)))
-        actionsOfBoards <- Future.sequence(boardIds.map(b => trelloApi.getAllActionsOfBoard(b))).map(_.flatten)
 
-        insertedBoards <- workflowListDB.insertWorkflowLists(boards.map { trelloBoard =>
-          WorkflowList(
-            id = 0L,
-            apiId = trelloBoard.id,
-            title = trelloBoard.name,
-            description = Some(trelloBoard.desc),
-            parentId = None,
-            position = 0,
-            listType = WorkflowListType.BOARD,
-            state = Some(getWorkflowListState(trelloBoard.closed)),
-            dataSource = WorkflowListDataSource.Trello,
-            useCase = None, // TODO Add to request
-            createdAt = DateUtil.getDateFromObjectIdString(trelloBoard.id),
-            updatedAt = actionsOfBoards
-              .filter(a => a.data.board.id == trelloBoard.id)
-              .sortBy(_.date)
-              .lastOption.map(_.date)
-              .getOrException("Error getting update date for board")
-          )
-        })
-        insertedLists <- workflowListDB.insertWorkflowLists(listsLists.flatMap(_.zipWithIndex.map {
-          case (trelloList, index) =>
+      def fetchDataForTrelloBoard(boardId: String) = {
+        log.info(s"Start fetching Trello data for boardId $boardId...")
+        (for {
+          board <- trelloApi.getBoard(boardId)
+          lists <- trelloApi.getListsOfBoard(boardId)
+          cards <- trelloApi.getAllCardsOfBoard(boardId)
+          actions <- trelloApi.getAllActionsOfBoard(boardId)
+
+          insertedBoard <- workflowListDB.insertWorkflowList(
             WorkflowList(
               id = 0L,
-              apiId = trelloList.id,
-              title = trelloList.name,
-              description = None,
-              parentId = insertedBoards.find(_.apiId == trelloList.idBoard).map(_.id),
-              position = index.toLong,
-              listType = WorkflowListType.LIST,
-              state = Some(getWorkflowListState(trelloList.closed)),
+              apiId = board.id,
+              title = board.name,
+              description = Some(board.desc),
+              parentId = None,
+              position = 0,
+              listType = WorkflowListType.BOARD,
+              state = Some(getWorkflowListState(board.closed)),
               dataSource = WorkflowListDataSource.Trello,
               useCase = None, // TODO Add to request
-              createdAt = DateUtil.getDateFromObjectIdString(trelloList.id),
-              updatedAt = actionsOfBoards
-                .filter(a => a.data.list.map(_.id).contains(trelloList.id))
+              createdAt = DateUtil.getDateFromObjectIdString(board.id),
+              updatedAt = actions
+                .filter(a => a.data.board.id == board.id)
                 .sortBy(_.date)
                 .lastOption.map(_.date)
-                .getOrException("Error getting update date for list")
+                .getOrException("Error getting update date for board")
             )
-        }))
-        insertedCards <- workflowListDB.insertWorkflowLists(cardsLists.flatMap(_.zipWithIndex.map {
-          case (trelloCard, index) =>
-            WorkflowList(
-              id = 0L,
-              apiId = trelloCard.id,
-              title = trelloCard.name,
-              description = Some(trelloCard.desc),
-              parentId = insertedLists.find(_.apiId == trelloCard.idList).map(_.id),
-              position = index.toLong,
-              listType = WorkflowListType.ITEM,
-              state = Some(getWorkflowListState(trelloCard.closed)),
-              dataSource = WorkflowListDataSource.Trello,
-              useCase = None, // TODO Add to request
-              createdAt = DateUtil.getDateFromObjectIdString(trelloCard.id),
-              updatedAt = trelloCard.dateLastActivity
-            )
-        }))
-
-        insertedActions <- actionDB.insertActions(actionsOfBoards.map { trelloAction =>
-          Action(
-            id = 0L,
-            apiId = trelloAction.id,
-            actionType = trelloAction.`type`.toString,
-            workflowListApiId = (trelloAction.data.card, trelloAction.data.list) match {
-              case (Some(card), _) => card.id
-              case (_, Some(list)) => list.id
-              case (_, _) => trelloAction.data.board.id
-            },
-            parentApiId =
-              if (trelloAction.isCreateOrDeleteAction)
-                Some(trelloAction.data.list.getOrException("Could not get parentApiId").id)
-              else None,
-            oldParentApiId =
-              if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listBefore.getOrException("Could not get oldListApiId").id)
-              else None,
-            newParentApiId =
-              if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listAfter.getOrException("Could not get oldListApiId").id)
-              else None,
-            userApiId = trelloAction.idMemberCreator,
-            date = trelloAction.date,
-            dataSource = WorkflowListDataSource.Trello
           )
-        })
+          // To be able to keep and store the order of the lists retrieved by the API we use .zipWithIndex.map
+          insertedLists <- workflowListDB.insertWorkflowLists(lists.zipWithIndex.map {
+            case (trelloList, index) =>
+              WorkflowList(
+                id = 0L,
+                apiId = trelloList.id,
+                title = trelloList.name,
+                description = None,
+                parentId = Some(insertedBoard.id),
+                position = index.toLong,
+                listType = WorkflowListType.LIST,
+                state = Some(getWorkflowListState(trelloList.closed)),
+                dataSource = WorkflowListDataSource.Trello,
+                useCase = None, // TODO Add to request
+                createdAt = DateUtil.getDateFromObjectIdString(trelloList.id),
+                updatedAt = actions
+                  .filter(a => a.data.list.map(_.getId).contains(trelloList.id))
+                  .sortBy(_.date)
+                  .lastOption.map(_.date)
+                  .getOrException("Error getting update date for list")
+              )
+          })
+          insertedCards <- workflowListDB.insertWorkflowLists(cards.zipWithIndex.map {
+            case (trelloCard, index) =>
+              WorkflowList(
+                id = 0L,
+                apiId = trelloCard.id,
+                title = trelloCard.name,
+                description = Some(trelloCard.desc),
+                parentId = insertedLists.find(_.apiId == trelloCard.idList).map(_.id),
+                position = index.toLong,
+                listType = WorkflowListType.ITEM,
+                state = Some(getWorkflowListState(trelloCard.closed)),
+                dataSource = WorkflowListDataSource.Trello,
+                useCase = None, // TODO Add to request
+                createdAt = DateUtil.getDateFromObjectIdString(trelloCard.id),
+                updatedAt = trelloCard.dateLastActivity
+              )
+          })
+          insertedActions <- actionDB.insertActions(actions.map { trelloAction =>
+            Action(
+              id = 0L,
+              apiId = trelloAction.id,
+              actionType = trelloAction.`type`.toString,
+              workflowListApiId = (trelloAction.data.card, trelloAction.data.list) match {
+                case (Some(card), _) => card.id
+                case (_, Some(list)) => list.getId
+                case (_, _) => trelloAction.data.board.id
+              },
+              boardApiId = Some(insertedBoard.apiId),
+              parentApiId =
+                if (trelloAction.isCreateOrDeleteAction)
+                  Some(trelloAction.data.list.getOrException("Could not get parentApiId").getId)
+                else None,
+              oldParentApiId =
+                if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listBefore.getOrException("Could not get oldListApiId").getId)
+                else None,
+              newParentApiId =
+                if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listAfter.getOrException("Could not get oldListApiId").getId)
+                else None,
+              userApiId = trelloAction.idMemberCreator,
+              date = trelloAction.date,
+              dataSource = WorkflowListDataSource.Trello
+            )
+          })
 
-        _ <- CsvUtil.writeWorkflowListsToCsv(insertedBoards ++ insertedLists ++ insertedCards)
-        _ <- CsvUtil.writeActionsToCsv(insertedActions)
+          _ <- CsvUtil.writeWorkflowListsToCsv(insertedBoard.title, Seq(insertedBoard) ++ insertedLists ++ insertedCards)
+          _ <- CsvUtil.writeActionsToCsv(insertedBoard.title, insertedActions)
 
-      } yield {
-        val inserted = insertedBoards.length + insertedLists.length + insertedCards.length + insertedActions.length
-        log.info(s"Fetching Trello data completed. Inserted a total of ${inserted} rows.")
-      }).recoverWith {
-        case t: Throwable => log.error(t, "error fetching trello data")
-          Future.failed(t)
+        } yield {
+          val inserted = 1 + insertedLists.length + insertedCards.length + insertedActions.length
+          log.info(s"Fetching Trello for Board ${insertedBoard.title} data completed. Inserted a total of ${inserted} rows.")
+        }).recoverWith {
+          case t: Throwable => log.error(t, "error fetching trello data")
+            Future.failed(t)
+        }
       }
+
+      FutureUtil.linearize(boardIds)(fetchDataForTrelloBoard)
 
 
     case FetchGitHubDataForProject(gitHubProject, position) => {
@@ -241,6 +245,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               apiId = gitHubIssueEvent.id.toString,
               actionType = gitHubIssueEvent.event.toString,
               workflowListApiId = gitHubCard.id.toString,
+              boardApiId = Some(insertedProject.apiId),
               parentApiId = None, // TODO check
               oldParentApiId =
                 if (gitHubIssueEvent.isMoveToNewColumnEvent)
@@ -264,8 +269,8 @@ class FetchDataActor(trelloApi: TrelloApi,
             )
         })
 
-        _ <- CsvUtil.writeWorkflowListsToCsv(Seq(insertedProject) ++ insertedColumns ++ insertedCards)
-        _ <- CsvUtil.writeActionsToCsv(insertedEvents)
+        _ <- CsvUtil.writeWorkflowListsToCsv(insertedProject.title, Seq(insertedProject) ++ insertedColumns ++ insertedCards)
+        _ <- CsvUtil.writeActionsToCsv(insertedProject.title, insertedEvents)
 
       } yield {
         val inserted = 1 + insertedColumns.length + insertedCards.length + insertedEvents.length
@@ -302,7 +307,7 @@ object FetchDataActor {
 
   val name = "FetchDataActor"
 
-  case class FetchDataTrello(boardIds: Seq[String], now: LocalDateTime)
+  case class FetchDataTrello(boardIds: Seq[String])
 
   case class FetchGitHubDataForProject(gitHubProject: GitHubProject, position: Int)
 

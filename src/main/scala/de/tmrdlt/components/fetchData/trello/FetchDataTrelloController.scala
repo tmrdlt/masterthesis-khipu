@@ -4,19 +4,15 @@ import akka.actor.ActorRef
 import de.tmrdlt.components.fetchData.FetchDataActor.FetchDataTrello
 import de.tmrdlt.connectors.TrelloApi
 import de.tmrdlt.database.workflowlist.WorkflowListDB
-import de.tmrdlt.utils.SimpleNameLogger
-
-import java.time.LocalDateTime
+import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 
 
 class FetchDataTrelloController(trelloApi: TrelloApi,
                                 workflowListDB: WorkflowListDB,
                                 fetchDataActor: ActorRef)
-  extends SimpleNameLogger {
+  extends SimpleNameLogger with OptionExtensions {
 
   def fetchDataTrello(boardIds: Seq[String]): Unit = {
-    log.info("Start fetching Trello data...")
-    val now = LocalDateTime.now()
-    fetchDataActor ! FetchDataTrello(boardIds, now)
+    fetchDataActor ! FetchDataTrello(boardIds)
   }
 }
