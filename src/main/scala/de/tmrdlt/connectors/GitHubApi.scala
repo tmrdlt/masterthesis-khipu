@@ -14,6 +14,10 @@ import scala.concurrent.Future
 class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with WorkflowConfig with GitHubJsonSupport {
   private val http: HttpExt = Http()
 
+  // Rate Limits
+  // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting
+  // Via BasicAuthentication its 5000 Requests / hour per Token
+  
   // Base URL
   // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#schema
   private val baseUrl = "https://api.github.com"
@@ -52,27 +56,11 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
   private def gitHubPaginationParams(page: Int): Seq[(String, String)] =
     Seq(("per_page", s"$paginationElementsPerPage"), ("page", s"$page"))
 
-
-  def getProjectsOfOrganisation(orgName: String): Future[Seq[GitHubProject]] = {
-    val request = HttpUtil.request(
-      method = HttpMethods.GET,
-      headers = List(projectsApiAcceptHeader),
-      path = s"${baseUrl}/orgs/${orgName}/projects",
-    )
-    for {
-      response <- http.singleRequest(request)
-      res <- Unmarshal(response).to[Seq[GitHubProject]]
-    } yield {
-      log.info("Got GitHub projects")
-      res
-    }
-  }
-
-  def getProjectsForRepository(repoOwnerString: String): Future[Seq[GitHubProject]] = {
+  def getProjectsOfRepo(ownerAndRepo: String): Future[Seq[GitHubProject]] = {
     val request = HttpUtil.request(
       method = HttpMethods.GET,
       headers = List(projectsApiAcceptHeader, authHeader),
-      path = s"${baseUrl}/repos/${repoOwnerString}/projects",
+      path = s"${baseUrl}/repos/${ownerAndRepo}/projects",
     )
     log.info(s"URL: ${request.uri}")
     for {
@@ -99,27 +87,8 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  def getContentOfNote(contentUrl: String): Future[GitHubIssue] = {
-    val request = HttpUtil.request(
-      method = HttpMethods.GET,
-      headers = List(projectsApiAcceptHeader, authHeader),
-      path = contentUrl
-    )
-    for {
-      response <- http.singleRequest(request)
-      res <- Unmarshal(response).to[GitHubIssue]
-    } yield {
-      log.info("Got GitHub issue")
-      res
-    }
-  }
-
   def getAllCardsOfColumn(cardsUrl: String): Future[Seq[GitHubCard]] = {
     getCardsOfColumnRecursively(cardsUrl, 0)
-  }
-
-  def getAllEventsOfIssue(eventsUrl: String): Future[Seq[GitHubIssueEvent]] = {
-    getEventsOfIssueRecursively(eventsUrl, 0)
   }
 
   private def getCardsOfColumnRecursively(cardsUrl: String, page: Int): Future[Seq[GitHubCard]] = {
@@ -136,6 +105,7 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
       path = cardsUrl,
       parameters = gitHubPaginationParams(page)
     )
+    log.info(s"URL: ${request.uri}")
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubCard]]
@@ -145,21 +115,25 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
     }
   }
 
-  private def getEventsOfIssueRecursively(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
-    getEventsOfIssue(eventsUrl, page).flatMap { seq =>
-      if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getEventsOfIssueRecursively(eventsUrl, page + 1), Future.successful(seq))
+  def getAllIssueEventsOfRepo(ownerAndRepo: String): Future[Seq[GitHubIssueEvent]] = {
+    getIssueEventsOfRepoRecursively(ownerAndRepo, 0)
+  }
+
+  private def getIssueEventsOfRepoRecursively(ownerAndRepo: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
+    getIssueEventsOfRepo(ownerAndRepo, page).flatMap { seq =>
+      if (seq.nonEmpty) FutureUtil.mergeFutureSeqs(getIssueEventsOfRepoRecursively(ownerAndRepo, page + 1), Future.successful(seq))
       else Future.successful(seq)
     }
   }
 
-
-  private def getEventsOfIssue(eventsUrl: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
+  private def getIssueEventsOfRepo(ownerAndRepo: String, page: Int): Future[Seq[GitHubIssueEvent]] = {
     val request = HttpUtil.request(
       method = HttpMethods.GET,
       headers = List(eventsApiAcceptHeader, authHeader),
-      path = eventsUrl,
+      path = s"${baseUrl}/repos/${ownerAndRepo}/issues/events",
       parameters = gitHubPaginationParams(page)
     )
+    log.info(s"URL: ${request.uri}")
     for {
       response <- http.singleRequest(request)
       res <- Unmarshal(response).to[Seq[GitHubIssueEvent]]
@@ -168,4 +142,5 @@ class GitHubApi(implicit system: ActorSystem) extends SimpleNameLogger with Work
       res
     }
   }
+
 }

@@ -19,6 +19,10 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
 
   private val http: HttpExt = Http()
 
+  // Rate Limit
+  // https://help.trello.com/article/838-api-rate-limits
+  // 100 Requests / 10 seconds / token
+
   // Base URL
   // https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#your-first-api-call
   private val baseUrl = "https://api.trello.com/1"

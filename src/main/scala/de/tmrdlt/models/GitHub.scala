@@ -18,10 +18,10 @@ trait GitHubJsonSupport extends JsonSupport {
   implicit val gitHubEventActorFormat: RootJsonFormat[GitHubEventActor] = jsonFormat2(GitHubEventActor)
   implicit val gitHubRenameEventFormat: RootJsonFormat[GitHubRenameEvent] = jsonFormat2(GitHubRenameEvent)
   implicit val gitHubEventProjectCardFormat: RootJsonFormat[GitHubEventProjectCard] = jsonFormat5(GitHubEventProjectCard)
-  implicit val gitHubIssueEventFormat: RootJsonFormat[GitHubIssueEvent] = jsonFormat8(GitHubIssueEvent)
+  implicit val gitHubIssueEventFormat: RootJsonFormat[GitHubIssueEvent] = jsonFormat9(GitHubIssueEvent)
 }
 
-case class FetchDataGitHubEntity(orgNames: Seq[String])
+case class FetchDataGitHubEntity(ownerAndRepo: String)
 
 case class GitHubProject(id: Long,
                          node_id: String,
@@ -68,15 +68,20 @@ case class GitHubIssue(id: Long,
 
 case class GitHubIssueEvent(id: Long,
                             node_id: String,
-                            event: GitHubIssueEventType,
+                            event: String,
                             url: String,
-                            actor: GitHubEventActor,
+                            actor: Option[GitHubEventActor],
                             rename: Option[GitHubRenameEvent], // if rename event ???
                             project_card: Option[GitHubEventProjectCard],
+                            issue: Option[GitHubIssue],
                             created_at: LocalDateTime) {
 
   def isMoveToNewColumnEvent: Boolean =
-    event == GitHubIssueEventType.moved_columns_in_project
+    event.contains(GitHubIssueEventType.moved_columns_in_project.toString)
+
+  def isAddedOrRemovedEvent: Boolean =
+    event.contains(GitHubIssueEventType.added_to_project.toString) || event.contains(GitHubIssueEventType.removed_from_project.toString)
+
 }
 
 case class GitHubEventProjectCard(id: Long,

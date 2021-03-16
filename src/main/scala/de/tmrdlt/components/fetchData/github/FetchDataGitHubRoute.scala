@@ -12,7 +12,7 @@ class FetchDataGitHubRoute(controller: FetchDataGitHubController)
   val route: Route =
     post {
       entity(as[FetchDataGitHubEntity]) { fetchDataGitHubEntity =>
-        controller.fetchDataGitHub(fetchDataGitHubEntity.orgNames)
+        controller.fetchDataGitHub(fetchDataGitHubEntity)
         complete(Accepted)
       }
     }
