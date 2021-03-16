@@ -99,10 +99,10 @@ class TrelloApi(implicit system: ActorSystem) extends SimpleNameLogger
     }
   }
 
-  private def getCardsOfList(listID: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
+  private def getCardsOfList(listId: String, beforeId: Option[String]): Future[Seq[TrelloCard]] = {
     val request = HttpUtil.request(
       method = HttpMethods.GET,
-      path = s"${baseUrl}/lists/${listID}/cards/all",
+      path = s"${baseUrl}/lists/${listId}/cards/all",
       parameters = trelloAuthParams ++ trelloPaginationParam(beforeId)
     )
     for {
