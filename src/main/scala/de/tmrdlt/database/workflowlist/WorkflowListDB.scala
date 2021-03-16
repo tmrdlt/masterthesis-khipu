@@ -54,6 +54,7 @@ class WorkflowListDB
             state = Some(WorkflowListState.OPEN),
             dataSource = WorkflowListDataSource.Khipu,
             useCase = None,
+            isTemporalConstraintBoard = Some(false),
             createdAt = now,
             updatedAt = now
           )

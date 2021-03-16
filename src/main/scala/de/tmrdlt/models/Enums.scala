@@ -7,8 +7,9 @@ trait EnumJsonSupport extends JsonSupport {
   implicit val workflowListStateFormat: EnumJsonConverter[WorkflowListState.type] = new EnumJsonConverter(WorkflowListState)
   implicit val workflowUseCaseFormat: EnumJsonConverter[WorkflowListUseCase.type] = new EnumJsonConverter(WorkflowListUseCase)
   implicit val workflowDataSourceFormat: EnumJsonConverter[WorkflowListDataSource.type] = new EnumJsonConverter(WorkflowListDataSource)
-  implicit val eventTypeFormat: EnumJsonConverter[EventType.type] = new EnumJsonConverter(EventType)
   implicit val workflowListTypeFormat: EnumJsonConverter[WorkflowListType.type] = new EnumJsonConverter(WorkflowListType)
+  implicit val eventTypeFormat: EnumJsonConverter[EventType.type] = new EnumJsonConverter(EventType)
+  implicit val temporalConstraintTypeFormat: EnumJsonConverter[TemporalConstraintType.type] = new EnumJsonConverter(TemporalConstraintType)
 }
 
 object WorkflowListState extends Enumeration {
@@ -37,11 +38,6 @@ object WorkflowListDataSource extends Enumeration {
   val Khipu, GitHub, Trello = Value
 }
 
-object EventType extends Enumeration {
-  type EventType = Value
-  val createWorkflowList, deleteWorkflowList, moveToNewParent = Value
-}
-
 object WorkflowListType extends Enumeration {
   type WorkflowListType = Value
   val ITEM, LIST, BOARD = Value
@@ -55,4 +51,14 @@ object WorkflowListType extends Enumeration {
       WorkflowListType.BOARD
     }
   }
+}
+
+object EventType extends Enumeration {
+  type EventType = Value
+  val createWorkflowList, deleteWorkflowList, moveToNewParent = Value
+}
+
+object TemporalConstraintType extends Enumeration {
+  type TemporalConstraintType = Value
+  val projectDueDate, itemToBeInList, dependsOn = Value
 }

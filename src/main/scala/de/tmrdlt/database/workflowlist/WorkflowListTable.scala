@@ -3,6 +3,7 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.database.temporalcontraint.TemporalConstraint
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models.WorkflowListEntity
@@ -17,19 +18,19 @@ import java.util.UUID
 /**
  * Database representation of a workflowList.
  *
- * @param id               Database id
- * @param apiId            UUID (generated upon insert) to be used as a unique identifier
- *                         when the real db id is not desired.
- * @param title            TBD
- * @param description      TBD
- * @param parentId         TBD
- * @param position         TBD
- * @param listType         TBD
- * @param state            TBD
- * @param useCase          TBD
- * @param dataSource       TBD
- * @param createdAt        TBD
- * @param updatedAt        TBD
+ * @param id          Database id
+ * @param apiId       UUID (generated upon insert) to be used as a unique identifier
+ *                    when the real db id is not desired.
+ * @param title       TBD
+ * @param description TBD
+ * @param parentId    TBD
+ * @param position    TBD
+ * @param listType    TBD
+ * @param state       TBD
+ * @param useCase     TBD
+ * @param dataSource  TBD
+ * @param createdAt   TBD
+ * @param updatedAt   TBD
  */
 case class WorkflowList(id: Long,
                         apiId: String,
@@ -41,19 +42,22 @@ case class WorkflowList(id: Long,
                         state: Option[WorkflowListState],
                         dataSource: WorkflowListDataSource,
                         useCase: Option[WorkflowListUseCase],
+                        isTemporalConstraintBoard: Option[Boolean] = None,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
-  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long): WorkflowListEntity =
+  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, temporalConstraint: Option[TemporalConstraint]): WorkflowListEntity =
     WorkflowListEntity(
       id = id,
       uuid = apiId,
       title = title,
       description = description,
-      children = children.sortBy(_.order), // Important to return the workflow lists in a ordered way!
+      children = children.sortBy(_.position), // Important to return the workflow lists in a ordered way!
       usageType = listType,
       level = level,
-      order = position,
+      position = position,
+      isTemporalConstraintBoard = isTemporalConstraintBoard,
+      temporalConstraint = temporalConstraint,
       createdAt = createdAt,
       updatedAt = updatedAt
     )
@@ -80,6 +84,8 @@ class WorkflowListTable(tag: Tag)
 
   def useCase: Rep[Option[WorkflowListUseCase]] = column[Option[WorkflowListUseCase]]("use_case", Nullable)
 
+  def isTemporalConstraintBoard: Rep[Option[Boolean]] = column[Option[Boolean]]("is_temporal_constraint_board", Nullable)
+
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -88,6 +94,19 @@ class WorkflowListTable(tag: Tag)
     foreignKey("parent_fk", parentId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  def * : ProvenShape[WorkflowList] =
-    (id, apiId, title, description, parentId, position, listType, state, dataSource, useCase, createdAt, updatedAt).mapTo[WorkflowList]
+  def * : ProvenShape[WorkflowList] = (
+    id,
+    apiId,
+    title,
+    description,
+    parentId,
+    position,
+    listType,
+    state,
+    dataSource,
+    useCase,
+    isTemporalConstraintBoard,
+    createdAt,
+    updatedAt
+    ).mapTo[WorkflowList]
 }

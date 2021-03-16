@@ -1,5 +1,6 @@
 package de.tmrdlt.models
 
+import de.tmrdlt.database.temporalcontraint.{TemporalConstraint, TemporalConstraintJsonSupport}
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import spray.json.RootJsonFormat
 
@@ -13,7 +14,9 @@ case class WorkflowListEntity(id: Long,
                               children: Seq[WorkflowListEntity],
                               usageType: WorkflowListType,
                               level: Long,
-                              order: Long,
+                              position: Long,
+                              isTemporalConstraintBoard: Option[Boolean],
+                              temporalConstraint: Option[TemporalConstraint],
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) // TODO add owner
 
@@ -32,7 +35,7 @@ case class MoveWorkflowListEntity(newParentApiId: Option[String],
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
-trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
+trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with TemporalConstraintJsonSupport {
 
   implicit val workflowListFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
@@ -43,7 +46,9 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
       "children",
       "usageType",
       "level",
-      "order",
+      "position",
+      "temporalConstraintActive",
+      "temporalConstraint",
       "createdAt",
       "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat4(CreateWorkflowListEntity)
