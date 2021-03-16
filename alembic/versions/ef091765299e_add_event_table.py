@@ -1,4 +1,4 @@
-"""add action table
+"""add event table
 
 Revision ID: ef091765299e
 Revises: da5b7f91e49d
@@ -18,10 +18,10 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('action',
+    op.create_table('event',
                     Column('id', BIGINT, primary_key=True),
                     Column('api_id', VARCHAR, nullable=False),
-                    Column('action_type', VARCHAR, nullable=False),
+                    Column('event_type', VARCHAR, nullable=False),
                     Column('workflow_list_api_id', VARCHAR, nullable=False),
                     Column('board_api_id', VARCHAR, nullable=True),
                     Column('parent_api_id', VARCHAR, nullable=True),
@@ -35,4 +35,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('action', schema='workflow')
+    op.drop_table('event', schema='workflow')

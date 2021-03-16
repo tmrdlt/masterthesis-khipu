@@ -1,7 +1,7 @@
 package de.tmrdlt.database
 
 import com.github.tminglei.slickpg.{ExPostgresProfile, PgDate2Support, PgEnumSupport}
-import de.tmrdlt.models.{ActionType, WorkflowListDataSource, WorkflowListState, WorkflowListType, WorkflowListUseCase}
+import de.tmrdlt.models.{EventType, WorkflowListDataSource, WorkflowListState, WorkflowListType, WorkflowListUseCase}
 import de.tmrdlt.utils.SimpleNameLogger
 import slick.util.SlickLogger
 
@@ -33,9 +33,9 @@ trait MyPostgresProfile
     implicit val workflowListDataSourceListTypeMapper = createEnumListJdbcType("data_source", WorkflowListDataSource)
     implicit val workflowListDataSourceOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListDataSource)
 
-    implicit val actionTypeTypeMapper = createEnumJdbcType("action_type", ActionType)
-    implicit val actionTypeListTypeMapper = createEnumListJdbcType("action_type", ActionType)
-    implicit val actionTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(ActionType)
+    implicit val actionTypeTypeMapper = createEnumJdbcType("action_type", EventType)
+    implicit val actionTypeListTypeMapper = createEnumListJdbcType("action_type", EventType)
+    implicit val actionTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(EventType)
   }
 
 }

@@ -7,7 +7,7 @@ trait EnumJsonSupport extends JsonSupport {
   implicit val workflowListStateFormat: EnumJsonConverter[WorkflowListState.type] = new EnumJsonConverter(WorkflowListState)
   implicit val workflowUseCaseFormat: EnumJsonConverter[WorkflowListUseCase.type] = new EnumJsonConverter(WorkflowListUseCase)
   implicit val workflowDataSourceFormat: EnumJsonConverter[WorkflowListDataSource.type] = new EnumJsonConverter(WorkflowListDataSource)
-  implicit val actionTypeFormat: EnumJsonConverter[ActionType.type] = new EnumJsonConverter(ActionType)
+  implicit val eventTypeFormat: EnumJsonConverter[EventType.type] = new EnumJsonConverter(EventType)
   implicit val workflowListTypeFormat: EnumJsonConverter[WorkflowListType.type] = new EnumJsonConverter(WorkflowListType)
 }
 
@@ -37,8 +37,8 @@ object WorkflowListDataSource extends Enumeration {
   val Khipu, GitHub, Trello = Value
 }
 
-object ActionType extends Enumeration {
-  type ActionType = Value
+object EventType extends Enumeration {
+  type EventType = Value
   val createWorkflowList, deleteWorkflowList, moveToNewParent = Value
 }
 

@@ -2,7 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.action.Action
+import de.tmrdlt.database.action.Event
 import de.tmrdlt.models._
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction
@@ -58,11 +58,11 @@ class WorkflowListDB
             updatedAt = now
           )
         }
-        _ <- (actionQuery returning actionQuery) += {
-          Action(
+        _ <- (eventQuery returning eventQuery) += {
+          Event(
             id = 0L,
             apiId = java.util.UUID.randomUUID.toString,
-            actionType = ActionType.createWorkflowList.toString,
+            eventType = EventType.createWorkflowList.toString,
             workflowListApiId = workflowList.apiId,
             boardApiId = None,
             parentApiId = cwle.parentApiId,
@@ -110,11 +110,11 @@ class WorkflowListDB
               }
               neighboursUpdatedOnRemove <- updateNeighboursOnRemove(workflowList)
               elementDeleted <- workflowListQuery.filter(_.id === workflowList.id).delete
-              _ <- (actionQuery returning actionQuery) += {
-                Action(
+              _ <- (eventQuery returning eventQuery) += {
+                Event(
                   id = 0L,
                   apiId = java.util.UUID.randomUUID.toString,
-                  actionType = ActionType.deleteWorkflowList.toString,
+                  eventType = EventType.deleteWorkflowList.toString,
                   workflowListApiId = workflowList.apiId,
                   boardApiId = None,
                   parentApiId = parentOption.map(_.apiId),
@@ -178,11 +178,11 @@ class WorkflowListDB
                 case Some(id) => getWorkflowListByIdSqlAction(id)
                 case _ => DBIO.successful(None)
               }
-              _ <- (actionQuery returning actionQuery) += {
-                Action(
+              _ <- (eventQuery returning eventQuery) += {
+                Event(
                   id = 0L,
                   apiId = java.util.UUID.randomUUID.toString,
-                  actionType = ActionType.moveToNewParent.toString,
+                  eventType = EventType.moveToNewParent.toString,
                   workflowListApiId = workflowList.apiId,
                   boardApiId = None,
                   parentApiId = None,

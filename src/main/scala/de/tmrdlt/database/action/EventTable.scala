@@ -8,23 +8,23 @@ import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
 import java.time.LocalDateTime
 
-case class Action(id: Long,
-                  apiId: String,
-                  actionType: String, // TODO make Enum: Decide which actions to use
-                  workflowListApiId: String, // TODO make Long and foreign key
-                  boardApiId: Option[String], // Only for GitHub & Trello
-                  parentApiId: Option[String], // TODO make Long and foreign key // Only for create and delete actions
-                  oldParentApiId: Option[String], // TODO make Long and foreign key
-                  newParentApiId: Option[String], // Only for move actions
-                  userApiId: String,
-                  date: LocalDateTime,
-                  dataSource: WorkflowListDataSource)
+case class Event(id: Long,
+                 apiId: String,
+                 eventType: String, // TODO make Enum: Decide which actions to use
+                 workflowListApiId: String, // TODO make Long and foreign key
+                 boardApiId: Option[String], // Only for GitHub & Trello
+                 parentApiId: Option[String], // TODO make Long and foreign key // Only for create and delete actions
+                 oldParentApiId: Option[String], // TODO make Long and foreign key
+                 newParentApiId: Option[String], // Only for move actions
+                 userApiId: String,
+                 date: LocalDateTime,
+                 dataSource: WorkflowListDataSource)
 
-class ActionTable(tag: Tag) extends BaseTableLong[Action](tag, "action") {
+class EventTable(tag: Tag) extends BaseTableLong[Event](tag, "event") {
 
   def apiId: Rep[String] = column[String]("api_id", NotNull)
 
-  def actionType: Rep[String] = column[String]("action_type", NotNull)
+  def eventType: Rep[String] = column[String]("event_type", NotNull)
 
   def workflowListApiId: Rep[String] = column[String]("workflow_list_api_id", NotNull)
 
@@ -43,6 +43,6 @@ class ActionTable(tag: Tag) extends BaseTableLong[Action](tag, "action") {
   def dataSource: Rep[WorkflowListDataSource] = column[WorkflowListDataSource]("data_source", NotNull)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  def * : ProvenShape[Action] =
-    (id, apiId, actionType, workflowListApiId, boardApiId, parentApiId, oldParentApiId, newParentApiId, userApiId, date, dataSource).mapTo[Action]
+  def * : ProvenShape[Event] =
+    (id, apiId, eventType, workflowListApiId, boardApiId, parentApiId, oldParentApiId, newParentApiId, userApiId, date, dataSource).mapTo[Event]
 }

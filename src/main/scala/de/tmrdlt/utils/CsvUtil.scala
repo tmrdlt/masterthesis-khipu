@@ -1,7 +1,7 @@
 package de.tmrdlt.utils
 
 import com.github.tototoshi.csv.{CSVWriter, DefaultCSVFormat}
-import de.tmrdlt.database.action.Action
+import de.tmrdlt.database.action.Event
 import de.tmrdlt.database.workflowlist.WorkflowList
 
 import java.io.File
@@ -33,13 +33,13 @@ object CsvUtil {
   }
 
 
-  def writeActionsToCsv(boardName: String, actions: Seq[Action]): Future[File] = {
-    val header = Seq(classOf[Action].getDeclaredFields.map(_.getName).toSeq)
+  def writeEventsToCsv(boardName: String, actions: Seq[Event]): Future[File] = {
+    val header = Seq(classOf[Event].getDeclaredFields.map(_.getName).toSeq)
     val data = actions.map(a =>
       Seq(
         a.id.toString,
         a.apiId,
-        a.actionType,
+        a.eventType,
         a.workflowListApiId,
         a.parentApiId.getOrElse(""),
         a.oldParentApiId.getOrElse(""),
@@ -49,7 +49,7 @@ object CsvUtil {
         a.dataSource.toString,
       )
     )
-    writeCSV("actions_" ++ boardName, header ++ data)
+    writeCSV("events_" ++ boardName, header ++ data)
   }
 
   def writeCSV(filePrefix: String = "data",

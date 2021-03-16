@@ -1,6 +1,6 @@
 package de.tmrdlt.database
 
-import de.tmrdlt.database.action.ActionTable
+import de.tmrdlt.database.action.EventTable
 import de.tmrdlt.database.workflowlist.WorkflowListTable
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
@@ -14,5 +14,5 @@ object MyDB {
   val db: JdbcProfile#Backend#Database = dbConfig.db
 
   val workflowListQuery = TableQuery[WorkflowListTable]
-  val actionQuery = TableQuery[ActionTable]
+  val eventQuery = TableQuery[EventTable]
 }
