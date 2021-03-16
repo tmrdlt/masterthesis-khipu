@@ -1,4 +1,4 @@
-package de.tmrdlt.database.action
+package de.tmrdlt.database.event
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._

@@ -2,7 +2,7 @@ package de.tmrdlt.database.workflowlist
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.action.Event
+import de.tmrdlt.database.event.Event
 import de.tmrdlt.models._
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
 import slick.sql.SqlAction

@@ -1,7 +1,7 @@
 package de.tmrdlt.utils
 
 import com.github.tototoshi.csv.{CSVWriter, DefaultCSVFormat}
-import de.tmrdlt.database.action.Event
+import de.tmrdlt.database.event.Event
 import de.tmrdlt.database.workflowlist.WorkflowList
 
 import java.io.File

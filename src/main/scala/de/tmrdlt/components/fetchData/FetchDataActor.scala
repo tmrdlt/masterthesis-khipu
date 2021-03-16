@@ -3,7 +3,7 @@ package de.tmrdlt.components.fetchData
 import akka.actor.{Actor, ActorLogging, Props}
 import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataTrello, FetchDataGitHub}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
-import de.tmrdlt.database.action.{Event, EventDB}
+import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._

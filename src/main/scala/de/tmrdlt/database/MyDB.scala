@@ -1,6 +1,6 @@
 package de.tmrdlt.database
 
-import de.tmrdlt.database.action.EventTable
+import de.tmrdlt.database.event.EventTable
 import de.tmrdlt.database.workflowlist.WorkflowListTable
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
