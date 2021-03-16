@@ -32,9 +32,11 @@ class FetchDataActor(trelloApi: TrelloApi,
       def fetchDataForTrelloBoard(boardId: String): Future[Boolean] = {
         log.info(s"Start fetching Trello data for board with ID '$boardId'.")
         (for {
+          // To be able to keep and store the order of the lists retrieved by the API a Seq[Seq[Foo]] data structure is
+          // used together with flatMap and zipWithIndex
           trelloBoard <- trelloApi.getBoard(boardId)
           trelloLists <- trelloApi.getListsOfBoard(boardId)
-          trelloCards <- trelloApi.getAllCardsOfBoard(boardId)
+          trelloCardsSeqs <- Future.sequence(trelloLists.map(l => trelloApi.getAllCardsOfList(l.id)))
           trelloActions <- trelloApi.getAllActionsOfBoard(boardId)
 
           insertedBoard <- workflowListDB.insertWorkflowList(
@@ -57,7 +59,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                 .getOrException("Error getting update date for board")
             )
           )
-          // To be able to keep and store the order of the lists retrieved by the API we use .zipWithIndex.map
+
           insertedLists <- workflowListDB.insertWorkflowLists(trelloLists.zipWithIndex.map {
             case (trelloList, index) =>
               WorkflowList(
@@ -79,7 +81,8 @@ class FetchDataActor(trelloApi: TrelloApi,
                   .getOrException("Error getting update date for list")
               )
           })
-          insertedItems <- workflowListDB.insertWorkflowLists(trelloCards.zipWithIndex.map {
+
+          insertedItems <- workflowListDB.insertWorkflowLists(trelloCardsSeqs.flatMap(_.zipWithIndex.map {
             case (trelloCard, index) =>
               WorkflowList(
                 id = 0L,
@@ -95,7 +98,8 @@ class FetchDataActor(trelloApi: TrelloApi,
                 createdAt = DateUtil.getDateFromObjectIdString(trelloCard.id),
                 updatedAt = trelloCard.dateLastActivity
               )
-          })
+          }))
+
           insertedEvents <- eventDB.insertEvents(trelloActions.map { trelloAction =>
             Event(
               id = 0L,
