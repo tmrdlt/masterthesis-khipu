@@ -1,11 +1,10 @@
 package de.tmrdlt.models
 
-import de.tmrdlt.database.temporalcontraint.{TemporalConstraint, TemporalConstraintJsonSupport}
+import de.tmrdlt.models.TemporalConstraintType.TemporalConstraintType
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
-import java.util.UUID
 
 case class WorkflowListEntity(id: Long,
                               uuid: String,
@@ -15,8 +14,8 @@ case class WorkflowListEntity(id: Long,
                               usageType: WorkflowListType,
                               level: Long,
                               position: Long,
-                              isTemporalConstraintBoard: Option[Boolean],
-                              temporalConstraint: Option[TemporalConstraint],
+                              isTemporalConstraintBoard: Boolean,
+                              temporalConstraint: Option[TemporalConstraintEntity],
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) // TODO add owner
 
@@ -35,9 +34,16 @@ case class MoveWorkflowListEntity(newParentApiId: Option[String],
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
-trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with TemporalConstraintJsonSupport {
+case class TemporalConstraintEntity(temporalConstraintType: TemporalConstraintType,
+                                    dueDate: Option[LocalDateTime],
+                                    connectedWorkflowListId: Option[Long],
+                                    createdAt: LocalDateTime,
+                                    updatedAt: LocalDateTime)
 
-  implicit val workflowListFormat: RootJsonFormat[WorkflowListEntity] =
+trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
+
+  implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat5(TemporalConstraintEntity)
+  implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
       "id",
       "uuid",
@@ -47,7 +53,7 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with Temp
       "usageType",
       "level",
       "position",
-      "temporalConstraintActive",
+      "isTemporalConstraintBoard",
       "temporalConstraint",
       "createdAt",
       "updatedAt")))

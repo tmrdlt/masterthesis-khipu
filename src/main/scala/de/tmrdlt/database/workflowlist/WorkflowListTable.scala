@@ -56,8 +56,8 @@ case class WorkflowList(id: Long,
       usageType = listType,
       level = level,
       position = position,
-      isTemporalConstraintBoard = isTemporalConstraintBoard,
-      temporalConstraint = temporalConstraint,
+      isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
+      temporalConstraint = temporalConstraint.map(_.toTemporalConstraintEntity),
       createdAt = createdAt,
       updatedAt = updatedAt
     )
