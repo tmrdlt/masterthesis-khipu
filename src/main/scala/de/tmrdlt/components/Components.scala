@@ -7,6 +7,7 @@ import de.tmrdlt.components.health.{HealthController, HealthRoute}
 import de.tmrdlt.components.workflowlist.id.convert.{WorkflowListIdConvertController, WorkflowListIdConvertRoute}
 import de.tmrdlt.components.workflowlist.id.move.{WorkflowListIdMoveController, WorkflowListIdMoveRoute}
 import de.tmrdlt.components.workflowlist.id.reorder.{WorkflowListIdReorderController, WorkflowListIdReorderRoute}
+import de.tmrdlt.components.workflowlist.id.tempconstraint.{WorkflowListIdTempConstraintController, WorkflowListIdTempConstraintRoute}
 import de.tmrdlt.components.workflowlist.id.{WorkflowListIdController, WorkflowListIdRoute}
 import de.tmrdlt.components.workflowlist.{WorkflowListController, WorkflowListRoute}
 import de.tmrdlt.connectors.Apis
@@ -26,4 +27,7 @@ class Components(system: ActorSystem) {
   val workflowListIdConvert = new WorkflowListIdConvertRoute(new WorkflowListIdConvertController(dbs.workflowListDB))
   val workflowListIdMove = new WorkflowListIdMoveRoute(new WorkflowListIdMoveController(dbs.workflowListDB))
   val workflowListIdReorder = new WorkflowListIdReorderRoute(new WorkflowListIdReorderController(dbs.workflowListDB))
+  val workflowListIdTempConstraint = new WorkflowListIdTempConstraintRoute(
+    new WorkflowListIdTempConstraintController(dbs.workflowListDB, dbs.temporalConstraintDB)
+  )
 }

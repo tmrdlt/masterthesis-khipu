@@ -2,11 +2,11 @@ package de.tmrdlt.database.temporalcontraint
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.models.TemporalConstraintEntity
 import de.tmrdlt.models.TemporalConstraintType.TemporalConstraintType
-import de.tmrdlt.models.{EnumJsonSupport, JsonSupport, TemporalConstraintEntity}
 import slick.lifted.{ProvenShape, Rep}
+import slick.ast.ColumnOption.Unique
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
-import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
 
@@ -21,16 +21,14 @@ case class TemporalConstraint(id: Long,
     TemporalConstraintEntity(
       temporalConstraintType = temporalConstraintType,
       dueDate = dueDate,
-      connectedWorkflowListId = connectedWorkflowListId,
-      createdAt = createdAt,
-      updatedAt = updatedAt
+      connectedWorkflowListId = connectedWorkflowListId
     )
 }
 
 class TemporalConstraintTable(tag: Tag)
   extends BaseTableLong[TemporalConstraint](tag, "temporal_constraint") {
 
-  def workflowListId: Rep[Long] = column[Long]("workflow_list_id", NotNull)
+  def workflowListId: Rep[Long] = column[Long]("workflow_list_id", NotNull, Unique)
 
   def temporalConstraintType: Rep[TemporalConstraintType] = column[TemporalConstraintType]("temporal_constraint_type", NotNull)
 

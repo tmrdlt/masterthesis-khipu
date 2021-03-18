@@ -25,7 +25,8 @@ case class CreateWorkflowListEntity(title: String,
                                     parentApiId: Option[String])
 
 case class UpdateWorkflowListEntity(newTitle: String,
-                                    newDescription: Option[String])
+                                    newDescription: Option[String],
+                                    isTemporalConstraintBoard: Option[Boolean])
 
 case class ConvertWorkflowListEntity(newListType: WorkflowListType)
 
@@ -36,13 +37,11 @@ case class ReorderWorkflowListEntity(newPosition: Long)
 
 case class TemporalConstraintEntity(temporalConstraintType: TemporalConstraintType,
                                     dueDate: Option[LocalDateTime],
-                                    connectedWorkflowListId: Option[Long],
-                                    createdAt: LocalDateTime,
-                                    updatedAt: LocalDateTime)
+                                    connectedWorkflowListId: Option[Long])
 
 trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
 
-  implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat5(TemporalConstraintEntity)
+  implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat3(TemporalConstraintEntity)
   implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
       "id",
@@ -58,7 +57,7 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
       "createdAt",
       "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat4(CreateWorkflowListEntity)
-  implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat2(UpdateWorkflowListEntity)
+  implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat3(UpdateWorkflowListEntity)
   implicit val convertWorkflowListEntityFormat: RootJsonFormat[ConvertWorkflowListEntity] = jsonFormat1(ConvertWorkflowListEntity)
   implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat2(MoveWorkflowListEntity)
   implicit val reorderWorkflowListEntityFormat: RootJsonFormat[ReorderWorkflowListEntity] = jsonFormat1(ReorderWorkflowListEntity)

@@ -10,4 +10,13 @@ class TemporalConstraintDB {
   def getTemporalConstraints: Future[Seq[TemporalConstraint]] =
     db.run(temporalConstraintQuery.result)
 
+  def getTemporalConstraint(workflowListId: Long): Future[Option[TemporalConstraint]] =
+    db.run(temporalConstraintQuery.filter(_.workflowListId === workflowListId).result.headOption)
+
+  def insertOrUpdateTemporalConstraint(temporalConstraint: TemporalConstraint): Future[Int] = {
+    val query = temporalConstraintQuery
+      .insertOrUpdate(temporalConstraint)
+    db.run(query)
+  }
+
 }

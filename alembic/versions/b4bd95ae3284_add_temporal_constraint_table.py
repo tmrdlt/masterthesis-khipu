@@ -20,7 +20,7 @@ depends_on = None
 def upgrade():
     op.create_table('temporal_constraint',
                     Column('id', BIGINT, primary_key=True),
-                    Column('workflow_list_id', VARCHAR, nullable=False),
+                    Column('workflow_list_id', BIGINT, nullable=False, unique=True),
                     Column('temporal_constraint_type', Enum('projectDueDate', 'itemToBeInList', 'dependsOn',
                                                             name='temporal_constraint_type', schema='workflow'),
                            nullable=False),
@@ -29,6 +29,9 @@ def upgrade():
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
+
+    op.create_unique_constraint('temporal_constraint_workflow_list_id_unique_constraint', 'temporal_constraint',
+                                ['workflow_list_id'], schema='workflow')
 
 
 def downgrade():
