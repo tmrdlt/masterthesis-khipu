@@ -40,6 +40,7 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
         parent.toWorkflowListEntity(
           getChildren(parent.id, workflowLists, 1L, temporalConstraints),
           0L,
+          workflowLists,
           temporalConstraints
         )
       }
@@ -52,7 +53,7 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     workflowLists
       .filter(_.parentId.contains(parentId))
       .map { child =>
-        child.toWorkflowListEntity(getChildren(child.id, workflowLists, level+1, temporalConstraints), level, temporalConstraints)
+        child.toWorkflowListEntity(getChildren(child.id, workflowLists, level+1, temporalConstraints), level, workflowLists, temporalConstraints)
       }
   }
 }

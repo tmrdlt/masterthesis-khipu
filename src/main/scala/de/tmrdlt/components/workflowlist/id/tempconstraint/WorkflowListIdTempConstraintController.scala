@@ -17,6 +17,10 @@ class WorkflowListIdTempConstraintController(workflowListDB: WorkflowListDB,
     val now = LocalDateTime.now()
     for {
       workflowList <- workflowListDB.getWorkflowList(workflowListApiId)
+      connectedWorkflowListOption <- entity.connectedWorkflowList match {
+        case Some(simpleWl) => workflowListDB.getWorkflowList(simpleWl.apiId).map(wl => Some(wl))
+        case _ => Future.successful(None)
+      }
       temporalConstraintOption <- temporalConstraintDB.getTemporalConstraint(workflowList.id)
       upserted <- temporalConstraintDB.insertOrUpdateTemporalConstraint(
         TemporalConstraint(
@@ -24,7 +28,7 @@ class WorkflowListIdTempConstraintController(workflowListDB: WorkflowListDB,
           workflowListId = workflowList.id,
           temporalConstraintType = entity.temporalConstraintType,
           dueDate = entity.dueDate,
-          connectedWorkflowListId = entity.connectedWorkflowListId,
+          connectedWorkflowListId = connectedWorkflowListOption.map(_.id),
           createdAt = temporalConstraintOption.map(_.createdAt).getOrElse(now),
           updatedAt = now
         )

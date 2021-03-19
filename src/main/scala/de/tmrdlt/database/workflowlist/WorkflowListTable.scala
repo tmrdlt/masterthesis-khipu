@@ -6,7 +6,7 @@ import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.temporalcontraint.TemporalConstraint
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
-import de.tmrdlt.models.WorkflowListEntity
+import de.tmrdlt.models.{WorkflowListEntity, WorkflowListSimpleEntity}
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
 import de.tmrdlt.models.WorkflowListUseCase.WorkflowListUseCase
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
@@ -46,7 +46,7 @@ case class WorkflowList(id: Long,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
-  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, temporalConstraints: Seq[TemporalConstraint]): WorkflowListEntity =
+  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, workflowLists: Seq[WorkflowList], temporalConstraints: Seq[TemporalConstraint]): WorkflowListEntity = {
     WorkflowListEntity(
       id = id,
       uuid = apiId,
@@ -57,9 +57,15 @@ case class WorkflowList(id: Long,
       level = level,
       position = position,
       isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
-      temporalConstraint = temporalConstraints.find(_.workflowListId == id).map(_.toTemporalConstraintEntity),
+      temporalConstraint = temporalConstraints.find(_.workflowListId == id).map(_.toTemporalConstraintEntity(workflowLists)),
       createdAt = createdAt,
       updatedAt = updatedAt
+    )
+  }
+  def toWorkflowListSimpleEntity: WorkflowListSimpleEntity =
+    WorkflowListSimpleEntity(
+      apiId = apiId,
+      title = title
     )
 }
 

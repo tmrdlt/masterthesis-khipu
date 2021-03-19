@@ -2,6 +2,7 @@ package de.tmrdlt.database.temporalcontraint
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.database.workflowlist.WorkflowList
 import de.tmrdlt.models.TemporalConstraintEntity
 import de.tmrdlt.models.TemporalConstraintType.TemporalConstraintType
 import slick.lifted.{ProvenShape, Rep}
@@ -17,11 +18,12 @@ case class TemporalConstraint(id: Long,
                               connectedWorkflowListId: Option[Long],
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) {
-  def toTemporalConstraintEntity: TemporalConstraintEntity =
+
+  def toTemporalConstraintEntity (workflowLists: Seq[WorkflowList]): TemporalConstraintEntity =
     TemporalConstraintEntity(
       temporalConstraintType = temporalConstraintType,
       dueDate = dueDate,
-      connectedWorkflowListId = connectedWorkflowListId
+      connectedWorkflowList = workflowLists.find(wl => connectedWorkflowListId.contains(wl.id)).map(_.toWorkflowListSimpleEntity)
     )
 }
 

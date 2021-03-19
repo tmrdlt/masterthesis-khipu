@@ -35,13 +35,17 @@ case class MoveWorkflowListEntity(newParentApiId: Option[String],
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
+case class WorkflowListSimpleEntity(apiId: String,
+                                    title: String)
+
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalConstraintEntity(temporalConstraintType: TemporalConstraintType,
                                     dueDate: Option[LocalDateTime],
-                                    connectedWorkflowListId: Option[Long])
+                                    connectedWorkflowList: Option[WorkflowListSimpleEntity])
 
 trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
 
+  implicit val workflowListSimpleEntityFormat: RootJsonFormat[WorkflowListSimpleEntity] = jsonFormat2(WorkflowListSimpleEntity)
   implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat3(TemporalConstraintEntity)
   implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
