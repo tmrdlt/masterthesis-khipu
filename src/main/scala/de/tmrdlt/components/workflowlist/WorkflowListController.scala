@@ -37,11 +37,10 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     workflowLists
       .filter(_.parentId.isEmpty)
       .map { parent =>
-        val temporalConstraint = temporalConstraints.find(_.workflowListId == parent.id)
         parent.toWorkflowListEntity(
-          getChildren(parent.id, workflowLists, 1L, temporalConstraint),
+          getChildren(parent.id, workflowLists, 1L, temporalConstraints),
           0L,
-          temporalConstraint
+          temporalConstraints
         )
       }
   }
@@ -49,11 +48,11 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
   private def getChildren(parentId: Long,
                           workflowLists: Seq[WorkflowList],
                           level: Long,
-                          temporalConstraint: Option[TemporalConstraint]): Seq[WorkflowListEntity] = {
+                          temporalConstraints: Seq[TemporalConstraint]): Seq[WorkflowListEntity] = {
     workflowLists
       .filter(_.parentId.contains(parentId))
       .map { child =>
-        child.toWorkflowListEntity(getChildren(child.id, workflowLists, level+1, temporalConstraint), level, temporalConstraint)
+        child.toWorkflowListEntity(getChildren(child.id, workflowLists, level+1, temporalConstraints), level, temporalConstraints)
       }
   }
 }

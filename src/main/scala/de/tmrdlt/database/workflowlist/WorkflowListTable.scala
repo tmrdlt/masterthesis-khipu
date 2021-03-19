@@ -46,7 +46,7 @@ case class WorkflowList(id: Long,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
-  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, temporalConstraint: Option[TemporalConstraint]): WorkflowListEntity =
+  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, temporalConstraints: Seq[TemporalConstraint]): WorkflowListEntity =
     WorkflowListEntity(
       id = id,
       uuid = apiId,
@@ -57,7 +57,7 @@ case class WorkflowList(id: Long,
       level = level,
       position = position,
       isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
-      temporalConstraint = temporalConstraint.map(_.toTemporalConstraintEntity),
+      temporalConstraint = temporalConstraints.find(_.workflowListId == id).map(_.toTemporalConstraintEntity),
       createdAt = createdAt,
       updatedAt = updatedAt
     )

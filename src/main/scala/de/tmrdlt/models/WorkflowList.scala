@@ -35,6 +35,7 @@ case class MoveWorkflowListEntity(newParentApiId: Option[String],
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
+// TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalConstraintEntity(temporalConstraintType: TemporalConstraintType,
                                     dueDate: Option[LocalDateTime],
                                     connectedWorkflowListId: Option[Long])
