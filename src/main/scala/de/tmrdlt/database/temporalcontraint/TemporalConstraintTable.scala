@@ -23,7 +23,7 @@ case class TemporalConstraint(id: Long,
     TemporalConstraintEntity(
       temporalConstraintType = temporalConstraintType,
       dueDate = dueDate,
-      connectedWorkflowList = workflowLists.find(wl => connectedWorkflowListId.contains(wl.id)).map(_.toWorkflowListSimpleEntity)
+      connectedWorkflowListApiId = workflowLists.find(wl => connectedWorkflowListId.contains(wl.id)).map(_.apiId)
     )
 }
 

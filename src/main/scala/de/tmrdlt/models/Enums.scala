@@ -60,5 +60,5 @@ object EventType extends Enumeration {
 
 object TemporalConstraintType extends Enumeration {
   type TemporalConstraintType = Value
-  val projectDueDate, itemToBeInList, dependsOn = Value
+  val noConstraint, projectDueDate, itemToBeInList, dependsOn = Value
 }

@@ -41,7 +41,7 @@ case class WorkflowListSimpleEntity(apiId: String,
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalConstraintEntity(temporalConstraintType: TemporalConstraintType,
                                     dueDate: Option[LocalDateTime],
-                                    connectedWorkflowList: Option[WorkflowListSimpleEntity])
+                                    connectedWorkflowListApiId: Option[String])
 
 trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
 
