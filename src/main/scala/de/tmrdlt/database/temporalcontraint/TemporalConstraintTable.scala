@@ -1,11 +1,12 @@
 package de.tmrdlt.database.temporalcontraint
 
 import de.tmrdlt.database.BaseTableLong
+import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.workflowlist.WorkflowList
+import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListTable}
 import de.tmrdlt.models.TemporalConstraintEntity
 import de.tmrdlt.models.TemporalConstraintType.TemporalConstraintType
-import slick.lifted.{ProvenShape, Rep}
+import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.ast.ColumnOption.Unique
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
@@ -41,6 +42,12 @@ class TemporalConstraintTable(tag: Tag)
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
+
+  def workflowListForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
+    foreignKey("workflow_list_fk", workflowListId, workflowListQuery)(_.id, onDelete = ForeignKeyAction.Cascade)
+
+  def connectedWorkflowListForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
+    foreignKey("connected_workflow_list_fk", connectedWorkflowListId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[TemporalConstraint] =
