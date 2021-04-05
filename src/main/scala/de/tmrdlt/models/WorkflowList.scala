@@ -1,6 +1,5 @@
 package de.tmrdlt.models
 
-import de.tmrdlt.models.TemporalConstraintType.TemporalConstraintType
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import spray.json.RootJsonFormat
 
@@ -39,14 +38,15 @@ case class WorkflowListSimpleEntity(apiId: String,
                                     title: String)
 
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
-case class TemporalConstraintEntity(temporalConstraintType: TemporalConstraintType,
-                                    dueDate: Option[LocalDateTime],
+case class TemporalConstraintEntity(startDate: Option[LocalDateTime],
+                                    endDate: Option[LocalDateTime],
+                                    durationInMinutes: Option[Long],
                                     connectedWorkflowListApiId: Option[String])
 
 trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
 
   implicit val workflowListSimpleEntityFormat: RootJsonFormat[WorkflowListSimpleEntity] = jsonFormat2(WorkflowListSimpleEntity)
-  implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat3(TemporalConstraintEntity)
+  implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat4(TemporalConstraintEntity)
   implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
       "id",

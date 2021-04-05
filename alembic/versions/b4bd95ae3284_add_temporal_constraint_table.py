@@ -21,10 +21,9 @@ def upgrade():
     op.create_table('temporal_constraint',
                     Column('id', BIGINT, primary_key=True),
                     Column('workflow_list_id', BIGINT, nullable=False, unique=True),
-                    Column('temporal_constraint_type',
-                           Enum('noConstraint', 'projectDueDate', 'itemToBeInList', 'dependsOn',
-                                name='temporal_constraint_type', schema='workflow'), nullable=False),
-                    Column('due_date', TIMESTAMP, nullable=True),
+                    Column('start_date', TIMESTAMP, nullable=True),
+                    Column('end_date', TIMESTAMP, nullable=True),
+                    Column('duration_in_minutes', BIGINT, nullable=True),
                     Column('connected_workflow_list_id', BIGINT, nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
@@ -43,7 +42,3 @@ def upgrade():
 
 def downgrade():
     op.drop_table('temporal_constraint', schema='workflow')
-
-    temporal_constraint_type_enum = ENUM('noConstraint', 'projectDueDate', 'itemToBeInList', 'dependsOn',
-                                         name='temporal_constraint_type', schema='workflow')
-    temporal_constraint_type_enum.drop(op.get_bind())

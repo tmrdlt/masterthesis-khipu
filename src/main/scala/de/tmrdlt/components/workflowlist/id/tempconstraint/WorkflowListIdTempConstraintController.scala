@@ -26,8 +26,9 @@ class WorkflowListIdTempConstraintController(workflowListDB: WorkflowListDB,
         TemporalConstraint(
           id = temporalConstraintOption.map(_.id).getOrElse(0L),
           workflowListId = workflowList.id,
-          temporalConstraintType = entity.temporalConstraintType,
-          dueDate = entity.dueDate,
+          startDate = entity.startDate,
+          endDate = entity.endDate,
+          durationInMinutes = entity.durationInMinutes,
           connectedWorkflowListId = connectedWorkflowListOption.map(_.id),
           createdAt = temporalConstraintOption.map(_.createdAt).getOrElse(now),
           updatedAt = now
