@@ -9,7 +9,7 @@ Create Date: 2020-12-04 16:21:56.293515
 from alembic import op
 
 from sqlalchemy import Column, func, Enum
-from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, VARCHAR, ENUM)
+from sqlalchemy.dialects.postgresql import (BIGINT, BOOLEAN, TIMESTAMP, VARCHAR, ENUM)
 
 # revision identifiers, used by Alembic.
 revision = 'afb2d9be7aca'
@@ -35,6 +35,7 @@ def upgrade():
                     Column('use_case',
                            Enum('softwareDevelopment', 'roadmap', 'personal', name='use_case', schema='workflow'),
                            nullable=True),
+                    Column('is_temporal_constraint_board', BOOLEAN, nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')

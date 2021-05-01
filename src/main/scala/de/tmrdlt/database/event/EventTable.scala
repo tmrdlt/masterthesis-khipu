@@ -13,8 +13,8 @@ case class Event(id: Long,
                  eventType: String, // TODO make Enum: Decide which actions to use
                  workflowListApiId: String, // TODO make Long and foreign key
                  boardApiId: Option[String], // Only for GitHub & Trello
-                 parentApiId: Option[String], // TODO make Long and foreign key // Only for create and delete actions
-                 oldParentApiId: Option[String], // TODO make Long and foreign key
+                 parentApiId: Option[String], // Only for create and delete actions TODO make Long and foreign key
+                 oldParentApiId: Option[String], // Only for move actions TODO make Long and foreign key
                  newParentApiId: Option[String], // Only for move actions
                  userApiId: String,
                  date: LocalDateTime,

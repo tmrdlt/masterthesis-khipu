@@ -21,6 +21,14 @@ class WorkflowListDB
     db.run(workflowListQuery.result)
   }
 
+  def getWorkflowList(workflowListApiId: String): Future[WorkflowList] = {
+    db.run(getWorkflowListByApiIdSqlAction(workflowListApiId).map {
+      case Some(workflowList) => workflowList
+      case _ => throw new Exception(s"No workflowList for apiId $workflowListApiId found")
+    })
+  }
+
+
   def insertWorkflowList(workflowList: WorkflowList): Future[WorkflowList] =
     db.run(workflowListQuery returning workflowListQuery += workflowList)
 
@@ -54,6 +62,7 @@ class WorkflowListDB
             state = Some(WorkflowListState.OPEN),
             dataSource = WorkflowListDataSource.Khipu,
             useCase = None,
+            isTemporalConstraintBoard = None,
             createdAt = now,
             updatedAt = now
           )
@@ -86,8 +95,8 @@ class WorkflowListDB
           case Some(workflowList) =>
             workflowListQuery
               .filter(_.id === workflowList.id)
-              .map(wl => (wl.title, wl.description, wl.updatedAt))
-              .update((uwle.newTitle, uwle.newDescription, LocalDateTime.now()))
+              .map(wl => (wl.title, wl.description, wl.isTemporalConstraintBoard, wl.updatedAt))
+              .update((uwle.newTitle, uwle.newDescription, uwle.isTemporalConstraintBoard, LocalDateTime.now()))
           case _ =>
             DBIO.failed(new Exception(s"Cannot update workflow list. No list for apiId ${workflowListApiId} found"))
         }
@@ -229,6 +238,25 @@ class WorkflowListDB
       } yield updated
 
     db.run(query.transactionally)
+  }
+
+  def updateWorkflowListIsTemporalConstraintBoard(workflowListApiId: String,
+                                                  isTemporalConstraintBoard: Boolean): Future[Int] = {
+    val query =
+      for {
+        workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
+        updated <- workflowListOption match {
+          case Some(workflowList) =>
+            workflowListQuery
+              .filter(_.id === workflowList.id)
+              .map(wl => (wl.isTemporalConstraintBoard, wl.updatedAt))
+              .update((Some(isTemporalConstraintBoard), LocalDateTime.now()))
+          case _ =>
+            DBIO.failed(new Exception(s"Cannot update workflow list. No list for apiId ${workflowListApiId} found"))
+        }
+      } yield updated
+
+    db.run(query)
   }
 
   private def getWorkflowListByIdSqlAction(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
