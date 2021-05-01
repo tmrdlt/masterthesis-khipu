@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 case class User(id: Long,
                 apiId: String,
-                userName: String,
+                username: String,
                 createdAt: LocalDateTime,
                 updatedAt: LocalDateTime)
 
