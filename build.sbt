@@ -17,7 +17,7 @@ libraryDependencies ++= {
   val akkaVersion = "2.6.13"
   val akkaHttpVersion = "10.2.4"
   val slickVersion = "3.3.3"
-  val slickPgVersion = "0.19.5"
+  val slickPgVersion = "0.19.6"
   val mongoDbVersion = "4.2.2"
   val scalaCsvVersion = "1.3.7"
 

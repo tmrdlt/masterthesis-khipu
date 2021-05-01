@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import de.tmrdlt.components.fetchData.github.{FetchDataGitHubController, FetchDataGitHubRoute}
 import de.tmrdlt.components.fetchData.trello.{FetchDataTrelloController, FetchDataTrelloRoute}
 import de.tmrdlt.components.health.{HealthController, HealthRoute}
+import de.tmrdlt.components.user.{UserController, UserRoute}
 import de.tmrdlt.components.workflowlist.id.convert.{WorkflowListIdConvertController, WorkflowListIdConvertRoute}
 import de.tmrdlt.components.workflowlist.id.move.{WorkflowListIdMoveController, WorkflowListIdMoveRoute}
 import de.tmrdlt.components.workflowlist.id.reorder.{WorkflowListIdReorderController, WorkflowListIdReorderRoute}
@@ -30,4 +31,5 @@ class Components(system: ActorSystem) {
   val workflowListIdTempConstraint = new WorkflowListIdTempConstraintRoute(
     new WorkflowListIdTempConstraintController(dbs.workflowListDB, dbs.temporalConstraintDB)
   )
+  val user = new UserRoute(new UserController(dbs.userDB))
 }

@@ -27,7 +27,7 @@ def upgrade():
                     schema='workflow')
 
     op.add_column(table_name='workflow_list',
-                  column=Column('created_by_user_id', BIGINT, nullable=True),
+                  column=Column('created_by_user_api_id', VARCHAR, nullable=True),
                   schema='workflow')
 
     # ToDo maybe add later

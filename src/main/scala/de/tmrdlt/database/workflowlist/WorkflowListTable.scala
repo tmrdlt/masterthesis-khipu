@@ -94,7 +94,7 @@ class WorkflowListTable(tag: Tag)
 
   def isTemporalConstraintBoard: Rep[Option[Boolean]] = column[Option[Boolean]]("is_temporal_constraint_board", Nullable)
 
-  def createdByUserApiId: Rep[Option[String]] = column[Option[String]]("created_by_user_id", Nullable)
+  def createdByUserApiId: Rep[Option[String]] = column[Option[String]]("created_by_user_api_id", Nullable)
 
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
