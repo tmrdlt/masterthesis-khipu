@@ -7,8 +7,8 @@ Create Date: 2021-03-16 17:12:19.585616
 """
 from alembic import op
 
-from sqlalchemy import Column, func, Enum
-from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, ENUM)
+from sqlalchemy import Column, func
+from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP)
 
 # revision identifiers, used by Alembic.
 revision = 'b4bd95ae3284'
@@ -29,16 +29,29 @@ def upgrade():
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
 
-    op.create_unique_constraint('temporal_constraint_workflow_list_id_unique_constraint', 'temporal_constraint',
-                                ['workflow_list_id'], schema='workflow')
+    op.create_unique_constraint(constraint_name='temporal_constraint_workflow_list_id_unique_constraint',
+                                table_name='temporal_constraint',
+                                columns=['workflow_list_id'],
+                                schema='workflow')
 
-    op.create_foreign_key('workflow_list_fk', 'temporal_constraint', 'workflow_list', ['workflow_list_id'], ['id'],
-                          None, 'CASCADE', None, None, None, 'workflow', 'workflow')
+    op.create_foreign_key(constraint_name='workflow_list_fk',
+                          source_table='temporal_constraint',
+                          referent_table='workflow_list',
+                          local_cols=['workflow_list_id'],
+                          remote_cols=['id'],
+                          ondelete='CASCADE',
+                          source_schema='workflow',
+                          referent_schema='workflow')
 
-    op.create_foreign_key('connected_workflow_list_fk', 'temporal_constraint', 'workflow_list',
-                          ['connected_workflow_list_id'], ['id'],
-                          None, 'CASCADE', None, None, None, 'workflow', 'workflow')
+    op.create_foreign_key(constraint_name='connected_workflow_list_fk',
+                          source_table='temporal_constraint',
+                          referent_table='workflow_list',
+                          local_cols=['connected_workflow_list_id'],
+                          remote_cols=['id'],
+                          ondelete='CASCADE',
+                          source_schema='workflow',
+                          referent_schema='workflow')
 
 
 def downgrade():
-    op.drop_table('temporal_constraint', schema='workflow')
+    op.drop_table(table_name='temporal_constraint', schema='workflow')

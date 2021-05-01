@@ -30,22 +30,30 @@ def upgrade():
                            nullable=False),
                     Column('state', Enum('OPEN', 'CLOSED', name='state', schema='workflow'),
                            nullable=True),
-                    Column('data_source', Enum('Khipu', 'GitHub', 'Trello', name='data_source', schema='workflow'),
+                    Column('data_source',
+                           Enum('Khipu', 'GitHub', 'Trello', name='data_source', schema='workflow'),
                            nullable=False),
                     Column('use_case',
-                           Enum('softwareDevelopment', 'roadmap', 'personal', name='use_case', schema='workflow'),
+                           Enum('softwareDevelopment', 'roadmap', 'personal', name='use_case',
+                                schema='workflow'),
                            nullable=True),
                     Column('is_temporal_constraint_board', BOOLEAN, nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
 
-    op.create_foreign_key('parent_fk', 'workflow_list', 'workflow_list', ['parent_id'], ['id'],
-                          None, 'CASCADE', None, None, None, 'workflow', 'workflow')
+    op.create_foreign_key(constraint_name='parent_fk',
+                          source_table='workflow_list',
+                          referent_table='workflow_list',
+                          local_cols=['parent_id'],
+                          remote_cols=['id'],
+                          ondelete='CASCADE',
+                          source_schema='workflow',
+                          referent_schema='workflow')
 
 
 def downgrade():
-    op.drop_table('workflow_list', schema='workflow')
+    op.drop_table(table_name='workflow_list', schema='workflow')
 
     list_type_enum = ENUM('BOARD', 'LIST', 'ITEM', name='list_type', schema='workflow')
     list_type_enum.drop(op.get_bind())

@@ -35,4 +35,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('event', schema='workflow')
+    op.drop_table(table_name='event', schema='workflow')
