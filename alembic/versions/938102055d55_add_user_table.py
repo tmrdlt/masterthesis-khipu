@@ -30,13 +30,14 @@ def upgrade():
                   column=Column('created_by_user_id', BIGINT, nullable=True),
                   schema='workflow')
 
-    op.create_foreign_key(constraint_name='created_by_user_fk',
-                          source_table='workflow_list',
-                          referent_table='user',
-                          local_cols=['created_by_user_id'],
-                          remote_cols=['id'],
-                          source_schema='workflow',
-                          referent_schema='workflow')
+    # ToDo maybe add later
+    # op.create_foreign_key(constraint_name='created_by_user_fk',
+    #                       source_table='workflow_list',
+    #                       referent_table='user',
+    #                       local_cols=['created_by_user_id'],
+    #                       remote_cols=['id'],
+    #                       source_schema='workflow',
+    #                       referent_schema='workflow')
 
 
 def downgrade():

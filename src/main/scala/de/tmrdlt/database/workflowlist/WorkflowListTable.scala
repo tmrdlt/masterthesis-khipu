@@ -43,6 +43,7 @@ case class WorkflowList(id: Long,
                         dataSource: WorkflowListDataSource,
                         useCase: Option[WorkflowListUseCase],
                         isTemporalConstraintBoard: Option[Boolean] = None,
+                        createdByUserApiId: Option[String] = None,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
@@ -62,6 +63,7 @@ case class WorkflowList(id: Long,
       updatedAt = updatedAt
     )
   }
+
   def toWorkflowListSimpleEntity: WorkflowListSimpleEntity =
     WorkflowListSimpleEntity(
       apiId = apiId,
@@ -92,6 +94,8 @@ class WorkflowListTable(tag: Tag)
 
   def isTemporalConstraintBoard: Rep[Option[Boolean]] = column[Option[Boolean]]("is_temporal_constraint_board", Nullable)
 
+  def createdByUserApiId: Rep[Option[String]] = column[Option[String]]("created_by_user_id", Nullable)
+
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -99,7 +103,6 @@ class WorkflowListTable(tag: Tag)
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("parent_fk", parentId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
-  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] = (
     id,
     apiId,
@@ -112,7 +115,8 @@ class WorkflowListTable(tag: Tag)
     dataSource,
     useCase,
     isTemporalConstraintBoard,
+    createdByUserApiId,
     createdAt,
     updatedAt
-    ).mapTo[WorkflowList]
+  ) <> (WorkflowList.tupled, WorkflowList.unapply)
 }

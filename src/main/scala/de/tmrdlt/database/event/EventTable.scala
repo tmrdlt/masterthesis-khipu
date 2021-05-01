@@ -43,6 +43,17 @@ class EventTable(tag: Tag) extends BaseTableLong[Event](tag, "event") {
   def dataSource: Rep[WorkflowListDataSource] = column[WorkflowListDataSource]("data_source", NotNull)
 
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  def * : ProvenShape[Event] =
-    (id, apiId, eventType, workflowListApiId, boardApiId, parentApiId, oldParentApiId, newParentApiId, userApiId, date, dataSource).mapTo[Event]
+  def * : ProvenShape[Event] = (
+    id,
+    apiId,
+    eventType,
+    workflowListApiId,
+    boardApiId,
+    parentApiId,
+    oldParentApiId,
+    newParentApiId,
+    userApiId,
+    date,
+    dataSource
+  ) <> (Event.tupled, Event.unapply)
 }
