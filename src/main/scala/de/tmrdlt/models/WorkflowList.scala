@@ -21,7 +21,8 @@ case class WorkflowListEntity(id: Long,
 case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
                                     listType: WorkflowListType,
-                                    parentApiId: Option[String])
+                                    parentApiId: Option[String],
+                                    username: String)
 
 case class UpdateWorkflowListEntity(newTitle: String,
                                     newDescription: Option[String],
@@ -30,7 +31,8 @@ case class UpdateWorkflowListEntity(newTitle: String,
 case class ConvertWorkflowListEntity(newListType: WorkflowListType)
 
 case class MoveWorkflowListEntity(newParentApiId: Option[String],
-                                  newPosition: Option[Long])
+                                  newPosition: Option[Long],
+                                  username: String)
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
@@ -61,10 +63,10 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
       "temporalConstraint",
       "createdAt",
       "updatedAt")))
-  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat4(CreateWorkflowListEntity)
+  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat5(CreateWorkflowListEntity)
   implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat3(UpdateWorkflowListEntity)
   implicit val convertWorkflowListEntityFormat: RootJsonFormat[ConvertWorkflowListEntity] = jsonFormat1(ConvertWorkflowListEntity)
-  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat2(MoveWorkflowListEntity)
+  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat3(MoveWorkflowListEntity)
   implicit val reorderWorkflowListEntityFormat: RootJsonFormat[ReorderWorkflowListEntity] = jsonFormat1(ReorderWorkflowListEntity)
 
 }

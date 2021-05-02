@@ -18,7 +18,7 @@ class UserDB {
       User(
         id = 0L,
         apiId = java.util.UUID.randomUUID.toString,
-        userName = username,
+        username = username,
         createdAt = now,
         updatedAt = now
       )

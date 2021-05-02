@@ -21,13 +21,13 @@ def upgrade():
     op.create_table('user',
                     Column('id', BIGINT, primary_key=True),
                     Column('api_id', VARCHAR, nullable=False),
-                    Column('username', VARCHAR, nullable=False),
+                    Column('username', VARCHAR, nullable=False, unique=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
 
     op.add_column(table_name='workflow_list',
-                  column=Column('created_by_user_api_id', VARCHAR, nullable=True),
+                  column=Column('owner', VARCHAR, nullable=True),
                   schema='workflow')
 
     # ToDo maybe add later
@@ -41,5 +41,5 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_column(table_name='workflow_list', column_name='created_by_user_id', schema='workflow')
+    op.drop_column(table_name='workflow_list', column_name='owner', schema='workflow')
     op.drop_table(table_name='user', schema='workflow')

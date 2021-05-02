@@ -2,6 +2,7 @@ package de.tmrdlt.database.user
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import slick.ast.ColumnOption.Unique
 import slick.lifted.{ProvenShape, Rep, Tag}
 import slick.sql.SqlProfile.ColumnOption.NotNull
 
@@ -17,7 +18,7 @@ class UserTable(tag: Tag) extends BaseTableLong[User](tag, "user") {
 
   def apiId: Rep[String] = column[String]("api_id", NotNull)
 
-  def username: Rep[String] = column[String]("username", NotNull)
+  def username: Rep[String] = column[String]("username", NotNull, Unique)
 
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
