@@ -7,6 +7,6 @@ case class CreateUserEntity(username: String)
 
 trait UserJsonSupport extends JsonSupport {
   implicit val createUserEntityFormat: RootJsonFormat[CreateUserEntity] = jsonFormat1(CreateUserEntity)
-  implicit val userFormat: RootJsonFormat[User] = jsonFormat5(User)
+  implicit val userFormat: RootJsonFormat[User] = jsonFormat6(User)
 
 }

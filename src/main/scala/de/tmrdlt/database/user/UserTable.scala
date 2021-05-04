@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 case class User(id: Long,
                 apiId: String,
                 username: String,
+                isActive: Boolean = true,
                 createdAt: LocalDateTime,
                 updatedAt: LocalDateTime)
 
@@ -20,6 +21,8 @@ class UserTable(tag: Tag) extends BaseTableLong[User](tag, "user") {
 
   def username: Rep[String] = column[String]("username", NotNull, Unique)
 
+  def isActive: Rep[Boolean] = column[Boolean]("is_active", NotNull)
+
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -28,6 +31,7 @@ class UserTable(tag: Tag) extends BaseTableLong[User](tag, "user") {
     id,
     apiId,
     username,
+    isActive,
     createdAt,
     updatedAt
   ) <> (User.tupled, User.unapply)

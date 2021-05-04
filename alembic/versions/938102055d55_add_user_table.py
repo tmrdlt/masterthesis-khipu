@@ -8,7 +8,7 @@ Create Date: 2021-05-01 12:27:06.313662
 from alembic import op
 
 from sqlalchemy import Column, func, ForeignKey
-from sqlalchemy.dialects.postgresql import (BIGINT, TIMESTAMP, VARCHAR)
+from sqlalchemy.dialects.postgresql import (BIGINT, BOOLEAN, TIMESTAMP, VARCHAR)
 
 # revision identifiers, used by Alembic.
 revision = '938102055d55'
@@ -22,6 +22,7 @@ def upgrade():
                     Column('id', BIGINT, primary_key=True),
                     Column('api_id', VARCHAR, nullable=False),
                     Column('username', VARCHAR, nullable=False, unique=True),
+                    Column('is_active', BOOLEAN, nullable=False),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
