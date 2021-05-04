@@ -49,8 +49,7 @@ case class WorkflowList(id: Long,
 
   def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, workflowLists: Seq[WorkflowList], temporalConstraints: Seq[TemporalConstraint]): WorkflowListEntity = {
     WorkflowListEntity(
-      id = id,
-      uuid = apiId,
+      apiId = apiId,
       title = title,
       description = description,
       children = children.sortBy(_.position), // Important to return the workflow lists in a ordered way!

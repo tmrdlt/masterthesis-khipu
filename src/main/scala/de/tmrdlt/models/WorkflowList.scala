@@ -5,8 +5,7 @@ import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
 
-case class WorkflowListEntity(id: Long,
-                              uuid: String,
+case class WorkflowListEntity(apiId: String,
                               title: String,
                               description: Option[String],
                               children: Seq[WorkflowListEntity],
@@ -51,8 +50,7 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
   implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat4(TemporalConstraintEntity)
   implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
-      "id",
-      "uuid",
+      "apiId",
       "title",
       "description",
       "children",
