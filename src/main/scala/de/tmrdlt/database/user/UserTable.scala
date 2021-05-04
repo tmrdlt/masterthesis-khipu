@@ -2,6 +2,7 @@ package de.tmrdlt.database.user
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.models.UserEntity
 import slick.ast.ColumnOption.Unique
 import slick.lifted.{ProvenShape, Rep, Tag}
 import slick.sql.SqlProfile.ColumnOption.NotNull
@@ -13,7 +14,11 @@ case class User(id: Long,
                 username: String,
                 isActive: Boolean = true,
                 createdAt: LocalDateTime,
-                updatedAt: LocalDateTime)
+                updatedAt: LocalDateTime) {
+  def toUserEntity: UserEntity = UserEntity(
+    apiId, username, createdAt, updatedAt
+  )
+}
 
 class UserTable(tag: Tag) extends BaseTableLong[User](tag, "user") {
 
