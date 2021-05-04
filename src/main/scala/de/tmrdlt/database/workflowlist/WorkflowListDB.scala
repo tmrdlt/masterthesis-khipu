@@ -20,8 +20,8 @@ class WorkflowListDB
   def getWorkflowLists: Future[Seq[WorkflowList]] =
     db.run(workflowListQuery.result)
 
-  def getWorkflowLists(owner: String): Future[Seq[WorkflowList]] =
-    db.run(workflowListQuery.filter(_.owner === owner).result)
+  def getWorkflowLists(userApiId: String): Future[Seq[WorkflowList]] =
+    db.run(workflowListQuery.filter(_.ownerApiId === userApiId).result)
 
   def getWorkflowList(workflowListApiId: String): Future[WorkflowList] = {
     db.run(getWorkflowListByApiIdSqlAction(workflowListApiId).map {
@@ -65,7 +65,7 @@ class WorkflowListDB
             dataSource = WorkflowListDataSource.Khipu,
             useCase = None,
             isTemporalConstraintBoard = None,
-            owner = Some(cwle.username),
+            ownerApiId = Some(cwle.userApiId),
             createdAt = now,
             updatedAt = now
           )
@@ -80,7 +80,7 @@ class WorkflowListDB
             parentApiId = cwle.parentApiId,
             oldParentApiId = None,
             newParentApiId = None,
-            userApiId = cwle.username,
+            userApiId = cwle.userApiId,
             date = now,
             dataSource = WorkflowListDataSource.Khipu
           )
@@ -200,7 +200,7 @@ class WorkflowListDB
                   parentApiId = None,
                   oldParentApiId = oldParentOption.map(_.apiId),
                   newParentApiId = newParentOption.map(_.apiId),
-                  userApiId = mwle.username,
+                  userApiId = mwle.userApiId,
                   date = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )

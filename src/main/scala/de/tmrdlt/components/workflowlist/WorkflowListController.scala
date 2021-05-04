@@ -15,9 +15,9 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     workflowListDB.createWorkflowList(createWorkflowListEntity)
   }
 
-  def getWorkflowListEntities(usernameOption: Option[String]): Future[Seq[WorkflowListEntity]] = {
-    val workflowListsFuture = usernameOption match {
-      case Some(username) => workflowListDB.getWorkflowLists(username)
+  def getWorkflowListEntities(userApiIdOption: Option[String]): Future[Seq[WorkflowListEntity]] = {
+    val workflowListsFuture = userApiIdOption match {
+      case Some(userApiId) => workflowListDB.getWorkflowLists(userApiId)
       case None => workflowListDB.getWorkflowLists
     }
     for {

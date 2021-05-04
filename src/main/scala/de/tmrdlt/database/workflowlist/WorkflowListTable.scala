@@ -43,7 +43,7 @@ case class WorkflowList(id: Long,
                         dataSource: WorkflowListDataSource,
                         useCase: Option[WorkflowListUseCase],
                         isTemporalConstraintBoard: Option[Boolean] = None,
-                        owner: Option[String] = None,
+                        ownerApiId: Option[String] = None,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
@@ -94,7 +94,7 @@ class WorkflowListTable(tag: Tag)
 
   def isTemporalConstraintBoard: Rep[Option[Boolean]] = column[Option[Boolean]]("is_temporal_constraint_board", Nullable)
 
-  def owner: Rep[Option[String]] = column[Option[String]]("owner", Nullable)
+  def ownerApiId: Rep[Option[String]] = column[Option[String]]("owner_api_id", Nullable)
 
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
@@ -115,7 +115,7 @@ class WorkflowListTable(tag: Tag)
     dataSource,
     useCase,
     isTemporalConstraintBoard,
-    owner,
+    ownerApiId,
     createdAt,
     updatedAt
   ) <> (WorkflowList.tupled, WorkflowList.unapply)

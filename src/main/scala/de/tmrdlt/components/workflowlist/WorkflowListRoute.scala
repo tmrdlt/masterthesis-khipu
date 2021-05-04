@@ -16,8 +16,8 @@ class WorkflowListRoute(controller: WorkflowListController)
   val route: Route = {
     concat(
       get {
-        parameters("username".?) { username =>
-            onSuccess(controller.getWorkflowListEntities(username)) { workflowListEntities =>
+        parameters("userApiId".?) { userApiId =>
+            onSuccess(controller.getWorkflowListEntities(userApiId)) { workflowListEntities =>
               complete(OK -> workflowListEntities)
             }
         }

@@ -27,7 +27,7 @@ def upgrade():
                     schema='workflow')
 
     op.add_column(table_name='workflow_list',
-                  column=Column('owner', VARCHAR, nullable=True),
+                  column=Column('owner_api_id', VARCHAR, nullable=True),
                   schema='workflow')
 
     # ToDo maybe add later
@@ -41,5 +41,5 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_column(table_name='workflow_list', column_name='owner', schema='workflow')
+    op.drop_column(table_name='workflow_list', column_name='owner_api_id', schema='workflow')
     op.drop_table(table_name='user', schema='workflow')

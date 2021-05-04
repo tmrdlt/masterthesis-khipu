@@ -22,7 +22,7 @@ case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
                                     listType: WorkflowListType,
                                     parentApiId: Option[String],
-                                    username: String)
+                                    userApiId: String)
 
 case class UpdateWorkflowListEntity(newTitle: String,
                                     newDescription: Option[String],
@@ -32,7 +32,7 @@ case class ConvertWorkflowListEntity(newListType: WorkflowListType)
 
 case class MoveWorkflowListEntity(newParentApiId: Option[String],
                                   newPosition: Option[Long],
-                                  username: String)
+                                  userApiId: String)
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
