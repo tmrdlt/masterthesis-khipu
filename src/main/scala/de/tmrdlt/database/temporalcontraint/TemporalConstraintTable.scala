@@ -20,7 +20,7 @@ case class TemporalConstraint(id: Long,
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) {
 
-  def toTemporalConstraintEntity (workflowLists: Seq[WorkflowList]): TemporalConstraintEntity =
+  def toTemporalConstraintEntity(workflowLists: Seq[WorkflowList]): TemporalConstraintEntity =
     TemporalConstraintEntity(
       startDate = startDate,
       endDate = endDate,
@@ -52,7 +52,13 @@ class TemporalConstraintTable(tag: Tag)
   def connectedWorkflowListForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("connected_workflow_list_fk", connectedWorkflowListId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
-  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  def * : ProvenShape[TemporalConstraint] =
-    (id, workflowListId, startDate, endDate, durationInMinutes, connectedWorkflowListId, createdAt, updatedAt).mapTo[TemporalConstraint]
+  def * : ProvenShape[TemporalConstraint] = (
+    id,
+    workflowListId,
+    startDate, endDate,
+    durationInMinutes,
+    connectedWorkflowListId,
+    createdAt,
+    updatedAt
+  ) <> (TemporalConstraint.tupled, TemporalConstraint.unapply)
 }

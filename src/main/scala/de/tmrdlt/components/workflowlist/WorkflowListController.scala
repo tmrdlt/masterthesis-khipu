@@ -15,10 +15,14 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     workflowListDB.createWorkflowList(createWorkflowListEntity)
   }
 
-  def getWorkflowListEntities: Future[Seq[WorkflowListEntity]] = {
+  def getWorkflowListEntities(userApiIdOption: Option[String]): Future[Seq[WorkflowListEntity]] = {
+    val workflowListsFuture = userApiIdOption match {
+      case Some(userApiId) => workflowListDB.getWorkflowLists(userApiId)
+      case None => workflowListDB.getWorkflowLists
+    }
     for {
-      workflowLists <- workflowListDB.getWorkflowLists
-      temporalConstraints <- temporalConstraintDB.getTemporalConstraints
+      workflowLists <- workflowListsFuture
+      temporalConstraints <- temporalConstraintDB.getTemporalConstraints(workflowLists.map(_.id))
     } yield {
       // Important to return the workflow lists in a ordered way!
       workflowListsToEntities(workflowLists
@@ -53,7 +57,12 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     workflowLists
       .filter(_.parentId.contains(parentId))
       .map { child =>
-        child.toWorkflowListEntity(getChildren(child.id, workflowLists, level+1, temporalConstraints), level, workflowLists, temporalConstraints)
+        child.toWorkflowListEntity(
+          getChildren(child.id, workflowLists, level + 1, temporalConstraints),
+          level,
+          workflowLists,
+          temporalConstraints
+        )
       }
   }
 }

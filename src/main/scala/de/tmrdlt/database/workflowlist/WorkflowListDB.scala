@@ -17,9 +17,11 @@ class WorkflowListDB
     with OptionExtensions {
 
 
-  def getWorkflowLists: Future[Seq[WorkflowList]] = {
+  def getWorkflowLists: Future[Seq[WorkflowList]] =
     db.run(workflowListQuery.result)
-  }
+
+  def getWorkflowLists(userApiId: String): Future[Seq[WorkflowList]] =
+    db.run(workflowListQuery.filter(_.ownerApiId === userApiId).result)
 
   def getWorkflowList(workflowListApiId: String): Future[WorkflowList] = {
     db.run(getWorkflowListByApiIdSqlAction(workflowListApiId).map {
@@ -63,6 +65,7 @@ class WorkflowListDB
             dataSource = WorkflowListDataSource.Khipu,
             useCase = None,
             isTemporalConstraintBoard = None,
+            ownerApiId = Some(cwle.userApiId),
             createdAt = now,
             updatedAt = now
           )
@@ -77,7 +80,7 @@ class WorkflowListDB
             parentApiId = cwle.parentApiId,
             oldParentApiId = None,
             newParentApiId = None,
-            userApiId = "Tmrdlt", // TODO change when we have a user model
+            userApiId = cwle.userApiId,
             date = now,
             dataSource = WorkflowListDataSource.Khipu
           )
@@ -197,7 +200,7 @@ class WorkflowListDB
                   parentApiId = None,
                   oldParentApiId = oldParentOption.map(_.apiId),
                   newParentApiId = newParentOption.map(_.apiId),
-                  userApiId = "Tmrdlt", // TODO change when we have a user model
+                  userApiId = mwle.userApiId,
                   date = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )
@@ -320,7 +323,7 @@ class WorkflowListDB
    * When inserting a workflow list into a new parent at a given index (because move to new parent), we have to update
    * the position of the new neighbours.
    *
-   * @param newParentId   Parent in which workflow list gets inserted
+   * @param newParentId Parent in which workflow list gets inserted
    * @param newPosition Index at which workflow list gets inserted
    * @return Number of updated rows
    */

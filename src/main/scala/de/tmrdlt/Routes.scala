@@ -29,7 +29,9 @@ class Routes(components: Components)
         path("workflowlist" / Segment / "move") { workflowListApiId => components.workflowListIdMove.route(workflowListApiId) },
         path("workflowlist" / Segment / "reorder") { workflowListApiId => components.workflowListIdReorder.route(workflowListApiId) },
         path("workflowlist" / Segment / "tempconstraint") { workflowListApiId => components.workflowListIdTempConstraint.route(workflowListApiId) },
-        path("workflowlist" / Segment) { workflowListApiId => components.workflowListId.route(workflowListApiId) }
+        path("workflowlist" / Segment) { workflowListApiId => components.workflowListId.route(workflowListApiId) },
+        path("user")(components.user.route),
+        path("user" / Segment) { userApiId => components.userId.route(userApiId)}
       )
     }
   }

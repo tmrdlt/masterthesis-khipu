@@ -43,13 +43,13 @@ case class WorkflowList(id: Long,
                         dataSource: WorkflowListDataSource,
                         useCase: Option[WorkflowListUseCase],
                         isTemporalConstraintBoard: Option[Boolean] = None,
+                        ownerApiId: Option[String] = None,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
   def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, workflowLists: Seq[WorkflowList], temporalConstraints: Seq[TemporalConstraint]): WorkflowListEntity = {
     WorkflowListEntity(
-      id = id,
-      uuid = apiId,
+      apiId = apiId,
       title = title,
       description = description,
       children = children.sortBy(_.position), // Important to return the workflow lists in a ordered way!
@@ -62,6 +62,7 @@ case class WorkflowList(id: Long,
       updatedAt = updatedAt
     )
   }
+
   def toWorkflowListSimpleEntity: WorkflowListSimpleEntity =
     WorkflowListSimpleEntity(
       apiId = apiId,
@@ -92,6 +93,8 @@ class WorkflowListTable(tag: Tag)
 
   def isTemporalConstraintBoard: Rep[Option[Boolean]] = column[Option[Boolean]]("is_temporal_constraint_board", Nullable)
 
+  def ownerApiId: Rep[Option[String]] = column[Option[String]]("owner_api_id", Nullable)
+
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -99,7 +102,6 @@ class WorkflowListTable(tag: Tag)
   def parentForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("parent_fk", parentId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
-  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[WorkflowList] = (
     id,
     apiId,
@@ -112,7 +114,8 @@ class WorkflowListTable(tag: Tag)
     dataSource,
     useCase,
     isTemporalConstraintBoard,
+    ownerApiId,
     createdAt,
     updatedAt
-    ).mapTo[WorkflowList]
+  ) <> (WorkflowList.tupled, WorkflowList.unapply)
 }
