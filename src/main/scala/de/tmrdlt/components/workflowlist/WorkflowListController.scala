@@ -1,7 +1,7 @@
 package de.tmrdlt.components.workflowlist
 
-import de.tmrdlt.database.temporalcontraint.{TemporalConstraint, TemporalConstraintDB}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
+import de.tmrdlt.database.workflowlistresource.{GenericResource, TemporalResource, WorkflowListResourceDB}
 import de.tmrdlt.models.{CreateWorkflowListEntity, WorkflowListDataSource, WorkflowListEntity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 
 class WorkflowListController(workflowListDB: WorkflowListDB,
-                             temporalConstraintDB: TemporalConstraintDB) {
+                             workflowListResourceDB: WorkflowListResourceDB) {
 
   def createWorkflowList(createWorkflowListEntity: CreateWorkflowListEntity): Future[WorkflowList] = {
     workflowListDB.createWorkflowList(createWorkflowListEntity)
@@ -22,7 +22,8 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     }
     for {
       workflowLists <- workflowListsFuture
-      temporalConstraints <- temporalConstraintDB.getTemporalConstraints(workflowLists.map(_.id))
+      temporalResources <- workflowListResourceDB.getTemporalResources(workflowLists.map(_.id))
+      genericResources <- workflowListResourceDB.getGenericResources(workflowLists.map(_.id))
     } yield {
       // Important to return the workflow lists in a ordered way!
       workflowListsToEntities(workflowLists
@@ -31,21 +32,23 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
         .filter(_.dataSource == WorkflowListDataSource.Khipu)
         // .filter(_.dataSource == WorkflowListDataSource.Trello)
         // .filter(_.dataSource == WorkflowListDataSource.GitHub)
-        , temporalConstraints
+        , temporalResources, genericResources
       ).sortBy(_.position)
     }
   }
 
   private def workflowListsToEntities(workflowLists: Seq[WorkflowList],
-                                      temporalConstraints: Seq[TemporalConstraint]): Seq[WorkflowListEntity] = {
+                                      temporalResources: Seq[TemporalResource],
+                                      genericResources: Seq[GenericResource]): Seq[WorkflowListEntity] = {
     workflowLists
       .filter(_.parentId.isEmpty)
       .map { parent =>
         parent.toWorkflowListEntity(
-          getChildren(parent.id, workflowLists, 1L, temporalConstraints),
+          getChildren(parent.id, workflowLists, 1L, temporalResources, genericResources),
           0L,
           workflowLists,
-          temporalConstraints
+          temporalResources,
+          genericResources
         )
       }
   }
@@ -53,15 +56,17 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
   private def getChildren(parentId: Long,
                           workflowLists: Seq[WorkflowList],
                           level: Long,
-                          temporalConstraints: Seq[TemporalConstraint]): Seq[WorkflowListEntity] = {
+                          temporalResources: Seq[TemporalResource],
+                          genericResources: Seq[GenericResource]): Seq[WorkflowListEntity] = {
     workflowLists
       .filter(_.parentId.contains(parentId))
       .map { child =>
         child.toWorkflowListEntity(
-          getChildren(child.id, workflowLists, level + 1, temporalConstraints),
+          getChildren(child.id, workflowLists, level + 1, temporalResources, genericResources),
           level,
           workflowLists,
-          temporalConstraints
+          temporalResources,
+          genericResources
         )
       }
   }

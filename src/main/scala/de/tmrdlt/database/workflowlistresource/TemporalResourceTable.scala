@@ -1,27 +1,27 @@
-package de.tmrdlt.database.temporalcontraint
+package de.tmrdlt.database.workflowlistresource
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListTable}
-import de.tmrdlt.models.TemporalConstraintEntity
+import de.tmrdlt.models.{TemporalResourceEntity, WorkflowListResource}
 import slick.ast.ColumnOption.Unique
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
 import java.time.LocalDateTime
 
-case class TemporalConstraint(id: Long,
-                              workflowListId: Long,
-                              startDate: Option[LocalDateTime],
-                              endDate: Option[LocalDateTime],
-                              durationInMinutes: Option[Long],
-                              connectedWorkflowListId: Option[Long],
-                              createdAt: LocalDateTime,
-                              updatedAt: LocalDateTime) {
+case class TemporalResource(id: Long,
+                            workflowListId: Long,
+                            startDate: Option[LocalDateTime],
+                            endDate: Option[LocalDateTime],
+                            durationInMinutes: Option[Long],
+                            connectedWorkflowListId: Option[Long],
+                            createdAt: LocalDateTime,
+                            updatedAt: LocalDateTime) extends WorkflowListResource {
 
-  def toTemporalConstraintEntity(workflowLists: Seq[WorkflowList]): TemporalConstraintEntity =
-    TemporalConstraintEntity(
+  def toTemporalResourceEntity(workflowLists: Seq[WorkflowList]): TemporalResourceEntity =
+    TemporalResourceEntity(
       startDate = startDate,
       endDate = endDate,
       durationInMinutes = durationInMinutes,
@@ -29,8 +29,8 @@ case class TemporalConstraint(id: Long,
     )
 }
 
-class TemporalConstraintTable(tag: Tag)
-  extends BaseTableLong[TemporalConstraint](tag, "temporal_constraint") {
+class TemporalResourceTable(tag: Tag)
+  extends BaseTableLong[TemporalResource](tag, "temporal_resource") {
 
   def workflowListId: Rep[Long] = column[Long]("workflow_list_id", NotNull, Unique)
 
@@ -52,7 +52,7 @@ class TemporalConstraintTable(tag: Tag)
   def connectedWorkflowListForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("connected_workflow_list_fk", connectedWorkflowListId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
 
-  def * : ProvenShape[TemporalConstraint] = (
+  def * : ProvenShape[TemporalResource] = (
     id,
     workflowListId,
     startDate, endDate,
@@ -60,5 +60,5 @@ class TemporalConstraintTable(tag: Tag)
     connectedWorkflowListId,
     createdAt,
     updatedAt
-  ) <> (TemporalConstraint.tupled, TemporalConstraint.unapply)
+  ) <> (TemporalResource.tupled, TemporalResource.unapply)
 }

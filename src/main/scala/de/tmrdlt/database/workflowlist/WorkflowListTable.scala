@@ -3,17 +3,16 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.temporalcontraint.TemporalConstraint
+import de.tmrdlt.database.workflowlistresource.{GenericResource, TemporalResource}
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
-import de.tmrdlt.models.WorkflowListType.WorkflowListType
-import de.tmrdlt.models.{WorkflowListEntity, WorkflowListSimpleEntity}
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
+import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models.WorkflowListUseCase.WorkflowListUseCase
+import de.tmrdlt.models.{WorkflowListEntity, WorkflowListSimpleEntity}
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
 import java.time.LocalDateTime
-import java.util.UUID
 
 /**
  * Database representation of a workflowList.
@@ -47,7 +46,11 @@ case class WorkflowList(id: Long,
                         createdAt: LocalDateTime,
                         updatedAt: LocalDateTime) {
 
-  def toWorkflowListEntity(children: Seq[WorkflowListEntity], level: Long, workflowLists: Seq[WorkflowList], temporalConstraints: Seq[TemporalConstraint]): WorkflowListEntity = {
+  def toWorkflowListEntity(children: Seq[WorkflowListEntity],
+                           level: Long,
+                           workflowLists: Seq[WorkflowList],
+                           temporalResources: Seq[TemporalResource],
+                           genericResources: Seq[GenericResource]): WorkflowListEntity = {
     WorkflowListEntity(
       apiId = apiId,
       title = title,
@@ -57,7 +60,8 @@ case class WorkflowList(id: Long,
       level = level,
       position = position,
       isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
-      temporalConstraint = temporalConstraints.find(_.workflowListId == id).map(_.toTemporalConstraintEntity(workflowLists)),
+      temporalResource = temporalResources.find(_.workflowListId == id).map(_.toTemporalResourceEntity(workflowLists)),
+      genericResources = genericResources.filter(_.workflowListId == id).map(_.toGenericResourceEntity),
       createdAt = createdAt,
       updatedAt = updatedAt
     )
