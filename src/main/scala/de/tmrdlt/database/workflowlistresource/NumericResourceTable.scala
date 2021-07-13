@@ -17,7 +17,7 @@ case class NumericResource(id: Long,
                            createdAt: LocalDateTime,
                            updatedAt: LocalDateTime) {
 
-  def toGenericResourceEntity: NumericResourceEntity =
+  def toNumericResourceEntity: NumericResourceEntity =
     NumericResourceEntity(label = label, value = value)
 }
 

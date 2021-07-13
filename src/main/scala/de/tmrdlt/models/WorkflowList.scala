@@ -14,7 +14,8 @@ case class WorkflowListEntity(apiId: String,
                               position: Long,
                               isTemporalConstraintBoard: Boolean,
                               temporalResource: Option[TemporalResourceEntity],
-                              genericResources: Seq[NumericResourceEntity],
+                              numericResources: Seq[NumericResourceEntity],
+                              textualResources: Seq[TextualResourceEntity] = Seq.empty, // TODO CHANGE
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) // TODO add owner
 
@@ -53,7 +54,8 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with Work
       "position",
       "isTemporalConstraintBoard",
       "temporalResource",
-      "genericResources",
+      "numericResources",
+      "textualResources",
       "createdAt",
       "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat5(CreateWorkflowListEntity)

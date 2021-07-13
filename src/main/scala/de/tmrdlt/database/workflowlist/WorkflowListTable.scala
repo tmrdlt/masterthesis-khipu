@@ -3,7 +3,7 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource}
+import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource, TextualResource}
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
@@ -50,7 +50,8 @@ case class WorkflowList(id: Long,
                            level: Long,
                            workflowLists: Seq[WorkflowList],
                            temporalResources: Seq[TemporalResource],
-                           genericResources: Seq[NumericResource]): WorkflowListEntity = {
+                           numericResources: Seq[NumericResource],
+                           textualResources: Seq[TextualResource]): WorkflowListEntity = {
     WorkflowListEntity(
       apiId = apiId,
       title = title,
@@ -61,7 +62,8 @@ case class WorkflowList(id: Long,
       position = position,
       isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
       temporalResource = temporalResources.find(_.workflowListId == id).map(_.toTemporalResourceEntity(workflowLists)),
-      genericResources = genericResources.filter(_.workflowListId == id).map(_.toGenericResourceEntity),
+      numericResources = numericResources.filter(_.workflowListId == id).map(_.toNumericResourceEntity),
+      textualResources = textualResources.filter(_.workflowListId == id).map(_.toTextualResourceEntity),
       createdAt = createdAt,
       updatedAt = updatedAt
     )

@@ -101,5 +101,5 @@ def upgrade():
 
 def downgrade():
     op.drop_table(table_name='temporal_resource', schema='workflow')
-    op.drop_table(table_name='generic_resource', schema='workflow')
+    op.drop_table(table_name='numeric_resource', schema='workflow')
     op.drop_table(table_name='textual_resource', schema='workflow')
