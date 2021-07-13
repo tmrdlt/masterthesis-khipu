@@ -1,7 +1,7 @@
 package de.tmrdlt.components.workflowlist
 
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
-import de.tmrdlt.database.workflowlistresource.{GenericResource, TemporalResource, WorkflowListResourceDB}
+import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource, WorkflowListResourceDB}
 import de.tmrdlt.models.{CreateWorkflowListEntity, WorkflowListDataSource, WorkflowListEntity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,7 +23,7 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
     for {
       workflowLists <- workflowListsFuture
       temporalResources <- workflowListResourceDB.getTemporalResources(workflowLists.map(_.id))
-      genericResources <- workflowListResourceDB.getGenericResources(workflowLists.map(_.id))
+      numericResources <- workflowListResourceDB.getNumericResources(workflowLists.map(_.id))
     } yield {
       // Important to return the workflow lists in a ordered way!
       workflowListsToEntities(workflowLists
@@ -32,14 +32,14 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
         .filter(_.dataSource == WorkflowListDataSource.Khipu)
         // .filter(_.dataSource == WorkflowListDataSource.Trello)
         // .filter(_.dataSource == WorkflowListDataSource.GitHub)
-        , temporalResources, genericResources
+        , temporalResources, numericResources
       ).sortBy(_.position)
     }
   }
 
   private def workflowListsToEntities(workflowLists: Seq[WorkflowList],
                                       temporalResources: Seq[TemporalResource],
-                                      genericResources: Seq[GenericResource]): Seq[WorkflowListEntity] = {
+                                      genericResources: Seq[NumericResource]): Seq[WorkflowListEntity] = {
     workflowLists
       .filter(_.parentId.isEmpty)
       .map { parent =>
@@ -57,7 +57,7 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
                           workflowLists: Seq[WorkflowList],
                           level: Long,
                           temporalResources: Seq[TemporalResource],
-                          genericResources: Seq[GenericResource]): Seq[WorkflowListEntity] = {
+                          genericResources: Seq[NumericResource]): Seq[WorkflowListEntity] = {
     workflowLists
       .filter(_.parentId.contains(parentId))
       .map { child =>

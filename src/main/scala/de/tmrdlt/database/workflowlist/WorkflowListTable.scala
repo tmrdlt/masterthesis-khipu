@@ -3,7 +3,7 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.workflowlistresource.{GenericResource, TemporalResource}
+import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource}
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
@@ -50,7 +50,7 @@ case class WorkflowList(id: Long,
                            level: Long,
                            workflowLists: Seq[WorkflowList],
                            temporalResources: Seq[TemporalResource],
-                           genericResources: Seq[GenericResource]): WorkflowListEntity = {
+                           genericResources: Seq[NumericResource]): WorkflowListEntity = {
     WorkflowListEntity(
       apiId = apiId,
       title = title,

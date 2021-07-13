@@ -12,7 +12,7 @@ from sqlalchemy.dialects.postgresql import (BIGINT, FLOAT, TIMESTAMP, VARCHAR)
 
 # revision identifiers, used by Alembic.
 revision = 'b4bd95ae3284'
-down_revision = 'ef091765299e'
+down_revision = '938102055d55'
 branch_labels = None
 depends_on = None
 
@@ -52,7 +52,7 @@ def upgrade():
                           source_schema='workflow',
                           referent_schema='workflow')
 
-    op.create_table('generic_resource',
+    op.create_table('numeric_resource',
                     Column('id', BIGINT, primary_key=True),
                     Column('workflow_list_id', BIGINT, nullable=False),
                     Column('label', VARCHAR, nullable=False),
@@ -62,7 +62,7 @@ def upgrade():
                     schema='workflow')
 
     op.create_foreign_key(constraint_name='workflow_list_fk',
-                          source_table='generic_resource',
+                          source_table='numeric_resource',
                           referent_table='workflow_list',
                           local_cols=['workflow_list_id'],
                           remote_cols=['id'],
@@ -70,8 +70,31 @@ def upgrade():
                           source_schema='workflow',
                           referent_schema='workflow')
 
-    op.create_unique_constraint(constraint_name='generic_resource_workflow_list_id_label_unique_constraint',
-                                table_name='generic_resource',
+    op.create_unique_constraint(constraint_name='numeric_resource_workflow_list_id_label_unique_constraint',
+                                table_name='numeric_resource',
+                                columns=['workflow_list_id', 'label'],
+                                schema='workflow')
+
+    op.create_table('textual_resource',
+                    Column('id', BIGINT, primary_key=True),
+                    Column('workflow_list_id', BIGINT, nullable=False),
+                    Column('label', VARCHAR, nullable=False),
+                    Column('value', VARCHAR, nullable=True),
+                    Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
+                    Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
+                    schema='workflow')
+
+    op.create_foreign_key(constraint_name='workflow_list_fk',
+                          source_table='textual_resource',
+                          referent_table='workflow_list',
+                          local_cols=['workflow_list_id'],
+                          remote_cols=['id'],
+                          ondelete='CASCADE',
+                          source_schema='workflow',
+                          referent_schema='workflow')
+
+    op.create_unique_constraint(constraint_name='textual_resource_workflow_list_id_label_unique_constraint',
+                                table_name='textual_resource',
                                 columns=['workflow_list_id', 'label'],
                                 schema='workflow')
 
@@ -79,3 +102,4 @@ def upgrade():
 def downgrade():
     op.drop_table(table_name='temporal_resource', schema='workflow')
     op.drop_table(table_name='generic_resource', schema='workflow')
+    op.drop_table(table_name='textual_resource', schema='workflow')

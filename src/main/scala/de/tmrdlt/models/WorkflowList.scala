@@ -14,7 +14,7 @@ case class WorkflowListEntity(apiId: String,
                               position: Long,
                               isTemporalConstraintBoard: Boolean,
                               temporalResource: Option[TemporalResourceEntity],
-                              genericResources: Seq[GenericResourceEntity],
+                              genericResources: Seq[NumericResourceEntity],
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) // TODO add owner
 
