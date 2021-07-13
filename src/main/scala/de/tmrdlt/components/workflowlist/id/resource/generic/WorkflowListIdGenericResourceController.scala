@@ -12,21 +12,25 @@ import scala.concurrent.Future
 class WorkflowListIdGenericResourceController(workflowListDB: WorkflowListDB,
                                               workflowListResourceDB: WorkflowListResourceDB) {
 
-  def createGenericResource(workflowListApiId: String,
-                            entity: GenericResourceEntity): Future[Int] = {
+  def updateGenericResources(workflowListApiId: String,
+                             genericResourceEntities: Seq[GenericResourceEntity]): Future[Int] = {
     val now = LocalDateTime.now()
     for {
       workflowList <- workflowListDB.getWorkflowList(workflowListApiId)
-      genericResourceOption <- workflowListResourceDB.getGenericResource(workflowList.id, entity.label)
-      inserted <- workflowListResourceDB.insertOrUpdateWorkflowListResource(
-        GenericResource(
-          id = genericResourceOption.map(_.id).getOrElse(0L),
-          workflowListId = workflowList.id,
-          label = entity.label,
-          value = entity.value,
-          createdAt = genericResourceOption.map(_.createdAt).getOrElse(now),
-          updatedAt = now
-        )
+      existingGenericResources <- Future.sequence(genericResourceEntities.map(gre => workflowListResourceDB.getGenericResource(workflowList.id, gre.label)))
+      inserted <- workflowListResourceDB.updateGenericResources(
+        workflowList.id,
+        genericResourceEntities.map { gre =>
+          val existingGenericResource = existingGenericResources.find(_.map(_.label).contains(gre.label)).flatten
+          GenericResource(
+            id = existingGenericResource.map(_.id).getOrElse(0L),
+            workflowListId = workflowList.id,
+            label = gre.label,
+            value = gre.value,
+            createdAt = existingGenericResource.map(_.createdAt).getOrElse(now),
+            updatedAt = now
+          )
+        }
       )
     } yield {
       inserted

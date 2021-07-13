@@ -18,7 +18,7 @@ object MyDB {
   val workflowListQuery = TableQuery[WorkflowListTable]
   val eventQuery = TableQuery[EventTable]
   val userQuery = TableQuery[UserTable]
-  val temporalResourceTable = TableQuery[TemporalResourceTable]
-  val genericResourceTable = TableQuery[GenericResourceTable]
+  val temporalResourceQuery = TableQuery[TemporalResourceTable]
+  val genericResourceQuery = TableQuery[GenericResourceTable]
 
 }

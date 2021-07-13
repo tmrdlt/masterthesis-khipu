@@ -16,8 +16,8 @@ class WorkflowListIdGenericResourceRoute(controller: WorkflowListIdGenericResour
   def route(workflowListApiId: String): Route = {
     concat(
       post {
-        entity(as[GenericResourceEntity]) { genericResourceEntity =>
-          onComplete(controller.createGenericResource(workflowListApiId, genericResourceEntity)) {
+        entity(as[Seq[GenericResourceEntity]]) { genericResourceEntities =>
+          onComplete(controller.updateGenericResources(workflowListApiId, genericResourceEntities)) {
             case Success(res) => complete(OK -> res.toString)
             case Failure(exception) =>
               log.error("error", exception)

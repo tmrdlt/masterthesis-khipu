@@ -4,42 +4,53 @@ import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.models.WorkflowListResource
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class WorkflowListResourceDB {
 
   def getTemporalResources: Future[Seq[TemporalResource]] =
-    db.run(temporalResourceTable.result)
+    db.run(temporalResourceQuery.result)
 
   def getTemporalResources(workflowListIds: Seq[Long]): Future[Seq[TemporalResource]] =
-    db.run(temporalResourceTable.filter(_.workflowListId inSet workflowListIds).result)
+    db.run(temporalResourceQuery.filter(_.workflowListId inSet workflowListIds).result)
 
   def getTemporalResource(workflowListId: Long): Future[Option[TemporalResource]] =
-    db.run(temporalResourceTable.filter(_.workflowListId === workflowListId).result.headOption)
+    db.run(temporalResourceQuery.filter(_.workflowListId === workflowListId).result.headOption)
 
   def getGenericResources: Future[Seq[GenericResource]] =
-    db.run(genericResourceTable.result)
+    db.run(genericResourceQuery.result)
 
   def getGenericResources(workflowListIds: Seq[Long]): Future[Seq[GenericResource]] =
-    db.run(genericResourceTable.filter(_.workflowListId inSet workflowListIds).result)
+    db.run(genericResourceQuery.filter(_.workflowListId inSet workflowListIds).result)
 
   def getGenericResource(workflowListId: Long, label: String): Future[Option[GenericResource]] =
     db.run(
-      genericResourceTable
+      genericResourceQuery
         .filter(gr => gr.workflowListId === workflowListId && gr.label === label)
         .result
         .headOption
     )
 
   def deleteGenericResource(workflowListId: Long, label: String): Future[Int] =
-    db.run(genericResourceTable.filter(gr => gr.workflowListId === workflowListId && gr.label === label).delete)
+    db.run(genericResourceQuery.filter(gr => gr.workflowListId === workflowListId && gr.label === label).delete)
 
   def insertOrUpdateWorkflowListResource[T <: WorkflowListResource](workflowListResource: T): Future[Int] = {
     val query = workflowListResource match {
-      case gr: GenericResource => genericResourceTable.insertOrUpdate(gr)
-      case tr: TemporalResource => temporalResourceTable.insertOrUpdate(tr)
+      case gr: GenericResource => genericResourceQuery.insertOrUpdate(gr)
+      case tr: TemporalResource => temporalResourceQuery.insertOrUpdate(tr)
     }
     db.run(query)
+  }
+
+  def updateGenericResources(workflowListId: Long, genericResources: Seq[GenericResource]): Future[Int] = {
+    val query = for {
+      _ <- genericResourceQuery.filter(_.workflowListId === workflowListId).delete
+      insertedGenericResources <- genericResourceQuery returning genericResourceQuery ++= genericResources
+    } yield {
+      insertedGenericResources.length
+    }
+    db.run(query.transactionally)
   }
 
 }
