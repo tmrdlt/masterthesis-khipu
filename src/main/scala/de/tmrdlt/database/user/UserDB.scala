@@ -19,6 +19,12 @@ class UserDB {
       case _ => throw new Exception(s"No active user for userApiId $userApiId found")
     })
 
+  def getActiveUserByUserNameSqlAction(username: String): DBIOAction[User, NoStream, Effect.Read] =
+    userQuery.filter(_.isActive).filter(_.username === username).result.headOption map {
+      case Some(user) => user
+      case _ => throw new Exception(s"No active user for username $username found")
+    }
+
   def createUser(username: String): Future[User] = {
     val now = LocalDateTime.now()
     val query = (userQuery returning userQuery) += {

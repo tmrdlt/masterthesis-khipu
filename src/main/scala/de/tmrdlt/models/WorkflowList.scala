@@ -13,7 +13,10 @@ case class WorkflowListEntity(apiId: String,
                               level: Long,
                               position: Long,
                               isTemporalConstraintBoard: Boolean,
-                              temporalConstraint: Option[TemporalConstraintEntity],
+                              temporalResource: Option[TemporalResourceEntity],
+                              userResource: Option[UserResourceEntity],
+                              numericResources: Seq[NumericResourceEntity],
+                              textualResources: Seq[TextualResourceEntity],
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) // TODO add owner
 
@@ -38,16 +41,9 @@ case class ReorderWorkflowListEntity(newPosition: Long)
 case class WorkflowListSimpleEntity(apiId: String,
                                     title: String)
 
-// TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
-case class TemporalConstraintEntity(startDate: Option[LocalDateTime],
-                                    endDate: Option[LocalDateTime],
-                                    durationInMinutes: Option[Long],
-                                    connectedWorkflowListApiId: Option[String])
-
-trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
+trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with WorkflowListResourceJsonSupport {
 
   implicit val workflowListSimpleEntityFormat: RootJsonFormat[WorkflowListSimpleEntity] = jsonFormat2(WorkflowListSimpleEntity)
-  implicit val temporalConstraintEntityFormat: RootJsonFormat[TemporalConstraintEntity] = jsonFormat4(TemporalConstraintEntity)
   implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
       "apiId",
@@ -58,7 +54,10 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport {
       "level",
       "position",
       "isTemporalConstraintBoard",
-      "temporalConstraint",
+      "temporalResource",
+      "userResource",
+      "numericResources",
+      "textualResources",
       "createdAt",
       "updatedAt")))
   implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat5(CreateWorkflowListEntity)

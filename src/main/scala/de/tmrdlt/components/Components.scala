@@ -9,7 +9,7 @@ import de.tmrdlt.components.user.{UserController, UserRoute}
 import de.tmrdlt.components.workflowlist.id.convert.{WorkflowListIdConvertController, WorkflowListIdConvertRoute}
 import de.tmrdlt.components.workflowlist.id.move.{WorkflowListIdMoveController, WorkflowListIdMoveRoute}
 import de.tmrdlt.components.workflowlist.id.reorder.{WorkflowListIdReorderController, WorkflowListIdReorderRoute}
-import de.tmrdlt.components.workflowlist.id.tempconstraint.{WorkflowListIdTempConstraintController, WorkflowListIdTempConstraintRoute}
+import de.tmrdlt.components.workflowlist.id.resource.{WorkflowListIdResourceController, WorkflowListIdResourceRoute}
 import de.tmrdlt.components.workflowlist.id.{WorkflowListIdController, WorkflowListIdRoute}
 import de.tmrdlt.components.workflowlist.{WorkflowListController, WorkflowListRoute}
 import de.tmrdlt.connectors.Apis
@@ -24,13 +24,13 @@ class Components(system: ActorSystem) {
   val health = new HealthRoute(new HealthController(actors.healthActor))
   val fetchDataTrello = new FetchDataTrelloRoute(new FetchDataTrelloController(actors.fetchDataActor))
   val fetchDataGitHub = new FetchDataGitHubRoute(new FetchDataGitHubController(actors.fetchDataActor))
-  val workflowList = new WorkflowListRoute(new WorkflowListController(dbs.workflowListDB, dbs.temporalConstraintDB))
+  val workflowList = new WorkflowListRoute(new WorkflowListController(dbs.workflowListDB, dbs.workflowListResourceDB, dbs.userDB))
   val workflowListId = new WorkflowListIdRoute(new WorkflowListIdController(dbs.workflowListDB))
   val workflowListIdConvert = new WorkflowListIdConvertRoute(new WorkflowListIdConvertController(dbs.workflowListDB))
   val workflowListIdMove = new WorkflowListIdMoveRoute(new WorkflowListIdMoveController(dbs.workflowListDB))
   val workflowListIdReorder = new WorkflowListIdReorderRoute(new WorkflowListIdReorderController(dbs.workflowListDB))
-  val workflowListIdTempConstraint = new WorkflowListIdTempConstraintRoute(
-    new WorkflowListIdTempConstraintController(dbs.workflowListDB, dbs.temporalConstraintDB)
+  val workflowListIdResource = new WorkflowListIdResourceRoute(
+    new WorkflowListIdResourceController(dbs.workflowListDB, dbs.workflowListResourceDB, dbs.userDB)
   )
   val user = new UserRoute(new UserController(dbs.userDB))
   val userId = new UserIdRoute(new UserIdController(dbs.userDB))
