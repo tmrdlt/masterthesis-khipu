@@ -24,15 +24,9 @@ def upgrade():
                     Column('start_date', TIMESTAMP, nullable=True),
                     Column('end_date', TIMESTAMP, nullable=True),
                     Column('duration_in_minutes', BIGINT, nullable=True),
-                    Column('connected_workflow_list_id', BIGINT, nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     schema='workflow')
-
-    op.create_unique_constraint(constraint_name='temporal_resource_workflow_list_id_unique_constraint',
-                                table_name='temporal_resource',
-                                columns=['workflow_list_id'],
-                                schema='workflow')
 
     op.create_foreign_key(constraint_name='workflow_list_fk',
                           source_table='temporal_resource',
@@ -43,14 +37,10 @@ def upgrade():
                           source_schema='workflow',
                           referent_schema='workflow')
 
-    op.create_foreign_key(constraint_name='connected_workflow_list_fk',
-                          source_table='temporal_resource',
-                          referent_table='workflow_list',
-                          local_cols=['connected_workflow_list_id'],
-                          remote_cols=['id'],
-                          ondelete='CASCADE',
-                          source_schema='workflow',
-                          referent_schema='workflow')
+    op.create_unique_constraint(constraint_name='temporal_resource_workflow_list_id_unique_constraint',
+                                table_name='temporal_resource',
+                                columns=['workflow_list_id'],
+                                schema='workflow')
 
     op.create_table('numeric_resource',
                     Column('id', BIGINT, primary_key=True),
@@ -98,8 +88,40 @@ def upgrade():
                                 columns=['workflow_list_id', 'label'],
                                 schema='workflow')
 
+    op.create_table('user_resource',
+                    Column('id', BIGINT, primary_key=True),
+                    Column('workflow_list_id', BIGINT, nullable=False),
+                    Column('user_id', BIGINT, nullable=True),
+                    Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
+                    Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),
+                    schema='workflow')
+
+    op.create_foreign_key(constraint_name='workflow_list_fk',
+                          source_table='user_resource',
+                          referent_table='workflow_list',
+                          local_cols=['workflow_list_id'],
+                          remote_cols=['id'],
+                          ondelete='CASCADE',
+                          source_schema='workflow',
+                          referent_schema='workflow')
+
+    op.create_foreign_key(constraint_name='user_fk',
+                          source_table='user_resource',
+                          referent_table='user',
+                          local_cols=['user_id'],
+                          remote_cols=['id'],
+                          ondelete='CASCADE',
+                          source_schema='workflow',
+                          referent_schema='workflow')
+
+    op.create_unique_constraint(constraint_name='user_resource_workflow_list_id_unique_constraint',
+                                table_name='textual_resource',
+                                columns=['workflow_list_id'],
+                                schema='workflow')
+
 
 def downgrade():
     op.drop_table(table_name='temporal_resource', schema='workflow')
     op.drop_table(table_name='numeric_resource', schema='workflow')
     op.drop_table(table_name='textual_resource', schema='workflow')
+    op.drop_table(table_name='user_resource', schema='workflow')

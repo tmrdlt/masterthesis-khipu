@@ -7,8 +7,7 @@ import java.time.LocalDateTime
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalResourceEntity(startDate: Option[LocalDateTime],
                                   endDate: Option[LocalDateTime],
-                                  durationInMinutes: Option[Long],
-                                  connectedWorkflowListApiId: Option[String])
+                                  durationInMinutes: Option[Long])
 
 case class NumericResourceEntity(label: String,
                                  value: Float)
@@ -16,7 +15,7 @@ case class NumericResourceEntity(label: String,
 case class TextualResourceEntity(label: String,
                                  value: Option[String])
 
-case class UserResourceEntity(userId: Long)
+case class UserResourceEntity(username: Option[String])
 
 case class WorkflowListResourceEntity(numeric: Option[Seq[NumericResourceEntity]],
                                       textual: Option[Seq[TextualResourceEntity]],
@@ -24,11 +23,9 @@ case class WorkflowListResourceEntity(numeric: Option[Seq[NumericResourceEntity]
                                       user: Option[UserResourceEntity])
 
 trait WorkflowListResourceJsonSupport extends JsonSupport {
-  implicit val temporalResourceEntityFormat: RootJsonFormat[TemporalResourceEntity] = jsonFormat4(TemporalResourceEntity)
+  implicit val temporalResourceEntityFormat: RootJsonFormat[TemporalResourceEntity] = jsonFormat3(TemporalResourceEntity)
   implicit val numericResourceEntityFormat: RootJsonFormat[NumericResourceEntity] = jsonFormat2(NumericResourceEntity)
   implicit val textualResourceEntityFormat: RootJsonFormat[TextualResourceEntity] = jsonFormat2(TextualResourceEntity)
   implicit val userResourceEntityFormat: RootJsonFormat[UserResourceEntity] = jsonFormat1(UserResourceEntity)
   implicit val resourceEntityFormat: RootJsonFormat[WorkflowListResourceEntity] = jsonFormat4(WorkflowListResourceEntity)
-
-
 }

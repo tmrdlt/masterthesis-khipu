@@ -3,7 +3,8 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource, TextualResource}
+import de.tmrdlt.database.user.User
+import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource, TextualResource, UserResource}
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
@@ -51,7 +52,9 @@ case class WorkflowList(id: Long,
                            workflowLists: Seq[WorkflowList],
                            temporalResources: Seq[TemporalResource],
                            numericResources: Seq[NumericResource],
-                           textualResources: Seq[TextualResource]): WorkflowListEntity = {
+                           textualResources: Seq[TextualResource],
+                           userResources: Seq[UserResource],
+                           users: Seq[User]): WorkflowListEntity = {
     WorkflowListEntity(
       apiId = apiId,
       title = title,
@@ -61,7 +64,8 @@ case class WorkflowList(id: Long,
       level = level,
       position = position,
       isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
-      temporalResource = temporalResources.find(_.workflowListId == id).map(_.toTemporalResourceEntity(workflowLists)),
+      temporalResource = temporalResources.find(_.workflowListId == id).map(_.toTemporalResourceEntity),
+      userResource = userResources.find(_.workflowListId == id).map(ur => ur.toUserResourceEntity(users.find(u => ur.userId.contains(u.id)).map(_.username))),
       numericResources = numericResources.filter(_.workflowListId == id).map(_.toNumericResourceEntity),
       textualResources = textualResources.filter(_.workflowListId == id).map(_.toTextualResourceEntity),
       createdAt = createdAt,

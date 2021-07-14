@@ -16,16 +16,14 @@ case class TemporalResource(id: Long,
                             startDate: Option[LocalDateTime],
                             endDate: Option[LocalDateTime],
                             durationInMinutes: Option[Long],
-                            connectedWorkflowListId: Option[Long],
                             createdAt: LocalDateTime,
                             updatedAt: LocalDateTime) {
 
-  def toTemporalResourceEntity(workflowLists: Seq[WorkflowList]): TemporalResourceEntity =
+  def toTemporalResourceEntity: TemporalResourceEntity =
     TemporalResourceEntity(
       startDate = startDate,
       endDate = endDate,
-      durationInMinutes = durationInMinutes,
-      connectedWorkflowListApiId = workflowLists.find(wl => connectedWorkflowListId.contains(wl.id)).map(_.apiId)
+      durationInMinutes = durationInMinutes
     )
 }
 
@@ -40,8 +38,6 @@ class TemporalResourceTable(tag: Tag)
 
   def durationInMinutes: Rep[Option[Long]] = column[Option[Long]]("duration_in_minutes", Nullable)
 
-  def connectedWorkflowListId: Rep[Option[Long]] = column[Option[Long]]("connected_workflow_list_id", Nullable)
-
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   def updatedAt: Rep[LocalDateTime] = column[LocalDateTime]("updated_at", NotNull)
@@ -49,15 +45,11 @@ class TemporalResourceTable(tag: Tag)
   def workflowListForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
     foreignKey("workflow_list_fk", workflowListId, workflowListQuery)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def connectedWorkflowListForeignKey: ForeignKeyQuery[WorkflowListTable, WorkflowList] =
-    foreignKey("connected_workflow_list_fk", connectedWorkflowListId, workflowListQuery)(_.id.?, onDelete = ForeignKeyAction.Cascade)
-
   def * : ProvenShape[TemporalResource] = (
     id,
     workflowListId,
     startDate, endDate,
     durationInMinutes,
-    connectedWorkflowListId,
     createdAt,
     updatedAt
   ) <> (TemporalResource.tupled, TemporalResource.unapply)

@@ -14,8 +14,9 @@ case class WorkflowListEntity(apiId: String,
                               position: Long,
                               isTemporalConstraintBoard: Boolean,
                               temporalResource: Option[TemporalResourceEntity],
+                              userResource: Option[UserResourceEntity],
                               numericResources: Seq[NumericResourceEntity],
-                              textualResources: Seq[TextualResourceEntity] = Seq.empty, // TODO CHANGE
+                              textualResources: Seq[TextualResourceEntity],
                               createdAt: LocalDateTime,
                               updatedAt: LocalDateTime) // TODO add owner
 
@@ -54,6 +55,7 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with Work
       "position",
       "isTemporalConstraintBoard",
       "temporalResource",
+      "userResource",
       "numericResources",
       "textualResources",
       "createdAt",
