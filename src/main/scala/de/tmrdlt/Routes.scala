@@ -22,13 +22,14 @@ class Routes(components: Components)
       concat(
         preflightRoute,
         path("health")(components.health.route),
-        path("fetchdata" / "trello")(components.fetchDataTrello.route),
         path("fetchdata" / "github")(components.fetchDataGitHub.route),
+        path("fetchdata" / "trello")(components.fetchDataTrello.route),
         path("workflowlist")(components.workflowList.route),
         path("workflowlist" / Segment / "convert") { workflowListApiId => components.workflowListIdConvert.route(workflowListApiId) },
         path("workflowlist" / Segment / "move") { workflowListApiId => components.workflowListIdMove.route(workflowListApiId) },
         path("workflowlist" / Segment / "reorder") { workflowListApiId => components.workflowListIdReorder.route(workflowListApiId) },
         path("workflowlist" / Segment / "resource") { workflowListApiId => components.workflowListIdResource.route(workflowListApiId) },
+        path("workflowlist" / Segment / "query") { workflowListApiId => components.workflowListIdQuery.route(workflowListApiId) },
         path("workflowlist" / Segment) { workflowListApiId => components.workflowListId.route(workflowListApiId) },
         path("user")(components.user.route),
         path("user" / Segment) { userApiId => components.userId.route(userApiId) }

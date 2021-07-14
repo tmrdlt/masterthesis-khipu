@@ -20,7 +20,7 @@ class WorkflowListDB
   def getWorkflowLists: Future[Seq[WorkflowList]] =
     db.run(workflowListQuery.result)
 
-  def getWorkflowLists(userApiId: String): Future[Seq[WorkflowList]] =
+  def getWorkflowListsByUserApiId(userApiId: String): Future[Seq[WorkflowList]] =
     db.run(workflowListQuery.filter(_.ownerApiId === userApiId).result)
 
   def getWorkflowList(workflowListApiId: String): Future[WorkflowList] = {
@@ -30,6 +30,8 @@ class WorkflowListDB
     })
   }
 
+  def getWorkflowListsByParentId(parentId: Option[Long]): Future[Seq[WorkflowList]] =
+    db.run(workflowListQuery.filter(_.parentId === parentId).result)
 
   def insertWorkflowList(workflowList: WorkflowList): Future[WorkflowList] =
     db.run(workflowListQuery returning workflowListQuery += workflowList)
