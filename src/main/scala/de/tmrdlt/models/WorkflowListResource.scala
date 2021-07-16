@@ -22,10 +22,14 @@ case class WorkflowListResourceEntity(numeric: Option[Seq[NumericResourceEntity]
                                       temporal: Option[TemporalResourceEntity],
                                       user: Option[UserResourceEntity])
 
+case class TemporalQueryResultEntity(totalDurationMinutes: Long,
+                                     willFinishAt: LocalDateTime)
+
 trait WorkflowListResourceJsonSupport extends JsonSupport {
   implicit val temporalResourceEntityFormat: RootJsonFormat[TemporalResourceEntity] = jsonFormat3(TemporalResourceEntity)
   implicit val numericResourceEntityFormat: RootJsonFormat[NumericResourceEntity] = jsonFormat2(NumericResourceEntity)
   implicit val textualResourceEntityFormat: RootJsonFormat[TextualResourceEntity] = jsonFormat2(TextualResourceEntity)
   implicit val userResourceEntityFormat: RootJsonFormat[UserResourceEntity] = jsonFormat1(UserResourceEntity)
   implicit val resourceEntityFormat: RootJsonFormat[WorkflowListResourceEntity] = jsonFormat4(WorkflowListResourceEntity)
+  implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat2(TemporalQueryResultEntity)
 }
