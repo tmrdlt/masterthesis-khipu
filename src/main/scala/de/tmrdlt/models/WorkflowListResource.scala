@@ -23,7 +23,10 @@ case class WorkflowListResourceEntity(numeric: Option[Seq[NumericResourceEntity]
                                       user: Option[UserResourceEntity])
 
 case class TemporalQueryResultEntity(totalDurationMinutes: Long,
-                                     willFinishAt: LocalDateTime)
+                                     totalFinishDateByDuration: LocalDateTime,
+                                     openTasksPredictedFinishDate: LocalDateTime,
+                                     bestExecutionOrder: Seq[String],
+                                     numberOfFailedDueDates: Int)
 
 trait WorkflowListResourceJsonSupport extends JsonSupport {
   implicit val temporalResourceEntityFormat: RootJsonFormat[TemporalResourceEntity] = jsonFormat3(TemporalResourceEntity)
@@ -31,5 +34,5 @@ trait WorkflowListResourceJsonSupport extends JsonSupport {
   implicit val textualResourceEntityFormat: RootJsonFormat[TextualResourceEntity] = jsonFormat2(TextualResourceEntity)
   implicit val userResourceEntityFormat: RootJsonFormat[UserResourceEntity] = jsonFormat1(UserResourceEntity)
   implicit val resourceEntityFormat: RootJsonFormat[WorkflowListResourceEntity] = jsonFormat4(WorkflowListResourceEntity)
-  implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat2(TemporalQueryResultEntity)
+  implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat5(TemporalQueryResultEntity)
 }

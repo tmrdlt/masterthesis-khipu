@@ -15,7 +15,7 @@ class WorkflowListIdQueryRoute(controller: WorkflowListIdQueryController)
   def route(workflowListApiId: String): Route = {
     get {
       onComplete(controller.getDurationOfAllTasks(workflowListApiId)) {
-        case Success(result) => complete(OK -> result.toString)
+        case Success(result) => complete(OK -> result)
         case Failure(exception) => complete(exception.toResponseMarshallable)
       }
     }

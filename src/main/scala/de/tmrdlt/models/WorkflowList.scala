@@ -15,7 +15,7 @@ case class WorkflowListsData(workflowLists: Seq[WorkflowList],
                              userResources: Seq[UserResource],
                              users: Seq[User])
 
-case class WorkflowListEntity(apiId: String,
+case class WorkflowListEntity(apiId: String, // TODO add owner
                               title: String,
                               description: Option[String],
                               children: Seq[WorkflowListEntity],
@@ -28,7 +28,20 @@ case class WorkflowListEntity(apiId: String,
                               numericResources: Seq[NumericResourceEntity],
                               textualResources: Seq[TextualResourceEntity],
                               createdAt: LocalDateTime,
-                              updatedAt: LocalDateTime) // TODO add owner
+                              updatedAt: LocalDateTime) {
+  def getStartDate: Option[LocalDateTime] = {
+    temporalResource.flatMap(_.startDate)
+  }
+
+  def getEndDate: Option[LocalDateTime] = {
+    temporalResource.flatMap(_.endDate)
+  }
+
+  def getDuration: Option[Long] = {
+    temporalResource.flatMap(_.durationInMinutes)
+  }
+}
+
 
 case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
