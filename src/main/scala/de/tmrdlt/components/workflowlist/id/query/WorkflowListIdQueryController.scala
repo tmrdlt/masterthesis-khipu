@@ -47,6 +47,24 @@ object WorkflowListExecutionTreeEvaluation {
 class WorkflowListIdQueryController(workflowListService: WorkflowListService,
                                     eventDB: EventDB) extends SimpleNameLogger {
 
+  case class WorkingDate(date: LocalDateTime) {
+    def isAtWorkDay: Boolean = workingDaysOfWeek.contains(date.getDayOfWeek)
+
+    def getStartDate: LocalDateTime = date.withHour(startWorkAtHour).withMinute(0)
+
+    def getStopDate: LocalDateTime = date.withHour(stopWorkAtHour).withMinute(0)
+
+    def getNextStartDate: LocalDateTime = date.plusDays(1).withHour(startWorkAtHour).withMinute(0)
+
+    def isBeforeWorkingHours: Boolean = date < getStartDate
+
+    def isAfterWorkingHours: Boolean = date >= getStopDate
+
+    def isInsideWorkingHours: Boolean = date >= getStartDate && date < getStopDate
+  }
+
+  def getWorkingDate(localDateTime: LocalDateTime): WorkingDate = WorkingDate(localDateTime.withSecond(0).withNano(0))
+
   val workingDaysOfWeek: Seq[DayOfWeek] = Seq(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)
   val startWorkAtHour: Int = 10
   val stopWorkAtHour: Int = 18
@@ -85,7 +103,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
         val totalDuration = allWorkflowListsFlattened.map(_.predictedDuration).sum
 
-        val totalFinishDateByDuration = getFinishDateForStartDateAndDuration(now, totalDuration)
+        val totalFinishDateByDuration = getFinishDateRecursive(now, totalDuration)
         val bestExecutionResult = getBestExecutionOrderOfTasks(now, allWorkflowListsFlattened)
 
         TemporalQueryResultEntity(
@@ -166,6 +184,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
       // Predicted duration = estimated duration
       case WorkflowListColumnType.OPEN => workflowList.temporalResource.flatMap(_.durationInMinutes).getOrElse(0)
       // Predicted duration = estimated duration - time in progress
+      // TODO make dependend on schedule
       case WorkflowListColumnType.IN_PROGRESS =>
         val durationFromNow = workflowList.temporalResource.flatMap(_.durationInMinutes) match {
           case Some(duration) => duration - getMinutesInProgress(workflowList.apiId, openApiId, inProgressApiIds, events, now)
@@ -180,63 +199,30 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
     }
   }
 
-  private def getFinishDateForStartDateAndDuration(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {
-
-    @tailrec
-    def getFinishDateRecursive(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {
-      val stopDate = startDate.withHour(stopWorkAtHour).withMinute(0).withSecond(0)
-      val potentialStartDate = startDate.withHour(startWorkAtHour).withMinute(0).withSecond(0)
-      //log.info("startDate: " + startDate.toString + " stopDate: " + stopDate.toString)
-      val startWorkAt = {
-        // Saturday: Start monday morning
-        if (startDate.getDayOfWeek.getValue == 6) { // TODO make adjustable. e.g. if getDayOfWeek is inside workingDaysOfWeek...
-          startDate.plusDays(2).withHour(startWorkAtHour).withMinute(0).withSecond(0)
-        }
-        // Sunday: Start monday morning
-        else if (startDate.getDayOfWeek.getValue == 7) {
-          startDate.plusDays(1).withHour(startWorkAtHour).withMinute(0).withSecond(0)
-        }
-        // Friday and after stopWorkAtHour: Start monday morning
-        else if (startDate.getDayOfWeek.getValue == 5 && startDate >= stopDate) {
-          startDate.plusDays(3).withHour(startWorkAtHour).withMinute(0).withSecond(0)
-        }
-        // After stopWorkAtHour: Start tomorrow morning
-        else if (startDate >= stopDate) {
-          startDate.plusDays(1).withHour(startWorkAtHour).withMinute(0).withSecond(0)
-        }
-        // Before startWorkAtHour: Start today at startWorkAtHour
-        else if (startDate < potentialStartDate) {
-          potentialStartDate
-        }
-        // Start today
-        else {
-          startDate
-        }
-      }
-
-      val stopWorkAt = startWorkAt.withHour(stopWorkAtHour).withMinute(0).withSecond(0)
-
-      val minutesThatCanBeWorkedToday = ChronoUnit.MINUTES.between(startWorkAt, stopWorkAt)
-      val actualMinutesWorked =
-        if (durationInMinutes < minutesThatCanBeWorkedToday) durationInMinutes
-        else minutesThatCanBeWorkedToday
+  @tailrec
+  private def getFinishDateRecursive(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {
+    val workingDate = getWorkingDate(startDate)
+    if (!workingDate.isAtWorkDay) {
+      getFinishDateRecursive(workingDate.getNextStartDate, durationInMinutes)
+    } else if (workingDate.isAfterWorkingHours) {
+      getFinishDateRecursive(workingDate.getNextStartDate, durationInMinutes)
+    } else if (workingDate.isBeforeWorkingHours) {
+      getFinishDateRecursive(workingDate.getStartDate, durationInMinutes)
+    } else {
+      val minutesThatCanBeWorkedToday = ChronoUnit.MINUTES.between(workingDate.date, workingDate.getStopDate)
+      val actualMinutesWorked = Math.min(durationInMinutes, minutesThatCanBeWorkedToday)
       val minutesRemaining = durationInMinutes - actualMinutesWorked
-
       //log.info("startWorkAt: " + startWorkAt.toString + " stopWorkAt: " + stopWorkAt.toString + " Minutes that can be worked today: " + minutesThatCanBeWorkedToday.toString + " Actual minutes worked: " + actualMinutesWorked.toString + " Minutes remaining: " + minutesRemaining.toString)
       if (minutesRemaining > 0) {
-        getFinishDateRecursive(startWorkAt.plusMinutes(actualMinutesWorked), minutesRemaining)
+        getFinishDateRecursive(workingDate.date.plusMinutes(actualMinutesWorked), minutesRemaining)
       } else {
-        startWorkAt.plusMinutes(actualMinutesWorked)
+        workingDate.date.plusMinutes(actualMinutesWorked)
       }
+      // TODO MAYBE show if possible to finish today: return finish date as LocalDateTime
+      //if (startDateRounded.plusMinutes(durationInMinutes).toLocalDate == startDateRounded.toLocalDate) {
+      //  startDateRounded.plusMinutes(durationInMinutes)
+      //} else {
     }
-
-    val startDateRounded = startDate.withSecond(0).withNano(0)
-    // TODO MAYBE show if possible to finish today: return finish date as LocalDateTime
-    //if (startDateRounded.plusMinutes(durationInMinutes).toLocalDate == startDateRounded.toLocalDate) {
-    //  startDateRounded.plusMinutes(durationInMinutes)
-    //} else {
-    getFinishDateRecursive(startDateRounded, durationInMinutes)
-    //}
   }
 
 
@@ -252,7 +238,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
             case Some(date) => Seq(date, startDate).max
             case _ => endDate
           }
-          endDate = getFinishDateForStartDateAndDuration(startDate, workflowList.predictedDuration)
+          endDate = getFinishDateRecursive(startDate, workflowList.predictedDuration)
           //log.info("endDate" + endDate)
           if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
             numberOfDueDatesFailed = numberOfDueDatesFailed + 1
