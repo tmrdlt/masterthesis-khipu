@@ -1,14 +1,15 @@
 package de.tmrdlt.services
 
 import de.tmrdlt.components.workflowlist.id.query.WorkflowListTemporalQuery
-import de.tmrdlt.models.{WorkflowListType, WorkflowListsExecutionResult}
+import de.tmrdlt.models.{WorkflowListExecution, WorkflowListType, WorkflowListsExecutionResult}
+import de.tmrdlt.utils.SimpleNameLogger
 
 import java.time.temporal.ChronoUnit
 import java.time.{DayOfWeek, LocalDateTime}
 import scala.annotation.tailrec
 import scala.math.Ordered.orderingToOrdered
 
-class WorkScheduleService {
+class WorkScheduleService extends SimpleNameLogger {
 
   case class WorkingDate(date: LocalDateTime) {
     def isAtWorkDay: Boolean = workingDaysOfWeek.contains(date.getDayOfWeek)
@@ -87,23 +88,29 @@ class WorkScheduleService {
 
   def getBestExecutionOrderOfTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporalQuery]): WorkflowListsExecutionResult = {
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
-      var startDate = now
       var endDate = now
       var numberOfDueDatesFailed = 0
       // TODO make recursive function
-      tasksPermutation
-        .foreach { workflowList =>
-          startDate = workflowList.temporalResource.flatMap(_.startDate) match {
-            case Some(date) => Seq(date, startDate).max
-            case _ => endDate
-          }
-          endDate = getFinishDateRecursive(startDate, workflowList.predictedDuration)
-          //log.info("endDate" + endDate)
-          if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
-            numberOfDueDatesFailed = numberOfDueDatesFailed + 1
-          }
+      val result = tasksPermutation.map { workflowList =>
+        val startDate = workflowList.temporalResource.flatMap(_.startDate) match {
+          case Some(date) => Seq(date, endDate).max
+          case _ => endDate
         }
-      WorkflowListsExecutionResult(tasksPermutation.map(_.apiId), endDate, numberOfDueDatesFailed)
+        endDate = getFinishDateRecursive(startDate, workflowList.predictedDuration)
+        if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
+          numberOfDueDatesFailed = numberOfDueDatesFailed + 1
+        }
+        //log.info(s"${workflowList.title}, StartDate: $startDate, EndDate: $endDate")
+        WorkflowListExecution(
+          apiId = workflowList.apiId,
+          title = workflowList.title,
+          duration = workflowList.predictedDuration,
+          endDate = endDate,
+          dueDate = workflowList.temporalResource.flatMap(_.endDate),
+          dueDateKept = !workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)
+        )
+      }
+      WorkflowListsExecutionResult(result, endDate, numberOfDueDatesFailed)
     }.toSeq.min
   }
 

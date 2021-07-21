@@ -34,7 +34,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
                                     eventDB: EventDB) extends SimpleNameLogger {
 
 
-  def getDurationOfAllTasks(workflowListApiId: String): Future[Long] = {
+  def getDurationOfAllTasks(workflowListApiId: String): Future[TemporalQueryResultEntity] = {
     val now = LocalDateTime.now()
     for {
       board <- workflowListService.getWorkflowListEntityForId(workflowListApiId)
@@ -76,7 +76,6 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           totalDurationMinutes = totalDuration,
           bestExecutionResult = bestExecutionResult
         )
-        1L
       }
     }
   }

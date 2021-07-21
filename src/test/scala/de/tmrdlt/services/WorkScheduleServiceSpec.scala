@@ -60,7 +60,7 @@ class WorkScheduleServiceSpec extends AnyWordSpec with Matchers {
       )
       val result = workScheduleService.getBestExecutionOrderOfTasks(startDate, Seq(task1, task2, task3))
 
-      result.executionOrder shouldBe Seq(task2.apiId, task3.apiId, task1.apiId)
+      result.executionOrder.map(_.apiId) shouldBe Seq(task2.apiId, task3.apiId, task1.apiId)
       result.totalEndDate shouldBe LocalDateTime.of(2021, 7, 5, 18, 0)
       result.numberOfDueDatesFailed shouldBe 0
     }
