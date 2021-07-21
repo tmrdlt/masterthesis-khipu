@@ -106,12 +106,15 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         val totalFinishDateByDuration = getFinishDateRecursive(now, totalDuration)
         val bestExecutionResult = getBestExecutionOrderOfTasks(now, allWorkflowListsFlattened)
 
+        val durationInProgress = getDurationInMinutesRecursive(LocalDateTime.now, LocalDateTime.of(2021, 7, 26, 11, 0, 0))
+
         TemporalQueryResultEntity(
           totalDurationMinutes = totalDuration,
           totalFinishDateByDuration = totalFinishDateByDuration,
           openTasksPredictedFinishDate = bestExecutionResult.calculatedEndDate,
           bestExecutionOrder = bestExecutionResult.executionOrder,
-          numberOfFailedDueDates = bestExecutionResult.numberOfDueDatesFailed
+          numberOfFailedDueDates = bestExecutionResult.numberOfDueDatesFailed,
+          durationInProgress
         )
       }
     }
@@ -202,6 +205,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
   @tailrec
   private def getFinishDateRecursive(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {
     val workingDate = getWorkingDate(startDate)
+
     if (!workingDate.isAtWorkDay) {
       getFinishDateRecursive(workingDate.getNextStartDate, durationInMinutes)
     } else if (workingDate.isAfterWorkingHours) {
@@ -225,6 +229,30 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
     }
   }
 
+  @tailrec
+  private def getDurationInMinutesRecursive(startDate: LocalDateTime, finishDate: LocalDateTime, durationInMinutes: Long = 0): Long = {
+    val startWorkingDate = getWorkingDate(startDate)
+    val finishWorkingDate = getWorkingDate(finishDate)
+
+    if (!startWorkingDate.isAtWorkDay) {
+      getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishDate, durationInMinutes)
+    } else if (startWorkingDate.isAfterWorkingHours) {
+      getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishDate, durationInMinutes)
+    } else if (startWorkingDate.isBeforeWorkingHours) {
+      getDurationInMinutesRecursive(startWorkingDate.getStartDate, finishDate, durationInMinutes)
+    } else {
+      if (startWorkingDate.date.isAfter(finishWorkingDate.date)) {
+        durationInMinutes
+      } else {
+        val newDuration = if (finishWorkingDate.date <= startWorkingDate.getStopDate) {
+          durationInMinutes + Math.max(0, ChronoUnit.MINUTES.between(startWorkingDate.date, finishWorkingDate.date))
+        } else {
+          durationInMinutes + Math.max(0, ChronoUnit.MINUTES.between(startWorkingDate.date, startWorkingDate.getStopDate))
+        }
+        getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishWorkingDate.date, newDuration)
+      }
+    }
+  }
 
   private def getBestExecutionOrderOfTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporalQuery]): WorkflowListExecutionTreeEvaluation = {
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
