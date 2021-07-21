@@ -3,15 +3,13 @@ package de.tmrdlt.components.workflowlist.id.query
 import de.tmrdlt.components.workflowlist.id.query.WorkflowListColumnType.WorkflowListColumnType
 import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
-import de.tmrdlt.models.{TemporalQueryResultEntity, TemporalResourceEntity, WorkflowListEntity, WorkflowListType}
+import de.tmrdlt.models.{TemporalQueryResultEntity, TemporalResourceEntity, WorkflowListEntity}
 import de.tmrdlt.services.{WorkScheduleService, WorkflowListService}
 import de.tmrdlt.utils.SimpleNameLogger
 
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.math.Ordered.orderingToOrdered
 
 // TODO move elsewhere
 object WorkflowListColumnType extends Enumeration {
@@ -31,26 +29,12 @@ case class ExecutionOrderWl(apiId: String,
                             predictedDuration: Long,
                            )
 
-case class WorkflowListExecutionTreeEvaluation(executionOrder: Seq[String],
-                                               calculatedEndDate: LocalDateTime,
-                                               numberOfDueDatesFailed: Int) // TODO To show in frontend make object, which contains wl ID and projected due date
-
-object WorkflowListExecutionTreeEvaluation {
-  // Note that because `Ordering[A]` is not contravariant, the declaration
-  // must be type-parametrized in the event that you want the implicit
-  // ordering to apply to subclasses of `Employee`.
-  implicit def ordering[A <: WorkflowListExecutionTreeEvaluation]: Ordering[A] =
-    Ordering.by(t => (t.numberOfDueDatesFailed, t.calculatedEndDate))
-}
-
 class WorkflowListIdQueryController(workflowListService: WorkflowListService,
                                     workScheduleService: WorkScheduleService,
                                     eventDB: EventDB) extends SimpleNameLogger {
 
 
-
-
-  def getDurationOfAllTasks(workflowListApiId: String): Future[TemporalQueryResultEntity] = {
+  def getDurationOfAllTasks(workflowListApiId: String): Future[Long] = {
     val now = LocalDateTime.now()
     for {
       board <- workflowListService.getWorkflowListEntityForId(workflowListApiId)
@@ -66,35 +50,33 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         // Defined as columns between first and last column of board
         val inProgressColumns = board.children.drop(1).dropRight(1)
 
-        val allWorkflowListsFlattened = workflowListRecFlatten(
-          Seq(openColumn),
-          WorkflowListColumnType.OPEN,
-          openColumn.apiId,
-          inProgressColumns.map(_.apiId),
-          events,
-          now) ++
-          workflowListRecFlatten(inProgressColumns,
-            WorkflowListColumnType.IN_PROGRESS,
+        val allWorkflowListsFlattened =
+          workflowListRecFlatten(
+            Seq(openColumn),
+            WorkflowListColumnType.OPEN,
             openColumn.apiId,
             inProgressColumns.map(_.apiId),
             events,
-            now)
+            now
+          ) ++
+            workflowListRecFlatten(
+              inProgressColumns,
+              WorkflowListColumnType.IN_PROGRESS,
+              openColumn.apiId,
+              inProgressColumns.map(_.apiId),
+              events,
+              now
+            )
 
         val totalDuration = allWorkflowListsFlattened.map(_.predictedDuration).sum
 
-        val totalFinishDateByDuration = workScheduleService.getFinishDateRecursive(now, totalDuration)
-        val bestExecutionResult = getBestExecutionOrderOfTasks(now, allWorkflowListsFlattened)
-
-        val durationInProgress = workScheduleService.getDurationInMinutesRecursive(LocalDateTime.now, LocalDateTime.of(2021, 7, 26, 11, 0, 0))
+        val bestExecutionResult = workScheduleService.getBestExecutionOrderOfTasks(now, allWorkflowListsFlattened)
 
         TemporalQueryResultEntity(
           totalDurationMinutes = totalDuration,
-          totalFinishDateByDuration = totalFinishDateByDuration,
-          openTasksPredictedFinishDate = bestExecutionResult.calculatedEndDate,
-          bestExecutionOrder = bestExecutionResult.executionOrder,
-          numberOfFailedDueDates = bestExecutionResult.numberOfDueDatesFailed,
-          durationInProgress
+          bestExecutionResult = bestExecutionResult
         )
+        1L
       }
     }
   }
@@ -156,8 +138,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
       // Time in inProgress: Time passed since moved to inProgress OR time passed sinced created in inProgress
       (movedToInProgressDateOption, createdAtInProgressDateOption) match {
-        case (Some(fromDate), _) => ChronoUnit.MINUTES.between(fromDate, now)
-        case (_, Some(fromDate)) => ChronoUnit.MINUTES.between(fromDate, now)
+        case (Some(fromDate), _) => workScheduleService.getDurationInMinutesRecursive(fromDate, now)
+        case (_, Some(fromDate)) => workScheduleService.getDurationInMinutesRecursive(fromDate, now)
         case _ => 0
       }
     }
@@ -179,30 +161,6 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           0
         }
     }
-  }
-
-
-
-  private def getBestExecutionOrderOfTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporalQuery]): WorkflowListExecutionTreeEvaluation = {
-    workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
-      var startDate = now
-      var endDate = now
-      var numberOfDueDatesFailed = 0
-      // TODO make recursive function
-      tasksPermutation
-        .foreach { workflowList =>
-          startDate = workflowList.temporalResource.flatMap(_.startDate) match {
-            case Some(date) => Seq(date, startDate).max
-            case _ => endDate
-          }
-          endDate = workScheduleService.getFinishDateRecursive(startDate, workflowList.predictedDuration)
-          //log.info("endDate" + endDate)
-          if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
-            numberOfDueDatesFailed = numberOfDueDatesFailed + 1
-          }
-        }
-      WorkflowListExecutionTreeEvaluation(tasksPermutation.map(_.title), endDate, numberOfDueDatesFailed)
-    }.toSeq.min
   }
 }
 

@@ -1,5 +1,8 @@
 package de.tmrdlt.services
 
+import de.tmrdlt.components.workflowlist.id.query.WorkflowListTemporalQuery
+import de.tmrdlt.models.{WorkflowListType, WorkflowListsExecutionResult}
+
 import java.time.temporal.ChronoUnit
 import java.time.{DayOfWeek, LocalDateTime}
 import scala.annotation.tailrec
@@ -80,6 +83,28 @@ class WorkScheduleService {
         getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishWorkingDate.date, newDuration)
       }
     }
+  }
+
+  def getBestExecutionOrderOfTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporalQuery]): WorkflowListsExecutionResult = {
+    workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
+      var startDate = now
+      var endDate = now
+      var numberOfDueDatesFailed = 0
+      // TODO make recursive function
+      tasksPermutation
+        .foreach { workflowList =>
+          startDate = workflowList.temporalResource.flatMap(_.startDate) match {
+            case Some(date) => Seq(date, startDate).max
+            case _ => endDate
+          }
+          endDate = getFinishDateRecursive(startDate, workflowList.predictedDuration)
+          //log.info("endDate" + endDate)
+          if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
+            numberOfDueDatesFailed = numberOfDueDatesFailed + 1
+          }
+        }
+      WorkflowListsExecutionResult(tasksPermutation.map(_.apiId), endDate, numberOfDueDatesFailed)
+    }.toSeq.min
   }
 
 }
