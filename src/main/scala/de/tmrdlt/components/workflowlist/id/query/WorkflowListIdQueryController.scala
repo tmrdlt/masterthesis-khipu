@@ -4,12 +4,11 @@ import de.tmrdlt.components.workflowlist.id.query.WorkflowListColumnType.Workflo
 import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models.{TemporalQueryResultEntity, TemporalResourceEntity, WorkflowListEntity, WorkflowListType}
-import de.tmrdlt.services.WorkflowListService
+import de.tmrdlt.services.{WorkScheduleService, WorkflowListService}
 import de.tmrdlt.utils.SimpleNameLogger
 
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.time.{DayOfWeek, LocalDateTime}
-import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.math.Ordered.orderingToOrdered
@@ -45,30 +44,10 @@ object WorkflowListExecutionTreeEvaluation {
 }
 
 class WorkflowListIdQueryController(workflowListService: WorkflowListService,
+                                    workScheduleService: WorkScheduleService,
                                     eventDB: EventDB) extends SimpleNameLogger {
 
-  case class WorkingDate(date: LocalDateTime) {
-    def isAtWorkDay: Boolean = workingDaysOfWeek.contains(date.getDayOfWeek)
 
-    def getStartDate: LocalDateTime = date.withHour(startWorkAtHour).withMinute(0)
-
-    def getStopDate: LocalDateTime = date.withHour(stopWorkAtHour).withMinute(0)
-
-    def getNextStartDate: LocalDateTime = date.plusDays(1).withHour(startWorkAtHour).withMinute(0)
-
-    def isBeforeWorkingHours: Boolean = date < getStartDate
-
-    def isAfterWorkingHours: Boolean = date >= getStopDate
-
-    def isInsideWorkingHours: Boolean = date >= getStartDate && date < getStopDate
-  }
-
-  def getWorkingDate(localDateTime: LocalDateTime): WorkingDate = WorkingDate(localDateTime.withSecond(0).withNano(0))
-
-  val workingDaysOfWeek: Seq[DayOfWeek] = Seq(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)
-  val startWorkAtHour: Int = 10
-  val stopWorkAtHour: Int = 18
-  val assumedDurationForTasksWithoutDuration: Int = 0
 
 
   def getDurationOfAllTasks(workflowListApiId: String): Future[TemporalQueryResultEntity] = {
@@ -103,10 +82,10 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
         val totalDuration = allWorkflowListsFlattened.map(_.predictedDuration).sum
 
-        val totalFinishDateByDuration = getFinishDateRecursive(now, totalDuration)
+        val totalFinishDateByDuration = workScheduleService.getFinishDateRecursive(now, totalDuration)
         val bestExecutionResult = getBestExecutionOrderOfTasks(now, allWorkflowListsFlattened)
 
-        val durationInProgress = getDurationInMinutesRecursive(LocalDateTime.now, LocalDateTime.of(2021, 7, 26, 11, 0, 0))
+        val durationInProgress = workScheduleService.getDurationInMinutesRecursive(LocalDateTime.now, LocalDateTime.of(2021, 7, 26, 11, 0, 0))
 
         TemporalQueryResultEntity(
           totalDurationMinutes = totalDuration,
@@ -202,57 +181,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
     }
   }
 
-  @tailrec
-  private def getFinishDateRecursive(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {
-    val workingDate = getWorkingDate(startDate)
 
-    if (!workingDate.isAtWorkDay) {
-      getFinishDateRecursive(workingDate.getNextStartDate, durationInMinutes)
-    } else if (workingDate.isAfterWorkingHours) {
-      getFinishDateRecursive(workingDate.getNextStartDate, durationInMinutes)
-    } else if (workingDate.isBeforeWorkingHours) {
-      getFinishDateRecursive(workingDate.getStartDate, durationInMinutes)
-    } else {
-      val minutesThatCanBeWorkedToday = ChronoUnit.MINUTES.between(workingDate.date, workingDate.getStopDate)
-      val actualMinutesWorked = Math.min(durationInMinutes, minutesThatCanBeWorkedToday)
-      val minutesRemaining = durationInMinutes - actualMinutesWorked
-      //log.info("startWorkAt: " + startWorkAt.toString + " stopWorkAt: " + stopWorkAt.toString + " Minutes that can be worked today: " + minutesThatCanBeWorkedToday.toString + " Actual minutes worked: " + actualMinutesWorked.toString + " Minutes remaining: " + minutesRemaining.toString)
-      if (minutesRemaining > 0) {
-        getFinishDateRecursive(workingDate.date.plusMinutes(actualMinutesWorked), minutesRemaining)
-      } else {
-        workingDate.date.plusMinutes(actualMinutesWorked)
-      }
-      // TODO MAYBE show if possible to finish today: return finish date as LocalDateTime
-      //if (startDateRounded.plusMinutes(durationInMinutes).toLocalDate == startDateRounded.toLocalDate) {
-      //  startDateRounded.plusMinutes(durationInMinutes)
-      //} else {
-    }
-  }
-
-  @tailrec
-  private def getDurationInMinutesRecursive(startDate: LocalDateTime, finishDate: LocalDateTime, durationInMinutes: Long = 0): Long = {
-    val startWorkingDate = getWorkingDate(startDate)
-    val finishWorkingDate = getWorkingDate(finishDate)
-
-    if (!startWorkingDate.isAtWorkDay) {
-      getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishDate, durationInMinutes)
-    } else if (startWorkingDate.isAfterWorkingHours) {
-      getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishDate, durationInMinutes)
-    } else if (startWorkingDate.isBeforeWorkingHours) {
-      getDurationInMinutesRecursive(startWorkingDate.getStartDate, finishDate, durationInMinutes)
-    } else {
-      if (startWorkingDate.date.isAfter(finishWorkingDate.date)) {
-        durationInMinutes
-      } else {
-        val newDuration = if (finishWorkingDate.date <= startWorkingDate.getStopDate) {
-          durationInMinutes + Math.max(0, ChronoUnit.MINUTES.between(startWorkingDate.date, finishWorkingDate.date))
-        } else {
-          durationInMinutes + Math.max(0, ChronoUnit.MINUTES.between(startWorkingDate.date, startWorkingDate.getStopDate))
-        }
-        getDurationInMinutesRecursive(startWorkingDate.getNextStartDate, finishWorkingDate.date, newDuration)
-      }
-    }
-  }
 
   private def getBestExecutionOrderOfTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporalQuery]): WorkflowListExecutionTreeEvaluation = {
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
@@ -266,7 +195,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
             case Some(date) => Seq(date, startDate).max
             case _ => endDate
           }
-          endDate = getFinishDateRecursive(startDate, workflowList.predictedDuration)
+          endDate = workScheduleService.getFinishDateRecursive(startDate, workflowList.predictedDuration)
           //log.info("endDate" + endDate)
           if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
             numberOfDueDatesFailed = numberOfDueDatesFailed + 1
