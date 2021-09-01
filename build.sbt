@@ -45,7 +45,7 @@ libraryDependencies ++= {
 
     "org.postgresql" % "postgresql" % postgresVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
-
+    "org.optaplanner" % "optaplanner-core" % "8.10.0.Final",
 
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test",

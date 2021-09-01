@@ -17,6 +17,7 @@ object WorkflowListColumnType extends Enumeration {
   val OPEN, IN_PROGRESS = Value
 }
 
+// TODO move elsewhere
 case class WorkflowListTemporalQuery(apiId: String,
                                      title: String,
                                      temporalResource: Option[TemporalResourceEntity],
