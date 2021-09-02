@@ -39,33 +39,33 @@ class SolverActor() extends Actor with SimpleNameLogger {
         Task(
           id = 0L,
           startDate = LocalDateTime.of(2021, 1, 1, 10, 0),
-          dueDate = LocalDateTime.of(2021, 1, 1, 11, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
           duration = 60),
         Task(
           id = 1L,
           startDate = LocalDateTime.of(2021, 1, 1, 9, 0),
-          dueDate = LocalDateTime.of(2021, 1, 1, 10, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
           duration = 60),
         Task(
           id = 2L,
           startDate = LocalDateTime.of(2021, 1, 1, 8, 0),
-          dueDate = LocalDateTime.of(2021, 1, 1, 9, 0),
-          duration = 60),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 30),
         Task(
           id = 3L,
           startDate = LocalDateTime.of(2021, 1, 1, 7, 0),
-          dueDate = LocalDateTime.of(2021, 1, 1, 8, 0),
-          duration = 60),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 120),
         Task(
           id = 4L,
           startDate = LocalDateTime.of(2021, 1, 1, 6, 0),
-          dueDate = LocalDateTime.of(2021, 1, 1, 7, 0),
-          duration = 60),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 30),
         Task(
           id = 5L,
           startDate = LocalDateTime.of(2021, 1, 1, 5, 0),
-          dueDate = LocalDateTime.of(2021, 1, 1, 6, 0),
-          duration = 60),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 120),
         Task(
           id = 6L,
           startDate = LocalDateTime.of(2021, 1, 1, 4, 0),
@@ -75,7 +75,7 @@ class SolverActor() extends Actor with SimpleNameLogger {
           id = 7L,
           startDate = LocalDateTime.of(2021, 1, 1, 3, 0),
           dueDate = LocalDateTime.of(2021, 1, 1, 4, 0),
-          duration = 60),
+          duration = 20),
         Task(
           id = 8L,
           startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
@@ -83,6 +83,56 @@ class SolverActor() extends Actor with SimpleNameLogger {
           duration = 60),
         Task(
           id = 9L,
+          startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
+          duration = 60),
+        Task(
+          id = 10L,
+          startDate = LocalDateTime.of(2021, 1, 1, 10, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 60),
+        Task(
+          id = 11L,
+          startDate = LocalDateTime.of(2021, 1, 1, 9, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 60),
+        Task(
+          id = 12L,
+          startDate = LocalDateTime.of(2021, 1, 1, 8, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 30),
+        Task(
+          id = 13L,
+          startDate = LocalDateTime.of(2021, 1, 1, 7, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 120),
+        Task(
+          id = 14L,
+          startDate = LocalDateTime.of(2021, 1, 1, 6, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 30),
+        Task(
+          id = 15L,
+          startDate = LocalDateTime.of(2021, 1, 1, 5, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+          duration = 120),
+        Task(
+          id = 16L,
+          startDate = LocalDateTime.of(2021, 1, 1, 4, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 5, 0),
+          duration = 60),
+        Task(
+          id = 17L,
+          startDate = LocalDateTime.of(2021, 1, 1, 3, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 4, 0),
+          duration = 20),
+        Task(
+          id = 18L,
+          startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
+          dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
+          duration = 60),
+        Task(
+          id = 19L,
           startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
           dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
           duration = 60)

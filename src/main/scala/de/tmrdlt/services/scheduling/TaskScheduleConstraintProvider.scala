@@ -12,30 +12,41 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
   override def defineConstraints(constraintFactory: ConstraintFactory): Array[Constraint] =
     Array(
       // Hard constraints
-      startDateConflict(constraintFactory),
+      startAfterstartDate(constraintFactory),
       // Medium constraints
-      dueDateConflict(constraintFactory),
+      finishBeforeDueDate(constraintFactory),
       // Soft constraints
-      totalFinishDate(constraintFactory)
+      minimizeTotalFinishDate(constraintFactory),
+      //doAsManyTasksAsPossible(constraintFactory)
+      // TODO maybe add prefer longer tasks constraint...
     )
 
-  private def startDateConflict(constraintFactory: ConstraintFactory): Constraint =
+  private def startAfterstartDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[Task])
       .filter((taskWork: Task) => taskWork._startedAt < taskWork.startDate)
-      .penalize("Start date conflict", HardMediumSoftScore.ONE_HARD)
+      .penalize("A task cannot be started before it's StartDate", HardMediumSoftScore.ONE_HARD)
 
-  private def dueDateConflict(constraintFactory: ConstraintFactory): Constraint =
+  private def finishBeforeDueDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[Task])
       .filter((taskWork: Task) => taskWork.finishedAt > taskWork.dueDate)
-      .penalize("Due date conflict", HardMediumSoftScore.ONE_MEDIUM)
+      .penalize("A task should ideally be finished before it's DueDate", HardMediumSoftScore.ONE_MEDIUM)
 
-  private def totalFinishDate(constraintFactory: ConstraintFactory): Constraint =
+  private def minimizeTotalFinishDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[Task])
       .filter(task => task._nextTask == null)
-      .penalize("Total finish date", HardMediumSoftScore.ONE_SOFT, (taskWork: Task) => Math.abs(ChronoUnit.MINUTES.between(LocalDateTime.now(), taskWork.finishedAt)).toInt)
+      .penalize("The final FinishTime should be minimized", HardMediumSoftScore.ONE_SOFT,
+        (taskWork: Task) => Math.abs(ChronoUnit.MINUTES.between(LocalDateTime.now(), taskWork.finishedAt)).toInt // TODO check why can't use penalizeLong?
+      )
+
+  private def doAsManyTasksAsPossible(constraintFactory: ConstraintFactory): Constraint = {
+    constraintFactory
+      .from(classOf[Task])
+      .filter(task => task.finishedAt > task.dueDate)
+      .impact("Try to do as many tasks as possible", HardMediumSoftScore.ofSoft(1000))
+  }
 }
 
 
