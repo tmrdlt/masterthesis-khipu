@@ -8,7 +8,7 @@ import scala.jdk.CollectionConverters._
 
 @PlanningSolution
 case class TaskSchedule(private val _employees: List[Employee],
-                        private val _taskWorks: List[TaskWork]) {
+                        private val _tasks: List[Task]) {
 
   @ValueRangeProvider(id = "employeeRange")
   @ProblemFactCollectionProperty
@@ -16,7 +16,7 @@ case class TaskSchedule(private val _employees: List[Employee],
 
   @PlanningEntityCollectionProperty
   @ValueRangeProvider(id = "tasksWorkRange")
-  var tasksWorks: java.util.List[TaskWork] = _taskWorks.asJava
+  var tasks: java.util.List[Task] = _tasks.asJava
 
   @PlanningScore
   var score: HardMediumSoftScore = _

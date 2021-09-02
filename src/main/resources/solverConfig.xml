@@ -3,8 +3,8 @@
         xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
 
     <solutionClass>de.tmrdlt.services.scheduling.TaskSchedule</solutionClass>
-    <entityClass>de.tmrdlt.services.scheduling.TaskWork</entityClass>
-    <entityClass>de.tmrdlt.services.scheduling.TaskWorkOrEmployee</entityClass>
+    <entityClass>de.tmrdlt.services.scheduling.Task</entityClass>
+    <entityClass>de.tmrdlt.services.scheduling.TaskOrEmployee</entityClass>
 
     <scoreDirectorFactory>
         <constraintProviderClass>de.tmrdlt.services.scheduling.TaskScheduleConstraintProvider</constraintProviderClass>

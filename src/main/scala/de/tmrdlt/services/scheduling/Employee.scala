@@ -5,7 +5,7 @@ import org.optaplanner.core.api.domain.lookup.PlanningId
 import java.time.LocalDateTime
 
 
-case class Employee(val id: Long) extends TaskWorkOrEmployee {
+case class Employee(val id: Long) extends TaskOrEmployee {
 
   @PlanningId
   val internalId: Long = id

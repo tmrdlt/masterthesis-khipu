@@ -21,21 +21,21 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
 
   private def startDateConflict(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[TaskWork])
-      .filter((taskWork: TaskWork) => taskWork._startedAt < taskWork.task.startDate)
+      .from(classOf[Task])
+      .filter((taskWork: Task) => taskWork._startedAt < taskWork.startDate)
       .penalize("Start date conflict", HardMediumSoftScore.ONE_HARD)
 
   private def dueDateConflict(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[TaskWork])
-      .filter((taskWork: TaskWork) => taskWork.finishedAt > taskWork.task.dueDate)
+      .from(classOf[Task])
+      .filter((taskWork: Task) => taskWork.finishedAt > taskWork.dueDate)
       .penalize("Due date conflict", HardMediumSoftScore.ONE_MEDIUM)
 
   private def totalFinishDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[TaskWork])
-      .filter(task => task._nextTaskWork == null)
-      .penalize("Total finish date", HardMediumSoftScore.ONE_SOFT, (taskWork: TaskWork) => Math.abs(ChronoUnit.MINUTES.between(LocalDateTime.now(), taskWork.finishedAt)).toInt)
+      .from(classOf[Task])
+      .filter(task => task._nextTask == null)
+      .penalize("Total finish date", HardMediumSoftScore.ONE_SOFT, (taskWork: Task) => Math.abs(ChronoUnit.MINUTES.between(LocalDateTime.now(), taskWork.finishedAt)).toInt)
 }
 
 

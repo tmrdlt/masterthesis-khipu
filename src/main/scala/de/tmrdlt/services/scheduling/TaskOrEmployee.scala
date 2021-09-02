@@ -6,10 +6,10 @@ import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable
 import java.time.LocalDateTime
 
 @PlanningEntity
-abstract class TaskWorkOrEmployee {
+abstract class TaskOrEmployee {
 
-  @InverseRelationShadowVariable(sourceVariableName = "_previousTaskWorkOrEmployee")
-  var _nextTaskWork: TaskWork = _
+  @InverseRelationShadowVariable(sourceVariableName = "_previousTaskOrEmployee")
+  var _nextTask: Task = _
 
   def employee: Employee
 
