@@ -7,14 +7,15 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
 import scala.jdk.CollectionConverters._
 
 @PlanningSolution
-case class TaskSchedule(private val _tasks: List[Task], private val _tasksVariables: List[Task]) {
+case class TaskSchedule(private val _tasks: List[Task], private val _taskWorks: List[TaskWork]) {
 
   @ProblemFactCollectionProperty
   @ValueRangeProvider(id = "tasksRange")
-  var tasksVariables: java.util.List[Task] = _tasksVariables.asJava
+  var tasks: java.util.List[Task] = _tasks.asJava
 
   @PlanningEntityCollectionProperty
-  var tasks: java.util.List[Task] = _tasks.asJava
+  @ValueRangeProvider(id = "tasksWorkRange")
+  var tasksWorks: java.util.List[TaskWork] = _taskWorks.asJava
 
   @PlanningScore
   var score: HardSoftScore = _

@@ -3,7 +3,7 @@ package de.tmrdlt.components.health
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.pattern.pipe
 import de.tmrdlt.components.health.HealthActor.{DoHealthCheck, Solve}
-import de.tmrdlt.services.scheduling.{Task, TaskSchedule}
+import de.tmrdlt.services.scheduling.{Task, TaskSchedule, TaskWork}
 import org.optaplanner.core.api.solver.{SolverJob, SolverManager}
 import org.optaplanner.core.config.solver.{SolverConfig, SolverManagerConfig}
 
@@ -45,32 +45,16 @@ class HealthActor() extends Actor with ActorLogging {
         duration = 60
       )
 
-      val task4: Task = Task(
-        id = 3L,
-        startDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-        dueDate = LocalDateTime.of(2021, 1, 10, 12, 0),
-        duration = 60
-      )
+      val taskWork1: TaskWork = TaskWork(3L)
+      val taskWork2: TaskWork = TaskWork(4L)
+      val taskWork3: TaskWork = TaskWork(5L)
 
-      val task5: Task = Task(
-        id = 4L,
-        startDate = LocalDateTime.of(2021, 1, 2, 12, 0),
-        dueDate = LocalDateTime.of(2021, 1, 10, 12, 0),
-        duration = 60
-      )
-
-      val task6: Task = Task(
-        id = 5L,
-        startDate = LocalDateTime.of(2021, 1, 3, 12, 0),
-        dueDate = LocalDateTime.of(2021, 1, 10, 12, 0),
-        duration = 60
-      )
 
       val solverManager: SolverManager[TaskSchedule, UUID] = SolverManager.create(
         SolverConfig.createFromXmlResource("solverConfig.xml"),
         new SolverManagerConfig()
       )
-      val solverJob: SolverJob[TaskSchedule, UUID] = solverManager.solve(UUID.randomUUID(), TaskSchedule(List(task1, task2, task3), List(task4, task5, task6)))
+      val solverJob: SolverJob[TaskSchedule, UUID] = solverManager.solve(UUID.randomUUID(), TaskSchedule(List(task1, task2, task3), List(taskWork1, taskWork2, taskWork3)))
       val solution: TaskSchedule = solverJob.getFinalBestSolution
 
       log.info(solution.toString)
