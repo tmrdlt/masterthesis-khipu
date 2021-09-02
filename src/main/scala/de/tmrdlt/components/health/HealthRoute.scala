@@ -11,7 +11,7 @@ class HealthRoute(controller: HealthController)
 
   val route: Route =
     get {
-      onSuccess(controller.solve()) { _ =>
+      onSuccess(controller.performHealthCheck()) { _ =>
         complete("Server is Healthy!")
       }
     }

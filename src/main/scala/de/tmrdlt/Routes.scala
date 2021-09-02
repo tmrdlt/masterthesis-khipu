@@ -32,7 +32,8 @@ class Routes(components: Components)
         path("workflowlist" / Segment / "query") { workflowListApiId => components.workflowListIdQuery.route(workflowListApiId) },
         path("workflowlist" / Segment) { workflowListApiId => components.workflowListId.route(workflowListApiId) },
         path("user")(components.user.route),
-        path("user" / Segment) { userApiId => components.userId.route(userApiId) }
+        path("user" / Segment) { userApiId => components.userId.route(userApiId) },
+        path("solver")(components.solver.route)
       )
     }
   }
