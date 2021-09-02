@@ -1,11 +1,13 @@
 package de.tmrdlt.services.scheduling
 
+import de.tmrdlt.utils.SimpleNameLogger
 import org.optaplanner.core.api.domain.variable.VariableListener
 import org.optaplanner.core.api.score.director.ScoreDirector
 
 import java.time.LocalDateTime
+import java.util.Objects
 
-class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, TaskWork] {
+class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, TaskWork] with SimpleNameLogger {
 
   override def beforeEntityAdded(scoreDirector: ScoreDirector[TaskSchedule], taskWork: TaskWork): Unit = {
     // Do nothing
@@ -33,24 +35,28 @@ class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, T
 
 
   protected def updateStartedAt(scoreDirector: ScoreDirector[TaskSchedule], sourceTask: TaskWork): Unit = {
-    val previousTask: TaskWork = sourceTask._previousTaskWork
-    var finishedAt: LocalDateTime = if (previousTask == null) {
+    val previous: TaskWorkOrEmployee = sourceTask._previousTaskWorkOrEmployee
+    var finishedAt: LocalDateTime = if (previous == null) {
       null
     } else {
-      previousTask._finishedAt
+      previous.finishedAt
     }
     var shadowTask: TaskWork = sourceTask
-    var startedAt: LocalDateTime = Seq(shadowTask._task.startDate, finishedAt).max
+    var startedAt: LocalDateTime = calculateStartTime(shadowTask, finishedAt)
     while ( {
-      shadowTask != null && !shadowTask._startedAt.isEqual(startedAt)
+      shadowTask != null && !Objects.equals(shadowTask._startedAt, startedAt)
     }) {
       scoreDirector.beforeVariableChanged(shadowTask, "_startedAt")
       shadowTask._startedAt = startedAt
-      shadowTask._finishedAt = shadowTask._startedAt.plusMinutes(shadowTask._task.duration)
       scoreDirector.afterVariableChanged(shadowTask, "_startedAt")
-      finishedAt = shadowTask._finishedAt
+      finishedAt = shadowTask.finishedAt
       shadowTask = shadowTask._nextTaskWork
-      startedAt = Seq(shadowTask._task.startDate, finishedAt).max
+      startedAt = calculateStartTime(shadowTask, finishedAt)
     }
+  }
+
+  private def calculateStartTime(taskWork: TaskWork, previousFinishedAt: LocalDateTime): LocalDateTime = {
+    if (taskWork == null || previousFinishedAt == null) null
+    else Seq(taskWork.task.startDate, previousFinishedAt).max
   }
 }

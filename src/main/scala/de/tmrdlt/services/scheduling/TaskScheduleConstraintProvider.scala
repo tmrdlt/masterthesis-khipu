@@ -1,9 +1,10 @@
 package de.tmrdlt.services.scheduling
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
-import org.optaplanner.core.api.score.stream.{Constraint, ConstraintCollectors, ConstraintFactory, ConstraintProvider}
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
+import org.optaplanner.core.api.score.stream.{Constraint, ConstraintFactory, ConstraintProvider}
 
-import java.time.ZoneOffset
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import scala.math.Ordered.orderingToOrdered
 
 class TaskScheduleConstraintProvider extends ConstraintProvider {
@@ -12,28 +13,29 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
     Array(
       // Hard constraints
       startDateConflict(constraintFactory),
-      // Soft constraints
+      // Medium constraints
       dueDateConflict(constraintFactory),
+      // Soft constraints
       totalFinishDate(constraintFactory)
     )
 
   private def startDateConflict(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[TaskWork])
-      .filter((taskWork: TaskWork) => taskWork._startedAt < taskWork._task.startDate)
-      .penalize("Start date conflict", HardSoftScore.ONE_HARD)
+      .filter((taskWork: TaskWork) => taskWork._startedAt < taskWork.task.startDate)
+      .penalize("Start date conflict", HardMediumSoftScore.ONE_HARD)
 
   private def dueDateConflict(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[TaskWork])
-      .filter((taskWork: TaskWork) => taskWork._finishedAt > taskWork._task.dueDate)
-      .penalize("Due date conflict", HardSoftScore.ONE_SOFT)
+      .filter((taskWork: TaskWork) => taskWork.finishedAt > taskWork.task.dueDate)
+      .penalize("Due date conflict", HardMediumSoftScore.ONE_MEDIUM)
 
   private def totalFinishDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[TaskWork])
-      .groupBy(ConstraintCollectors.max((taskWork1: TaskWork, taskWork2: TaskWork) => taskWork1._finishedAt.compareTo(taskWork1._finishedAt)))
-      .penalizeLong("Total finish date", HardSoftScore.ONE_SOFT, (taskWork: TaskWork) => taskWork._finishedAt.toEpochSecond(ZoneOffset.of("Z")))
+      .filter(task => task._nextTaskWork == null)
+      .penalize("Total finish date", HardMediumSoftScore.ONE_SOFT, (taskWork: TaskWork) => Math.abs(ChronoUnit.MINUTES.between(LocalDateTime.now(), taskWork.finishedAt)).toInt)
 }
 
 

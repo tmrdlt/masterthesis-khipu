@@ -7,27 +7,25 @@ import org.optaplanner.core.api.domain.variable._
 import java.time.LocalDateTime
 
 @PlanningEntity
-case class TaskWork(val id: Long) extends Comparable[TaskWork] {
+case class TaskWork(val id: Long,
+                    val task: Task) extends TaskWorkOrEmployee with Comparable[TaskWork] {
 
   @PlanningId
   val internalId: Long = id
 
-  @PlanningVariable(valueRangeProviderRefs = Array("tasksRange"))
-  var _task: Task = _
+  @AnchorShadowVariable(sourceVariableName = "_previousTaskWorkOrEmployee")
+  var employee: Employee = _
 
-  @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("tasksWorkRange"))
-  var _previousTaskWork: TaskWork = _
-
-  @InverseRelationShadowVariable(sourceVariableName = "_previousTaskWork")
-  var _nextTaskWork: TaskWork = _
+  @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("tasksWorkRange", "employeeRange"))
+  var _previousTaskWorkOrEmployee: TaskWorkOrEmployee = _
 
   @CustomShadowVariable(variableListenerClass = classOf[StartedAtUpdatingVariableListener],
-    sources = Array(new PlanningVariableReference(variableName = "_previousTaskWork")))
+    sources = Array(new PlanningVariableReference(variableName = "_previousTaskWorkOrEmployee")))
   var _startedAt: LocalDateTime = _
 
-  var _finishedAt: LocalDateTime = _
+  def finishedAt: LocalDateTime = if (_startedAt == null) null else _startedAt.plusMinutes(task.duration)
 
-  def this() = this(0)
+  def this() = this(0L, Task(0, LocalDateTime.MIN, LocalDateTime.MIN, 0))
 
   def compareTo(other: TaskWork): Int = internalId compareTo other.internalId
 }

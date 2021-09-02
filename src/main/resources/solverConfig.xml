@@ -4,6 +4,7 @@
 
     <solutionClass>de.tmrdlt.services.scheduling.TaskSchedule</solutionClass>
     <entityClass>de.tmrdlt.services.scheduling.TaskWork</entityClass>
+    <entityClass>de.tmrdlt.services.scheduling.TaskWorkOrEmployee</entityClass>
 
     <scoreDirectorFactory>
         <constraintProviderClass>de.tmrdlt.services.scheduling.TaskScheduleConstraintProvider</constraintProviderClass>
@@ -11,6 +12,6 @@
 
 
     <termination>
-        <unimprovedMinutesSpentLimit>5</unimprovedMinutesSpentLimit>
+        <secondsSpentLimit>5</secondsSpentLimit>
     </termination>
 </solver>
