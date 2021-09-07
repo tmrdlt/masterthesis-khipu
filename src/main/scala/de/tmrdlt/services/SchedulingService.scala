@@ -1,9 +1,7 @@
 package de.tmrdlt.services
 
-import de.tmrdlt.components.solver.TaskPlanningSolution
-import de.tmrdlt.components.workflowlist.id.query.WorkflowListTemporalQuery
-import de.tmrdlt.models.{WorkflowListExecution, WorkflowListType, WorkflowListsExecutionResult}
-import de.tmrdlt.services.scheduling.domain.{Assignee, Task, TaskSchedule}
+import de.tmrdlt.models.{TaskPlanningSolution, WorkflowListTemporal, WorkflowListType}
+import de.tmrdlt.services.scheduling.domain.{Assignee, TaskSchedule}
 import de.tmrdlt.utils.{SimpleNameLogger, WorkScheduleUtil}
 import org.optaplanner.core.api.solver.{SolverJob, SolverManager}
 import org.optaplanner.core.config.solver.{SolverConfig, SolverManagerConfig}
@@ -15,7 +13,8 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 
 class SchedulingService extends SimpleNameLogger {
 
-  def scheduleTasks(now: LocalDateTime, tasks: Seq[Task]): Seq[TaskPlanningSolution] = {
+  def scheduleTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
+    val tasks = workflowLists.map(_.toTask(now))
     val assignees = List(Assignee(0L))
 
     val solverManager: SolverManager[TaskSchedule, UUID] = SolverManager.create(
@@ -33,31 +32,43 @@ class SchedulingService extends SimpleNameLogger {
   }
 
   // Don't use this: Complexity is O(n!)
-  def scheduleTasksNaive(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporalQuery]): WorkflowListsExecutionResult = {
+  def scheduleTasksNaive(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
+
+    object WorkflowListsExecutionResult {
+      implicit def ordering[A <: WorkflowListsExecutionResult]: Ordering[A] =
+        Ordering.by(t => (t.numberOfDueDatesFailed, t.totalEndDate))
+    }
+
+    case class WorkflowListsExecutionResult(executionOrder: Seq[TaskPlanningSolution],
+                                            totalEndDate: LocalDateTime,
+                                            numberOfDueDatesFailed: Int)
+
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
       var endDate = now
       var numberOfDueDatesFailed = 0
       // TODO make recursive function
-      val result = tasksPermutation.map { workflowList =>
-        val startDate = workflowList.temporalResource.flatMap(_.startDate) match {
+      val result = tasksPermutation.map { wl =>
+        val startedAt = wl.startDate match {
           case Some(date) => Seq(date, endDate).max
           case _ => endDate
         }
-        endDate = WorkScheduleUtil.getFinishDateRecursive(startDate, workflowList.predictedDuration)
-        if (workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)) {
+        endDate = WorkScheduleUtil.getFinishDateRecursive(startedAt, wl.remainingDuration)
+        if (wl.dueDate.exists(_ < endDate)) {
           numberOfDueDatesFailed = numberOfDueDatesFailed + 1
         }
-        //log.info(s"${workflowList.title}, StartDate: $startDate, EndDate: $endDate")
-        WorkflowListExecution(
-          apiId = workflowList.apiId,
-          title = workflowList.title,
-          duration = workflowList.predictedDuration,
-          endDate = endDate,
-          dueDate = workflowList.temporalResource.flatMap(_.endDate),
-          dueDateKept = !workflowList.temporalResource.flatMap(_.endDate).exists(_ < endDate)
+        TaskPlanningSolution(
+          id = wl.id,
+          apiId = wl.apiId,
+          title = wl.title,
+          startDate = wl.startDate,
+          dueDate = wl.dueDate,
+          duration = wl.remainingDuration,
+          startedAt = startedAt,
+          finishedAt = endDate,
+          dueDateKept = !wl.dueDate.exists(_ < endDate)
         )
       }
       WorkflowListsExecutionResult(result, endDate, numberOfDueDatesFailed)
-    }.toSeq.min
+    }.toSeq.min.executionOrder
   }
 }

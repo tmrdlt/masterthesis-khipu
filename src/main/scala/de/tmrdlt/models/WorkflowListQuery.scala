@@ -1,34 +1,49 @@
 package de.tmrdlt.models
 
+import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
+import de.tmrdlt.models.WorkflowListType.WorkflowListType
+import de.tmrdlt.services.scheduling.domain.Task
 import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
 
-
-case class WorkflowListExecution(apiId: String,
-                                 title: String,
-                                 duration: Long,
-                                 endDate: LocalDateTime,
-                                 dueDate: Option[LocalDateTime],
-                                 dueDateKept: Boolean)
-
-object WorkflowListsExecutionResult {
-  implicit def ordering[A <: WorkflowListsExecutionResult]: Ordering[A] =
-    Ordering.by(t => (t.numberOfDueDatesFailed, t.totalEndDate))
+case class WorkflowListTemporal(id: Long,
+                                apiId: String,
+                                title: String, //TODO not needed?
+                                workflowListType: WorkflowListType,
+                                startDate: Option[LocalDateTime],
+                                dueDate: Option[LocalDateTime],
+                                duration: Long,
+                                remainingDuration: Long,
+                                inColumn: WorkflowListColumnType) {
+  def toTask(now: LocalDateTime): Task = Task(
+    id = id,
+    apiId = apiId,
+    title = title,
+    now = now,
+    startDate = startDate,
+    dueDate = dueDate,
+    duration = remainingDuration
+  )
 }
 
-case class WorkflowListsExecutionResult(executionOrder: Seq[WorkflowListExecution],
-                                        totalEndDate: LocalDateTime,
-                                        numberOfDueDatesFailed: Int) // TODO To show in frontend make object, which contains wl ID and projected due date
+case class TaskPlanningSolution(id: Long,
+                                apiId: String,
+                                title: String,
+                                startDate: Option[LocalDateTime],
+                                dueDate: Option[LocalDateTime],
+                                duration: Long,
+                                startedAt: LocalDateTime,
+                                finishedAt: LocalDateTime,
+                                dueDateKept: Boolean)
 
 
 case class TemporalQueryResultEntity(totalDurationMinutes: Long,
-                                     bestExecutionResult: WorkflowListsExecutionResult)
+                                     bestExecutionResult: Seq[TaskPlanningSolution])
 
 
 trait WorkflowListQueryJsonSupport extends JsonSupport {
-  implicit val workflowListExecutionFormat: RootJsonFormat[WorkflowListExecution] = jsonFormat6(WorkflowListExecution)
-  implicit val workflowListsExecutionResultFormat: RootJsonFormat[WorkflowListsExecutionResult] = jsonFormat3(WorkflowListsExecutionResult.apply)
+  implicit val taskPlanningSolutionFormat: RootJsonFormat[TaskPlanningSolution] = jsonFormat9(TaskPlanningSolution)
   implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat2(TemporalQueryResultEntity)
 
 }

@@ -1,6 +1,6 @@
 package de.tmrdlt.services.scheduling.domain
 
-import de.tmrdlt.components.solver.TaskPlanningSolution
+import de.tmrdlt.models.TaskPlanningSolution
 import de.tmrdlt.services.scheduling.domain.solver.StartedAtUpdatingVariableListener
 import org.optaplanner.core.api.domain.entity.PlanningEntity
 import org.optaplanner.core.api.domain.lookup.PlanningId
@@ -11,6 +11,8 @@ import scala.math.Ordered.orderingToOrdered
 
 @PlanningEntity
 case class Task(val id: Long,
+                val apiId: String,
+                val title: String,
                 val now: LocalDateTime,
                 val startDate: Option[LocalDateTime],
                 val dueDate: Option[LocalDateTime],
@@ -31,17 +33,19 @@ case class Task(val id: Long,
 
   def finishedAt: LocalDateTime = if (_startedAt == null) null else _startedAt.plusMinutes(duration)
 
-  def this() = this(0L, LocalDateTime.now, Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
+  def this() = this(0L, "", "", LocalDateTime.now, Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
 
   def compareTo(other: Task): Int = internalId compareTo other.internalId
 
   def toTaskPlanningSolution: TaskPlanningSolution = TaskPlanningSolution(
     id = id,
-    startedAt = _startedAt,
-    finishedAt = finishedAt,
+    apiId = apiId,
+    title = title,
     dueDate = dueDate,
     startDate = startDate,
     duration = duration,
+    startedAt = _startedAt,
+    finishedAt = finishedAt,
     dueDateKept = dueDate match {
       case Some(dueDate) => finishedAt <= dueDate
       case _ => true

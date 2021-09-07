@@ -49,6 +49,7 @@ case class WorkflowList(id: Long,
                            level: Long,
                            workflowListsData: WorkflowListsData): WorkflowListEntity = {
     WorkflowListEntity(
+      id = id,
       apiId = apiId,
       title = title,
       description = description,

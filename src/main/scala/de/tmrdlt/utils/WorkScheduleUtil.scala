@@ -27,7 +27,6 @@ object WorkScheduleUtil {
   val workingDaysOfWeek: Seq[DayOfWeek] = Seq(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)
   val startWorkAtHour: Int = 10
   val stopWorkAtHour: Int = 18
-  val assumedDurationForTasksWithoutDuration: Int = 0
 
   @tailrec
   final def getFinishDateRecursive(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {
