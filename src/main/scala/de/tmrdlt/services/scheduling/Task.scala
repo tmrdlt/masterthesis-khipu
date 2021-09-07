@@ -13,16 +13,16 @@ case class Task(val id: Long,
                 val now: LocalDateTime,
                 val startDate: Option[LocalDateTime],
                 val dueDate: Option[LocalDateTime],
-                val duration: Long) extends TaskOrEmployee with Comparable[Task] {
+                val duration: Long) extends TaskOrAssignee with Comparable[Task] {
 
   @PlanningId
   val internalId: Long = id
 
   @AnchorShadowVariable(sourceVariableName = "_previousTaskOrEmployee")
-  var employee: Employee = _
+  var assignee: Assignee = _
 
   @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("tasksWorkRange", "employeeRange"))
-  var _previousTaskOrEmployee: TaskOrEmployee = _
+  var _previousTaskOrEmployee: TaskOrAssignee = _
 
   @CustomShadowVariable(variableListenerClass = classOf[StartedAtUpdatingVariableListener],
     sources = Array(new PlanningVariableReference(variableName = "_previousTaskOrEmployee")))

@@ -4,7 +4,7 @@
 
     <solutionClass>de.tmrdlt.services.scheduling.TaskSchedule</solutionClass>
     <entityClass>de.tmrdlt.services.scheduling.Task</entityClass>
-    <entityClass>de.tmrdlt.services.scheduling.TaskOrEmployee</entityClass>
+    <entityClass>de.tmrdlt.services.scheduling.TaskOrAssignee</entityClass>
 
     <scoreDirectorFactory>
         <constraintProviderClass>de.tmrdlt.services.scheduling.TaskScheduleConstraintProvider</constraintProviderClass>

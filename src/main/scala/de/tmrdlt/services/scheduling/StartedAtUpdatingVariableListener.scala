@@ -35,7 +35,7 @@ class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, T
 
 
   protected def updateStartedAt(scoreDirector: ScoreDirector[TaskSchedule], sourceTask: Task): Unit = {
-    val previous: TaskOrEmployee = sourceTask._previousTaskOrEmployee
+    val previous: TaskOrAssignee = sourceTask._previousTaskOrEmployee
     var finishedAt: LocalDateTime = if (previous == null) {
       null
     } else {

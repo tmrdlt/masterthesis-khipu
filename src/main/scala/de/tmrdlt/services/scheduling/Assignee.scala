@@ -5,7 +5,7 @@ import org.optaplanner.core.api.domain.lookup.PlanningId
 import java.time.LocalDateTime
 
 
-case class Employee(val id: Long) extends TaskOrEmployee {
+case class Assignee(val id: Long) extends TaskOrAssignee {
 
   @PlanningId
   val internalId: Long = id
@@ -13,7 +13,7 @@ case class Employee(val id: Long) extends TaskOrEmployee {
   def this() = this(0L)
 
   @Override
-  override def employee: Employee = this
+  override def assignee: Assignee = this
 
   override def finishedAt: LocalDateTime = LocalDateTime.MIN
 

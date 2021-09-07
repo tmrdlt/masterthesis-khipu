@@ -7,12 +7,12 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import scala.jdk.CollectionConverters._
 
 @PlanningSolution
-case class TaskSchedule(private val _employees: List[Employee],
+case class TaskSchedule(private val _employees: List[Assignee],
                         private val _tasks: List[Task]) {
 
   @ValueRangeProvider(id = "employeeRange")
   @ProblemFactCollectionProperty
-  var employees: java.util.List[Employee] = _employees.asJava
+  var employees: java.util.List[Assignee] = _employees.asJava
 
   @PlanningEntityCollectionProperty
   @ValueRangeProvider(id = "tasksWorkRange")

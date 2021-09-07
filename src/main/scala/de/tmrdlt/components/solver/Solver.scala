@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{complete, get}
 import akka.http.scaladsl.server.Route
 import de.tmrdlt.models.{ApiErrorJsonSupport, JsonSupport}
-import de.tmrdlt.services.scheduling.{Employee, Task, TaskSchedule}
+import de.tmrdlt.services.scheduling.{Assignee, Task, TaskSchedule}
 import de.tmrdlt.utils.SimpleNameLogger
 import org.optaplanner.core.api.solver.{SolverJob, SolverManager}
 import org.optaplanner.core.config.solver.{SolverConfig, SolverManagerConfig}
@@ -32,7 +32,7 @@ class SolverRoute(controller: SolverController) extends ApiErrorJsonSupport
 class SolverController extends SimpleNameLogger {
 
   private val now = LocalDateTime.of(2021, 7, 1, 11, 0)
-  private val employees = List(Employee(0L))
+  private val assignees = List(Assignee(0L))
   private val tasks = List(
     Task(
       id = 0L,
@@ -60,7 +60,7 @@ class SolverController extends SimpleNameLogger {
         SolverConfig.createFromXmlResource("solverConfig.xml"),
         new SolverManagerConfig()
       )
-      val solverJob: SolverJob[TaskSchedule, UUID] = solverManager.solve(UUID.randomUUID(), TaskSchedule(employees, tasks))
+      val solverJob: SolverJob[TaskSchedule, UUID] = solverManager.solve(UUID.randomUUID(), TaskSchedule(assignees, tasks))
       val solution: TaskSchedule = solverJob.getFinalBestSolution
 
       //log.info(solution.tasks.toString)
