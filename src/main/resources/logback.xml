@@ -13,9 +13,11 @@
     <logger name="com.zaxxer" level="INFO"/>
 
     <!--Optaplanner-->
+    <!-- https://github.com/kiegroup/optaplanner/blob/main/optaplanner-examples/src/test/resources/logback-test.xml -->
     <logger name="org.drools" level="${logback.level.org.drools:-warn}"/>
     <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-info}"/>
     <logger name="org.optaplanner.benchmark.impl.DefaultPlannerBenchmark.singleBenchmarkRunnerException" level="error"/>
+    <!-- https://stackoverflow.com/questions/58156226/drools-logging-below-configuration-level -->
     <logger name="org.kie" level="INFO"/>
 
     <root level="DEBUG">
