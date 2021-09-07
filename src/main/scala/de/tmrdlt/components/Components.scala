@@ -33,7 +33,7 @@ class Components(system: ActorSystem) {
   val workflowListIdConvert = new WorkflowListIdConvertRoute(new WorkflowListIdConvertController(dbs.workflowListDB))
   val workflowListIdMove = new WorkflowListIdMoveRoute(new WorkflowListIdMoveController(dbs.workflowListDB))
   val workflowListIdQuery = new WorkflowListIdQueryRoute(
-    new WorkflowListIdQueryController(services.workflowListService, services.workScheduleService, dbs.eventDB)
+    new WorkflowListIdQueryController(services.workflowListService, services.schedulingService, dbs.eventDB)
   )
   val workflowListIdReorder = new WorkflowListIdReorderRoute(new WorkflowListIdReorderController(dbs.workflowListDB))
   val workflowListIdResource = new WorkflowListIdResourceRoute(

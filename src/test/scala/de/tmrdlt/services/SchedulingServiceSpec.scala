@@ -2,27 +2,48 @@ package de.tmrdlt.services
 
 import de.tmrdlt.components.workflowlist.id.query.{WorkflowListColumnType, WorkflowListTemporalQuery}
 import de.tmrdlt.models.{TemporalResourceEntity, WorkflowListType}
+import de.tmrdlt.services.scheduling.Task
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import java.time.LocalDateTime
 
-class WorkScheduleServiceSpec extends AnyWordSpec with Matchers {
+class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
-  private val workScheduleService = new WorkScheduleService
+  private val schedulingService = new SchedulingService
+  private val now = LocalDateTime.of(2021, 7, 1, 11, 0)
 
-  private val startDate = LocalDateTime.of(2021, 7, 1, 11, 0)
-  private val finishDate = LocalDateTime.of(2021, 7, 5, 11, 0)
-  private val duration = 960
-
-  "WorkScheduleService" must {
-    "getFinishDateRecursive should calculate a correct finish date" in {
-      workScheduleService.getFinishDateRecursive(startDate, duration) shouldBe finishDate
+  "scheduleTasks" should {
+    "schedule tasks correctly" in {
+      val tasks = List(
+        Task(
+          id = 1L,
+          now = now,
+          startDate = Some(LocalDateTime.of(2021, 7, 5, 10, 0)),
+          dueDate = Some(LocalDateTime.of(2021, 7, 5, 18, 0)),
+          duration = 480),
+        Task(
+          id = 2L,
+          now = now,
+          startDate = None,
+          dueDate = Some(LocalDateTime.of(2021, 7, 1, 13, 0)),
+          duration = 60),
+        Task(
+          id = 3L,
+          now = now,
+          startDate = None,
+          dueDate = None,
+          duration = 120),
+      )
+      val result = schedulingService.scheduleTasks(now, tasks)
+      result.map(_.id) shouldBe Seq(2L, 3L, 1L)
+      result.last.finishedAt shouldBe LocalDateTime.of(2021, 7, 5, 18, 0)
+      result.count(_.dueDateKept == false) shouldBe 0
     }
-    "getDurationInMinutesRecursive should calculate a correct duration" in {
-      workScheduleService.getDurationInMinutesRecursive(startDate, finishDate) shouldBe duration
-    }
-    "getBestExecutionOrderOfTasks" in {
+  }
+
+  "scheduleTasksNaive" should {
+    "schedule tasks correctly" in {
       val task1 = WorkflowListTemporalQuery(
         "id1",
         "task1",
@@ -58,7 +79,7 @@ class WorkScheduleServiceSpec extends AnyWordSpec with Matchers {
         columnType = WorkflowListColumnType.IN_PROGRESS,
         60
       )
-      val result = workScheduleService.getBestExecutionOrderOfTasks(startDate, Seq(task1, task2, task3))
+      val result = schedulingService.scheduleTasksNaive(now, Seq(task1, task2, task3))
 
       result.executionOrder.map(_.apiId) shouldBe Seq(task2.apiId, task3.apiId, task1.apiId)
       result.totalEndDate shouldBe LocalDateTime.of(2021, 7, 5, 18, 0)

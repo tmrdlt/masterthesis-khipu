@@ -4,8 +4,8 @@ import de.tmrdlt.components.workflowlist.id.query.WorkflowListColumnType.Workflo
 import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models.{TemporalQueryResultEntity, TemporalResourceEntity, WorkflowListEntity}
-import de.tmrdlt.services.{WorkScheduleService, WorkflowListService}
-import de.tmrdlt.utils.SimpleNameLogger
+import de.tmrdlt.services.{SchedulingService, WorkflowListService}
+import de.tmrdlt.utils.{SimpleNameLogger, WorkScheduleUtil}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,11 +27,10 @@ case class WorkflowListTemporalQuery(apiId: String,
 
 case class ExecutionOrderWl(apiId: String,
                             title: String,
-                            predictedDuration: Long,
-                           )
+                            predictedDuration: Long)
 
 class WorkflowListIdQueryController(workflowListService: WorkflowListService,
-                                    workScheduleService: WorkScheduleService,
+                                    schedulingService: SchedulingService,
                                     eventDB: EventDB) extends SimpleNameLogger {
 
 
@@ -71,7 +70,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
         val totalDuration = allWorkflowListsFlattened.map(_.predictedDuration).sum
 
-        val bestExecutionResult = workScheduleService.getBestExecutionOrderOfTasks(now, allWorkflowListsFlattened)
+        val bestExecutionResult = schedulingService.scheduleTasksNaive(now, allWorkflowListsFlattened)
 
         TemporalQueryResultEntity(
           totalDurationMinutes = totalDuration,
@@ -138,8 +137,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
       // Time in inProgress: Time passed since moved to inProgress OR time passed sinced created in inProgress
       (movedToInProgressDateOption, createdAtInProgressDateOption) match {
-        case (Some(fromDate), _) => workScheduleService.getDurationInMinutesRecursive(fromDate, now)
-        case (_, Some(fromDate)) => workScheduleService.getDurationInMinutesRecursive(fromDate, now)
+        case (Some(fromDate), _) => WorkScheduleUtil.getDurationInMinutesRecursive(fromDate, now)
+        case (_, Some(fromDate)) => WorkScheduleUtil.getDurationInMinutesRecursive(fromDate, now)
         case _ => 0
       }
     }
