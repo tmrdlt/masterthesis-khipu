@@ -42,6 +42,6 @@ class Components(system: ActorSystem) {
   val user = new UserRoute(new UserController(dbs.userDB))
   val userId = new UserIdRoute(new UserIdController(dbs.userDB))
 
-  val solver = new SolverRoute(new SolverController(actors.solverActor))
+  val solver = new SolverRoute(new SolverController())
 
 }

@@ -3,7 +3,6 @@ package de.tmrdlt.components
 import akka.actor._
 import de.tmrdlt.components.fetchData.FetchDataActor
 import de.tmrdlt.components.health.HealthActor
-import de.tmrdlt.components.solver.SolverActor
 import de.tmrdlt.connectors.Apis
 import de.tmrdlt.database.DBs
 
@@ -14,11 +13,6 @@ class Actors(system: ActorSystem,
   val healthActor: ActorRef = system.actorOf(
     HealthActor.props(),
     HealthActor.name
-  )
-
-  val solverActor: ActorRef = system.actorOf(
-    SolverActor.props(),
-    SolverActor.name
   )
 
   val fetchDataActor: ActorRef = system.actorOf(

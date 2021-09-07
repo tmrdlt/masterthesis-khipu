@@ -12,7 +12,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
   override def defineConstraints(constraintFactory: ConstraintFactory): Array[Constraint] =
     Array(
       // Hard constraints
-      startAfterstartDate(constraintFactory),
+      startAfterStartDate(constraintFactory),
       // Medium constraints
       finishBeforeDueDate(constraintFactory),
       // Soft constraints
@@ -21,7 +21,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
       // TODO maybe add prefer longer tasks constraint...
     )
 
-  private def startAfterstartDate(constraintFactory: ConstraintFactory): Constraint =
+  private def startAfterStartDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .from(classOf[Task])
       .filter((taskWork: Task) => taskWork._startedAt < taskWork.startDate)
