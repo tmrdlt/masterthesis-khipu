@@ -10,6 +10,11 @@
     <logger name="slick.jdbc.JdbcBackend.statement" level="INFO"/>
     <logger name="com.zaxxer" level="INFO"/>
     <logger name="de.tmrdlt" level="DEBUG"/>
+
+    <logger name="org.drools" level="${logback.level.org.drools:-warn}"/>
+    <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-info}"/>
+    <logger name="org.optaplanner.benchmark.impl.DefaultPlannerBenchmark.singleBenchmarkRunnerException" level="error"/>
+
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
