@@ -31,110 +31,28 @@ class SolverRoute(controller: SolverController) extends ApiErrorJsonSupport
 
 class SolverController extends SimpleNameLogger {
 
-  val tasks = List(
+  private val now = LocalDateTime.of(2021, 7, 1, 11, 0)
+  private val employees = List(Employee(0L))
+  private val tasks = List(
     Task(
       id = 0L,
-      startDate = LocalDateTime.of(2021, 1, 1, 10, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 60),
+      now = now,
+      startDate = Some(LocalDateTime.of(2021, 7, 5, 10, 0)),
+      dueDate = Some(LocalDateTime.of(2021, 7, 5, 18, 0)),
+      duration = 480),
     Task(
       id = 1L,
-      startDate = LocalDateTime.of(2021, 1, 1, 9, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+      now = now,
+      startDate = None,
+      dueDate = Some(LocalDateTime.of(2021, 7, 1, 13, 0)),
       duration = 60),
     Task(
       id = 2L,
-      startDate = LocalDateTime.of(2021, 1, 1, 8, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 30),
-    Task(
-      id = 3L,
-      startDate = LocalDateTime.of(2021, 1, 1, 7, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
+      now = now,
+      startDate = None,
+      dueDate = None,
       duration = 120),
-    Task(
-      id = 4L,
-      startDate = LocalDateTime.of(2021, 1, 1, 6, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 30),
-    Task(
-      id = 5L,
-      startDate = LocalDateTime.of(2021, 1, 1, 5, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 120),
-    Task(
-      id = 6L,
-      startDate = LocalDateTime.of(2021, 1, 1, 4, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 5, 0),
-      duration = 60),
-    Task(
-      id = 7L,
-      startDate = LocalDateTime.of(2021, 1, 1, 3, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 4, 0),
-      duration = 20),
-    Task(
-      id = 8L,
-      startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
-      duration = 60),
-    Task(
-      id = 9L,
-      startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
-      duration = 60),
-    Task(
-      id = 10L,
-      startDate = LocalDateTime.of(2021, 1, 1, 10, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 60),
-    Task(
-      id = 11L,
-      startDate = LocalDateTime.of(2021, 1, 1, 9, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 60),
-    Task(
-      id = 12L,
-      startDate = LocalDateTime.of(2021, 1, 1, 8, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 30),
-    Task(
-      id = 13L,
-      startDate = LocalDateTime.of(2021, 1, 1, 7, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 120),
-    Task(
-      id = 14L,
-      startDate = LocalDateTime.of(2021, 1, 1, 6, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 30),
-    Task(
-      id = 15L,
-      startDate = LocalDateTime.of(2021, 1, 1, 5, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 12, 0),
-      duration = 120),
-    Task(
-      id = 16L,
-      startDate = LocalDateTime.of(2021, 1, 1, 4, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 5, 0),
-      duration = 60),
-    Task(
-      id = 17L,
-      startDate = LocalDateTime.of(2021, 1, 1, 3, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 4, 0),
-      duration = 20),
-    Task(
-      id = 18L,
-      startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
-      duration = 60),
-    Task(
-      id = 19L,
-      startDate = LocalDateTime.of(2021, 1, 1, 1, 0),
-      dueDate = LocalDateTime.of(2021, 1, 1, 2, 0),
-      duration = 60)
   )
-
-  val employees = List(Employee(0L))
 
   def solve(): Future[Seq[TaskPlanningSolution]] = {
     Future {
@@ -160,8 +78,11 @@ class SolverController extends SimpleNameLogger {
 case class TaskPlanningSolution(id: Long,
                                 startedAt: LocalDateTime,
                                 finishedAt: LocalDateTime,
+                                dueDate: Option[LocalDateTime],
+                                startDate: Option[LocalDateTime],
+                                duration: Long,
                                 dueDateKept: Boolean)
 
 trait SolverJsonSupport extends JsonSupport {
-  implicit val taskPlanningSolutionFormat: RootJsonFormat[TaskPlanningSolution] = jsonFormat4(TaskPlanningSolution)
+  implicit val taskPlanningSolutionFormat: RootJsonFormat[TaskPlanningSolution] = jsonFormat7(TaskPlanningSolution)
 }

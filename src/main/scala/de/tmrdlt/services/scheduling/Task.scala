@@ -10,8 +10,9 @@ import scala.math.Ordered.orderingToOrdered
 
 @PlanningEntity
 case class Task(val id: Long,
-                val startDate: LocalDateTime,
-                val dueDate: LocalDateTime,
+                val now: LocalDateTime,
+                val startDate: Option[LocalDateTime],
+                val dueDate: Option[LocalDateTime],
                 val duration: Long) extends TaskOrEmployee with Comparable[Task] {
 
   @PlanningId
@@ -29,7 +30,7 @@ case class Task(val id: Long,
 
   def finishedAt: LocalDateTime = if (_startedAt == null) null else _startedAt.plusMinutes(duration)
 
-  def this() = this(0L, LocalDateTime.MIN, LocalDateTime.MIN, 0)
+  def this() = this(0L, LocalDateTime.now, Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
 
   def compareTo(other: Task): Int = internalId compareTo other.internalId
 
@@ -37,6 +38,12 @@ case class Task(val id: Long,
     id = id,
     startedAt = _startedAt,
     finishedAt = finishedAt,
-    dueDateKept = finishedAt <= dueDate
+    dueDate = dueDate,
+    startDate = startDate,
+    duration = duration,
+    dueDateKept = dueDate match {
+      case Some(dueDate) => finishedAt <= dueDate
+      case _ => true
+    }
   )
 }
