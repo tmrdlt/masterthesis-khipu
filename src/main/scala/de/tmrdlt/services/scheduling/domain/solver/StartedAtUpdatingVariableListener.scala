@@ -1,5 +1,6 @@
-package de.tmrdlt.services.scheduling
+package de.tmrdlt.services.scheduling.domain.solver
 
+import de.tmrdlt.services.scheduling.domain.{Task, TaskOrAssignee, TaskSchedule}
 import de.tmrdlt.utils.SimpleNameLogger
 import org.optaplanner.core.api.domain.variable.VariableListener
 import org.optaplanner.core.api.score.director.ScoreDirector

@@ -1,9 +1,8 @@
-package de.tmrdlt.services.scheduling
+package de.tmrdlt.services.scheduling.domain
 
 import org.optaplanner.core.api.domain.lookup.PlanningId
 
 import java.time.LocalDateTime
-
 
 case class Assignee(val id: Long) extends TaskOrAssignee {
 

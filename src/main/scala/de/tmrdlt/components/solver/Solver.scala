@@ -4,7 +4,8 @@ import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{complete, get}
 import akka.http.scaladsl.server.Route
 import de.tmrdlt.models.{ApiErrorJsonSupport, JsonSupport}
-import de.tmrdlt.services.scheduling.{Assignee, Task, TaskSchedule}
+import de.tmrdlt.services.scheduling.domain
+import de.tmrdlt.services.scheduling.domain.{Assignee, Task, TaskSchedule}
 import de.tmrdlt.utils.SimpleNameLogger
 import org.optaplanner.core.api.solver.{SolverJob, SolverManager}
 import org.optaplanner.core.config.solver.{SolverConfig, SolverManagerConfig}
@@ -40,13 +41,13 @@ class SolverController extends SimpleNameLogger {
       startDate = Some(LocalDateTime.of(2021, 7, 5, 10, 0)),
       dueDate = Some(LocalDateTime.of(2021, 7, 5, 18, 0)),
       duration = 480),
-    Task(
+    domain.Task(
       id = 1L,
       now = now,
       startDate = None,
       dueDate = Some(LocalDateTime.of(2021, 7, 1, 13, 0)),
       duration = 60),
-    Task(
+    domain.Task(
       id = 2L,
       now = now,
       startDate = None,

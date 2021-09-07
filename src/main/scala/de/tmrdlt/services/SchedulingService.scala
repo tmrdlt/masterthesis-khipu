@@ -3,7 +3,7 @@ package de.tmrdlt.services
 import de.tmrdlt.components.solver.TaskPlanningSolution
 import de.tmrdlt.components.workflowlist.id.query.WorkflowListTemporalQuery
 import de.tmrdlt.models.{WorkflowListExecution, WorkflowListType, WorkflowListsExecutionResult}
-import de.tmrdlt.services.scheduling.{Assignee, Task, TaskSchedule}
+import de.tmrdlt.services.scheduling.domain.{Assignee, Task, TaskSchedule}
 import de.tmrdlt.utils.{SimpleNameLogger, WorkScheduleUtil}
 import org.optaplanner.core.api.solver.{SolverJob, SolverManager}
 import org.optaplanner.core.config.solver.{SolverConfig, SolverManagerConfig}

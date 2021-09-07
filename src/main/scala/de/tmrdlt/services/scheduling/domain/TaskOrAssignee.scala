@@ -1,4 +1,4 @@
-package de.tmrdlt.services.scheduling
+package de.tmrdlt.services.scheduling.domain
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable

@@ -1,5 +1,6 @@
-package de.tmrdlt.services.scheduling
+package de.tmrdlt.services.scheduling.score
 
+import de.tmrdlt.services.scheduling.domain.Task
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.stream.{Constraint, ConstraintFactory, ConstraintProvider}
 

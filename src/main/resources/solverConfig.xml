@@ -2,12 +2,13 @@
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
 
-    <solutionClass>de.tmrdlt.services.scheduling.TaskSchedule</solutionClass>
-    <entityClass>de.tmrdlt.services.scheduling.Task</entityClass>
-    <entityClass>de.tmrdlt.services.scheduling.TaskOrAssignee</entityClass>
+    <solutionClass>de.tmrdlt.services.scheduling.domain.TaskSchedule</solutionClass>
+    <entityClass>de.tmrdlt.services.scheduling.domain.Task</entityClass>
+    <entityClass>de.tmrdlt.services.scheduling.domain.TaskOrAssignee</entityClass>
 
     <scoreDirectorFactory>
-        <constraintProviderClass>de.tmrdlt.services.scheduling.TaskScheduleConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>de.tmrdlt.services.scheduling.score.TaskScheduleConstraintProvider
+        </constraintProviderClass>
     </scoreDirectorFactory>
 
 

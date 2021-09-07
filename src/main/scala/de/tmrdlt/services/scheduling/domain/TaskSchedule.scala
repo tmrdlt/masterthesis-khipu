@@ -1,11 +1,10 @@
-package de.tmrdlt.services.scheduling
+package de.tmrdlt.services.scheduling.domain
 
 import org.optaplanner.core.api.domain.solution.{PlanningEntityCollectionProperty, PlanningScore, PlanningSolution, ProblemFactCollectionProperty}
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 
 import scala.jdk.CollectionConverters.SeqHasAsJava
-
 
 @PlanningSolution
 case class TaskSchedule(private val _employees: Seq[Assignee],

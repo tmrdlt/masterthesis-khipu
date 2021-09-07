@@ -2,7 +2,7 @@ package de.tmrdlt.services
 
 import de.tmrdlt.components.workflowlist.id.query.{WorkflowListColumnType, WorkflowListTemporalQuery}
 import de.tmrdlt.models.{TemporalResourceEntity, WorkflowListType}
-import de.tmrdlt.services.scheduling.Task
+import de.tmrdlt.services.scheduling.domain
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -16,19 +16,19 @@ class SchedulingServiceSpec extends AnyWordSpec with Matchers {
   "scheduleTasks" should {
     "schedule tasks correctly" in {
       val tasks = List(
-        Task(
+        domain.Task(
           id = 1L,
           now = now,
           startDate = Some(LocalDateTime.of(2021, 7, 5, 10, 0)),
           dueDate = Some(LocalDateTime.of(2021, 7, 5, 18, 0)),
           duration = 480),
-        Task(
+        domain.Task(
           id = 2L,
           now = now,
           startDate = None,
           dueDate = Some(LocalDateTime.of(2021, 7, 1, 13, 0)),
           duration = 60),
-        Task(
+        domain.Task(
           id = 3L,
           now = now,
           startDate = None,

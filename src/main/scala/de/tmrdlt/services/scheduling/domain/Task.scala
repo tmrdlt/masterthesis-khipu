@@ -1,6 +1,7 @@
-package de.tmrdlt.services.scheduling
+package de.tmrdlt.services.scheduling.domain
 
 import de.tmrdlt.components.solver.TaskPlanningSolution
+import de.tmrdlt.services.scheduling.domain.solver.StartedAtUpdatingVariableListener
 import org.optaplanner.core.api.domain.entity.PlanningEntity
 import org.optaplanner.core.api.domain.lookup.PlanningId
 import org.optaplanner.core.api.domain.variable._
