@@ -1,7 +1,9 @@
 package de.tmrdlt.utils
 
+import de.tmrdlt.constants.WorkSchedule.{startWorkAtHour, stopWorkAtHour, workingDaysOfWeek}
+
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.time.{DayOfWeek, LocalDateTime}
 import scala.annotation.tailrec
 import scala.math.Ordered.orderingToOrdered
 
@@ -23,10 +25,18 @@ object WorkScheduleUtil {
 
   private def getWorkingDate(localDateTime: LocalDateTime): WorkingDate = WorkingDate(localDateTime.withSecond(0).withNano(0))
 
-  // TODO maybe move to constants file
-  val workingDaysOfWeek: Seq[DayOfWeek] = Seq(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)
-  val startWorkAtHour: Int = 10
-  val stopWorkAtHour: Int = 18
+  def getStartDateWithinWorkSchedule(startDate: LocalDateTime): LocalDateTime = {
+    val workingDate = getWorkingDate(startDate)
+    if (!workingDate.isAtWorkDay) {
+      workingDate.getNextStartDate
+    } else if (workingDate.isAfterOrAtStopHour) {
+      workingDate.getNextStartDate
+    } else if (workingDate.isBeforeStartHour) {
+      workingDate.getStartDate
+    } else {
+      startDate
+    }
+  }
 
   @tailrec
   final def getFinishDateRecursive(startDate: LocalDateTime, durationInMinutes: Long): LocalDateTime = {

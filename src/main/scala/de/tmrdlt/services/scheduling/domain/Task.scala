@@ -2,6 +2,7 @@ package de.tmrdlt.services.scheduling.domain
 
 import de.tmrdlt.models.TaskPlanningSolution
 import de.tmrdlt.services.scheduling.domain.solver.StartedAtUpdatingVariableListener
+import de.tmrdlt.utils.WorkScheduleUtil
 import org.optaplanner.core.api.domain.entity.PlanningEntity
 import org.optaplanner.core.api.domain.lookup.PlanningId
 import org.optaplanner.core.api.domain.variable._
@@ -24,14 +25,18 @@ case class Task(val id: Long,
   @AnchorShadowVariable(sourceVariableName = "_previousTaskOrEmployee")
   var assignee: Assignee = _
 
-  @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("tasksWorkRange", "employeeRange"))
+  @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("tasksWorkRange", "assigneeRange"))
   var _previousTaskOrEmployee: TaskOrAssignee = _
 
   @CustomShadowVariable(variableListenerClass = classOf[StartedAtUpdatingVariableListener],
     sources = Array(new PlanningVariableReference(variableName = "_previousTaskOrEmployee")))
   var _startedAt: LocalDateTime = _
 
-  def finishedAt: LocalDateTime = if (_startedAt == null) null else _startedAt.plusMinutes(duration)
+  def finishedAt: LocalDateTime = if (_startedAt == null) {
+    null
+  } else {
+    WorkScheduleUtil.getFinishDateRecursive(_startedAt, duration)
+  }
 
   def this() = this(0L, "", "", LocalDateTime.now, Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
 
