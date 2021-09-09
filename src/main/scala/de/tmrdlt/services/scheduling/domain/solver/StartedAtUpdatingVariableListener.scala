@@ -1,7 +1,7 @@
 package de.tmrdlt.services.scheduling.domain.solver
 
 import de.tmrdlt.services.scheduling.domain.{Task, TaskOrAssignee, TaskSchedule}
-import de.tmrdlt.utils.SimpleNameLogger
+import de.tmrdlt.utils.{SimpleNameLogger, WorkScheduleUtil}
 import org.optaplanner.core.api.domain.variable.VariableListener
 import org.optaplanner.core.api.score.director.ScoreDirector
 
@@ -59,6 +59,6 @@ class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, T
   private def calculateStartTime(task: Task, previousFinishedAt: LocalDateTime): LocalDateTime = {
     if (task == null || previousFinishedAt == null) null
     // start at what ever is the latest: startDate of task, finishDate of previous task or the startDate of our project (which is task.now)
-    else Seq(task.startDate.getOrElse(LocalDateTime.MIN), previousFinishedAt, task.now).max
+    else WorkScheduleUtil.getStartDateWithinWorkSchedule(task.workSchedule, Seq(task.startDate.getOrElse(LocalDateTime.MIN), previousFinishedAt, task.now).max)
   }
 }

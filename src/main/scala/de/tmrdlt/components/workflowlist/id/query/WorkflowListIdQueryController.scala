@@ -3,6 +3,7 @@ package de.tmrdlt.components.workflowlist.id.query
 import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
 import de.tmrdlt.constants.{AssumedDurationForTasksWithoutDuration, WorkflowListColumnType}
 import de.tmrdlt.database.event.{Event, EventDB}
+import de.tmrdlt.database.workschedule.{WorkSchedule, WorkScheduleDB}
 import de.tmrdlt.models.{TemporalQueryResultEntity, WorkflowListEntity, WorkflowListTemporal}
 import de.tmrdlt.services.{SchedulingService, WorkflowListService}
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger, WorkScheduleUtil}
@@ -17,19 +18,25 @@ case class ExecutionOrderWl(apiId: String,
 
 class WorkflowListIdQueryController(workflowListService: WorkflowListService,
                                     schedulingService: SchedulingService,
-                                    eventDB: EventDB) extends SimpleNameLogger with OptionExtensions {
+                                    eventDB: EventDB,
+                                    workScheduleDB: WorkScheduleDB) extends SimpleNameLogger with OptionExtensions {
 
 
   def performTemporalQuery(workflowListApiId: String): Future[TemporalQueryResultEntity] = {
     val now = LocalDateTime.now()
 
+    val boardFuture = workflowListService.getWorkflowListEntityForId(workflowListApiId)
+    val eventsFuture = eventDB.getEvents
+    val workScheduleFuture = workScheduleDB.getWorkSchedule
+
     for {
-      board <- workflowListService.getWorkflowListEntityForId(workflowListApiId).map { wl =>
+      board <- boardFuture.map { wl =>
         if (wl.children.size < 2) {
           throw new Exception("Board doesnt have required columns to perform temporal query")
         } else wl
       }
-      events <- eventDB.getEvents
+      events <- eventsFuture
+      workSchedule <- workScheduleFuture
     } yield {
       // OPEN column is first column
       val openColumn = board.children.head
@@ -38,11 +45,11 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
       val allWorkflowListTemporals = recursiveGetAllWorkflowListsWithTemporalResource(Seq(openColumn), WorkflowListColumnType.OPEN) ++
         recursiveGetAllWorkflowListsWithTemporalResource(inProgressColumns, WorkflowListColumnType.IN_PROGRESS)
-          .map(wl => getRemainingDuration(now, wl, openColumn.apiId, inProgressColumns.map(_.apiId), events))
+          .map(wl => getRemainingDuration(now, workSchedule, wl, openColumn.apiId, inProgressColumns.map(_.apiId), events))
 
       TemporalQueryResultEntity(
         totalDurationMinutes = allWorkflowListTemporals.map(_.remainingDuration).sum,
-        bestExecutionResult = schedulingService.scheduleTasks(now, allWorkflowListTemporals)
+        bestExecutionResult = schedulingService.scheduleTasks(now, workSchedule, allWorkflowListTemporals)
       )
     }
   }
@@ -67,6 +74,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
   }
 
   private def getRemainingDuration(now: LocalDateTime,
+                                   workSchedule: WorkSchedule,
                                    workflowList: WorkflowListTemporal,
                                    openApiId: String,
                                    inProgressApiIds: Seq[String],
@@ -96,8 +104,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
       // Time in inProgress: Time passed since moved to IN_PROGRESS OR time passed since created in IN_PROGRESS
       (movedToInProgressDateOption, createdAtInProgressDateOption) match {
-        case (Some(fromDate), _) => WorkScheduleUtil.getDurationInMinutesRecursive(fromDate, now)
-        case (_, Some(fromDate)) => WorkScheduleUtil.getDurationInMinutesRecursive(fromDate, now)
+        case (Some(fromDate), _) => WorkScheduleUtil.getDurationInMinutesRecursive(workSchedule, fromDate, now)
+        case (_, Some(fromDate)) => WorkScheduleUtil.getDurationInMinutesRecursive(workSchedule, fromDate, now)
         case _ => 0
       }
     }

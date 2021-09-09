@@ -1,5 +1,6 @@
 package de.tmrdlt.services
 
+import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.models.{TaskPlanningSolution, WorkflowListTemporal, WorkflowListType}
 import de.tmrdlt.services.scheduling.domain.{Assignee, TaskSchedule}
 import de.tmrdlt.utils.{SimpleNameLogger, WorkScheduleUtil}
@@ -13,8 +14,10 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 
 class SchedulingService extends SimpleNameLogger {
 
-  def scheduleTasks(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
-    val tasks = workflowLists.map(_.toTask(now))
+  def scheduleTasks(now: LocalDateTime,
+                    workSchedule: WorkSchedule,
+                    workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
+    val tasks = workflowLists.map(_.toTask(now, workSchedule))
     val assignees = List(Assignee(0L))
 
     val solverManager: SolverManager[TaskSchedule, UUID] = SolverManager.create(
@@ -32,7 +35,7 @@ class SchedulingService extends SimpleNameLogger {
   }
 
   // Don't use this: Complexity is O(n!)
-  def scheduleTasksNaive(now: LocalDateTime, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
+  def scheduleTasksNaive(now: LocalDateTime, workSchedule: WorkSchedule, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
 
     object WorkflowListsExecutionResult {
       implicit def ordering[A <: WorkflowListsExecutionResult]: Ordering[A] =
@@ -52,7 +55,7 @@ class SchedulingService extends SimpleNameLogger {
           case Some(date) => Seq(date, endDate).max
           case _ => endDate
         }
-        endDate = WorkScheduleUtil.getFinishDateRecursive(startedAt, wl.remainingDuration)
+        endDate = WorkScheduleUtil.getFinishDateRecursive(workSchedule, startedAt, wl.remainingDuration)
         if (wl.dueDate.exists(_ < endDate)) {
           numberOfDueDatesFailed = numberOfDueDatesFailed + 1
         }

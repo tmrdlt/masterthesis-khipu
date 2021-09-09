@@ -1,16 +1,18 @@
 package de.tmrdlt.services
 
 import de.tmrdlt.constants.WorkflowListColumnType
+import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.models.{WorkflowListTemporal, WorkflowListType}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import java.time.LocalDateTime
+import java.time.{DayOfWeek, LocalDateTime}
 
 class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
   private val schedulingService = new SchedulingService
   private val now = LocalDateTime.of(2021, 6, 1, 8, 37)
+  private val workSchedule = WorkSchedule(10, 18, List(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY))
   val tasks = Seq(
     WorkflowListTemporal(
       id = 1L,
@@ -55,7 +57,7 @@ class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
   "scheduleTasks" should {
     "schedule tasks correctly" in {
-      val result = schedulingService.scheduleTasks(now, tasks)
+      val result = schedulingService.scheduleTasks(now, workSchedule, tasks)
       result.map(_.id) shouldBe Seq(2L, 3L, 1L, 4L)
       result.last.finishedAt shouldBe LocalDateTime.of(2021, 6, 3, 16, 0)
       result.count(_.dueDateKept == false) shouldBe 0
@@ -64,7 +66,7 @@ class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
   "scheduleTasksNaive" should {
     "schedule tasks correctly" in {
-      val result = schedulingService.scheduleTasksNaive(now, tasks)
+      val result = schedulingService.scheduleTasksNaive(now, workSchedule, tasks)
       result.map(_.id) shouldBe Seq(2L, 3L, 1L, 4L)
       result.last.finishedAt shouldBe LocalDateTime.of(2021, 6, 3, 16, 0)
       result.count(_.dueDateKept == false) shouldBe 0

@@ -1,6 +1,7 @@
 package de.tmrdlt.models
 
 import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
+import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.services.scheduling.domain.Task
 import spray.json.RootJsonFormat
@@ -16,11 +17,12 @@ case class WorkflowListTemporal(id: Long,
                                 duration: Long,
                                 remainingDuration: Long,
                                 inColumn: WorkflowListColumnType) {
-  def toTask(now: LocalDateTime): Task = Task(
+  def toTask(now: LocalDateTime, workSchedule: WorkSchedule): Task = Task(
     id = id,
     apiId = apiId,
     title = title,
     now = now,
+    workSchedule = workSchedule,
     startDate = startDate,
     dueDate = dueDate,
     duration = remainingDuration

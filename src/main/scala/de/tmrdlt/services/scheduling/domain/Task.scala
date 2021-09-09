@@ -1,5 +1,6 @@
 package de.tmrdlt.services.scheduling.domain
 
+import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.models.TaskPlanningSolution
 import de.tmrdlt.services.scheduling.domain.solver.StartedAtUpdatingVariableListener
 import de.tmrdlt.utils.WorkScheduleUtil
@@ -15,6 +16,7 @@ case class Task(val id: Long,
                 val apiId: String,
                 val title: String,
                 val now: LocalDateTime,
+                val workSchedule: WorkSchedule,
                 val startDate: Option[LocalDateTime],
                 val dueDate: Option[LocalDateTime],
                 val duration: Long) extends TaskOrAssignee with Comparable[Task] {
@@ -35,10 +37,10 @@ case class Task(val id: Long,
   def finishedAt: LocalDateTime = if (_startedAt == null) {
     null
   } else {
-    WorkScheduleUtil.getFinishDateRecursive(_startedAt, duration)
+    WorkScheduleUtil.getFinishDateRecursive(workSchedule, _startedAt, duration)
   }
 
-  def this() = this(0L, "", "", LocalDateTime.now, Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
+  def this() = this(0L, "", "", LocalDateTime.now, WorkSchedule(0, 0, List()), Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
 
   def compareTo(other: Task): Int = internalId compareTo other.internalId
 

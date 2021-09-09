@@ -1,12 +1,15 @@
 package de.tmrldt.utils
 
+import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.utils.WorkScheduleUtil
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import java.time.LocalDateTime
+import java.time.{DayOfWeek, LocalDateTime}
 
 class WorkScheduleUtilSpec extends AnyWordSpec with Matchers {
+
+  private val workSchedule = WorkSchedule(10, 18, List(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY))
 
   private val startDate = LocalDateTime.of(2021, 7, 1, 11, 0)
   private val finishDate = LocalDateTime.of(2021, 7, 5, 11, 0)
@@ -14,12 +17,12 @@ class WorkScheduleUtilSpec extends AnyWordSpec with Matchers {
 
   "getFinishDateRecursive" should {
     "calculate correct finish date by given startDate and duration based on work schedule" in {
-      WorkScheduleUtil.getFinishDateRecursive(startDate, duration) shouldBe finishDate
+      WorkScheduleUtil.getFinishDateRecursive(workSchedule, startDate, duration) shouldBe finishDate
     }
   }
   "getDurationInMinutesRecursive" should {
     "calculate correct duration by given startDate and finishDate based on work schedule" in {
-      WorkScheduleUtil.getDurationInMinutesRecursive(startDate, finishDate) shouldBe duration
+      WorkScheduleUtil.getDurationInMinutesRecursive(workSchedule, startDate, finishDate) shouldBe duration
     }
   }
 }
