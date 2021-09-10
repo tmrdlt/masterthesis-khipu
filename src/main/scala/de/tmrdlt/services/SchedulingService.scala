@@ -2,7 +2,7 @@ package de.tmrdlt.services
 
 import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.models.{TaskPlanningSolution, WorkflowListTemporal, WorkflowListType}
-import de.tmrdlt.services.scheduling.domain.{Assignee, TaskSchedule}
+import de.tmrdlt.services.scheduling.domain.{Assignee, Task, TaskSchedule}
 import de.tmrdlt.utils.{SimpleNameLogger, WorkScheduleUtil}
 import org.optaplanner.core.api.solver.{SolverJob, SolverManager}
 import org.optaplanner.core.config.solver.{SolverConfig, SolverManagerConfig}
@@ -27,7 +27,9 @@ class SchedulingService extends SimpleNameLogger {
     val solverJob: SolverJob[TaskSchedule, UUID] = solverManager.solve(UUID.randomUUID(), TaskSchedule(assignees, tasks))
     val solution: TaskSchedule = solverJob.getFinalBestSolution
 
-    val res = solution.tasks.asScala.toSeq.sortBy(_._startedAt).map(_.toTaskPlanningSolution)
+    val res = solution.tasks.asScala.toSeq.sortBy(_._startedAt).zipWithIndex.map {
+      case (task: Task, index: Int) => task.toTaskPlanningSolution(index)
+    }
     res.foreach(task =>
       log.info(task.toString)
     )
@@ -50,26 +52,28 @@ class SchedulingService extends SimpleNameLogger {
       var endDate = now
       var numberOfDueDatesFailed = 0
       // TODO make recursive function
-      val result = tasksPermutation.map { wl =>
-        val startedAt = wl.startDate match {
-          case Some(date) => Seq(date, endDate).max
-          case _ => endDate
-        }
-        endDate = WorkScheduleUtil.getFinishDateRecursive(workSchedule, startedAt, wl.remainingDuration)
-        if (wl.dueDate.exists(_ < endDate)) {
-          numberOfDueDatesFailed = numberOfDueDatesFailed + 1
-        }
-        TaskPlanningSolution(
-          id = wl.id,
-          apiId = wl.apiId,
-          title = wl.title,
-          startDate = wl.startDate,
-          dueDate = wl.dueDate,
-          duration = wl.remainingDuration,
-          startedAt = startedAt,
-          finishedAt = endDate,
-          dueDateKept = !wl.dueDate.exists(_ < endDate)
-        )
+      val result = tasksPermutation.zipWithIndex.map {
+        case (wl: WorkflowListTemporal, index: Int) =>
+          val startedAt = wl.startDate match {
+            case Some(date) => Seq(date, endDate).max
+            case _ => endDate
+          }
+          endDate = WorkScheduleUtil.getFinishDateRecursive(workSchedule, startedAt, wl.remainingDuration)
+          if (wl.dueDate.exists(_ < endDate)) {
+            numberOfDueDatesFailed = numberOfDueDatesFailed + 1
+          }
+          TaskPlanningSolution(
+            id = wl.id,
+            apiId = wl.apiId,
+            title = wl.title,
+            startDate = wl.startDate,
+            dueDate = wl.dueDate,
+            duration = wl.remainingDuration,
+            startedAt = startedAt,
+            finishedAt = endDate,
+            dueDateKept = !wl.dueDate.exists(_ < endDate),
+            index = index
+          )
       }
       WorkflowListsExecutionResult(result, endDate, numberOfDueDatesFailed)
     }.toSeq.min.executionOrder

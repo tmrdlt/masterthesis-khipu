@@ -25,7 +25,8 @@ case class WorkflowListTemporal(id: Long,
     workSchedule = workSchedule,
     startDate = startDate,
     dueDate = dueDate,
-    duration = remainingDuration
+    duration = remainingDuration,
+    inColumn = inColumn
   )
 }
 
@@ -37,15 +38,16 @@ case class TaskPlanningSolution(id: Long,
                                 duration: Long,
                                 startedAt: LocalDateTime,
                                 finishedAt: LocalDateTime,
-                                dueDateKept: Boolean)
+                                dueDateKept: Boolean,
+                                index: Int)
 
 
-case class TemporalQueryResultEntity(totalDurationMinutes: Long,
-                                     bestExecutionResult: Seq[TaskPlanningSolution])
+case class TemporalQueryResultEntity(boardResult: TaskPlanningSolution,
+                                     tasksResult: Seq[TaskPlanningSolution])
 
 
 trait WorkflowListQueryJsonSupport extends JsonSupport {
-  implicit val taskPlanningSolutionFormat: RootJsonFormat[TaskPlanningSolution] = jsonFormat9(TaskPlanningSolution)
+  implicit val taskPlanningSolutionFormat: RootJsonFormat[TaskPlanningSolution] = jsonFormat10(TaskPlanningSolution)
   implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat2(TemporalQueryResultEntity)
 
 }

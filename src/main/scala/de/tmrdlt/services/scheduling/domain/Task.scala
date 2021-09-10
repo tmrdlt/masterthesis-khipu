@@ -1,5 +1,7 @@
 package de.tmrdlt.services.scheduling.domain
 
+import de.tmrdlt.constants.WorkflowListColumnType
+import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
 import de.tmrdlt.database.workschedule.WorkSchedule
 import de.tmrdlt.models.TaskPlanningSolution
 import de.tmrdlt.services.scheduling.domain.solver.StartedAtUpdatingVariableListener
@@ -19,7 +21,8 @@ case class Task(val id: Long,
                 val workSchedule: WorkSchedule,
                 val startDate: Option[LocalDateTime],
                 val dueDate: Option[LocalDateTime],
-                val duration: Long) extends TaskOrAssignee with Comparable[Task] {
+                val duration: Long,
+                val inColumn: WorkflowListColumnType) extends TaskOrAssignee with Comparable[Task] {
 
   @PlanningId
   val internalId: Long = id
@@ -40,11 +43,11 @@ case class Task(val id: Long,
     WorkScheduleUtil.getFinishDateRecursive(workSchedule, _startedAt, duration)
   }
 
-  def this() = this(0L, "", "", LocalDateTime.now, WorkSchedule(0, 0, List()), Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0)
+  def this() = this(0L, "", "", LocalDateTime.now, WorkSchedule(0, 0, List()), Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0, WorkflowListColumnType.OPEN)
 
   def compareTo(other: Task): Int = internalId compareTo other.internalId
 
-  def toTaskPlanningSolution: TaskPlanningSolution = TaskPlanningSolution(
+  def toTaskPlanningSolution(index: Int): TaskPlanningSolution = TaskPlanningSolution(
     id = id,
     apiId = apiId,
     title = title,
@@ -56,6 +59,7 @@ case class Task(val id: Long,
     dueDateKept = dueDate match {
       case Some(dueDate) => finishedAt <= dueDate
       case _ => true
-    }
+    },
+    index = index
   )
 }

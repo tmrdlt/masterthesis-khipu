@@ -4,13 +4,14 @@ import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
 import de.tmrdlt.constants.{AssumedDurationForTasksWithoutDuration, WorkflowListColumnType}
 import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.database.workschedule.{WorkSchedule, WorkScheduleDB}
-import de.tmrdlt.models.{TemporalQueryResultEntity, WorkflowListEntity, WorkflowListTemporal}
+import de.tmrdlt.models.{TaskPlanningSolution, TemporalQueryResultEntity, WorkflowListEntity, WorkflowListTemporal}
 import de.tmrdlt.services.{SchedulingService, WorkflowListService}
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger, WorkScheduleUtil}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.math.Ordered.orderingToOrdered
 
 case class ExecutionOrderWl(apiId: String,
                             title: String,
@@ -47,9 +48,23 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         recursiveGetAllWorkflowListsWithTemporalResource(inProgressColumns, WorkflowListColumnType.IN_PROGRESS)
           .map(wl => getRemainingDuration(now, workSchedule, wl, openColumn.apiId, inProgressColumns.map(_.apiId), events))
 
+      val scheduling = schedulingService.scheduleTasks(now, workSchedule, allWorkflowListTemporals)
+
+      val boardFinishedAt = scheduling.lastOption.getOrException("No tasks were planned").finishedAt
       TemporalQueryResultEntity(
-        totalDurationMinutes = allWorkflowListTemporals.map(_.remainingDuration).sum,
-        bestExecutionResult = schedulingService.scheduleTasks(now, workSchedule, allWorkflowListTemporals)
+        boardResult = TaskPlanningSolution(
+          id = board.id,
+          apiId = board.apiId,
+          title = board.title,
+          startDate = None,
+          dueDate = board.getEndDate,
+          duration = allWorkflowListTemporals.map(_.remainingDuration).sum,
+          startedAt = scheduling.headOption.getOrException("No tasks were planned").startedAt,
+          finishedAt = boardFinishedAt,
+          dueDateKept = !board.getEndDate.exists(_ < boardFinishedAt),
+          index = 0
+        ),
+        tasksResult = scheduling
       )
     }
   }
@@ -90,7 +105,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         .filter(e => e.workflowListApiId == workflowListApiId &&
           e.oldParentApiId.contains(openApiId) &&
           inProgressApiIds.contains(e.newParentApiId.getOrElse("")))
-        .sortBy(_.date)
+        // Only use the newest event
+        .sortBy(_.date).reverse
         .headOption
         .map(_.date)
 
@@ -98,7 +114,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         .filter(e => e.workflowListApiId == workflowListApiId &&
           e.parentApiId.contains(openApiId) &&
           inProgressApiIds.contains(e.newParentApiId.getOrElse("")))
-        .sortBy(_.date)
+        // Only use the newest event
+        .sortBy(_.date).reverse
         .headOption
         .map(_.date)
 
