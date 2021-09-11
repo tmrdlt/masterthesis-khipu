@@ -4,6 +4,7 @@ import de.tmrdlt.database.event.EventTable
 import de.tmrdlt.database.user.UserTable
 import de.tmrdlt.database.workflowlist.WorkflowListTable
 import de.tmrdlt.database.workflowlistresource.{NumericResourceTable, TemporalResourceTable, TextualResourceTable, UserResourceTable}
+import de.tmrdlt.database.workschedule.WorkScheduleTable
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import slick.lifted.TableQuery
@@ -22,5 +23,6 @@ object MyDB {
   val numericResourceQuery = TableQuery[NumericResourceTable]
   val textualResourceQuery = TableQuery[TextualResourceTable]
   val userResourceQuery = TableQuery[UserResourceTable]
+  val workScheduleQuery = TableQuery[WorkScheduleTable]
 
 }

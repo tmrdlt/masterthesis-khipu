@@ -15,7 +15,8 @@ case class WorkflowListsData(workflowLists: Seq[WorkflowList],
                              userResources: Seq[UserResource],
                              users: Seq[User])
 
-case class WorkflowListEntity(apiId: String, // TODO add owner
+case class WorkflowListEntity(id: Long,
+                              apiId: String, // TODO add owner
                               title: String,
                               description: Option[String],
                               children: Seq[WorkflowListEntity],
@@ -69,6 +70,7 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with Work
   implicit val workflowListSimpleEntityFormat: RootJsonFormat[WorkflowListSimpleEntity] = jsonFormat2(WorkflowListSimpleEntity)
   implicit val workflowListEntityFormat: RootJsonFormat[WorkflowListEntity] =
     rootFormat(lazyFormat(jsonFormat(WorkflowListEntity,
+      "id",
       "apiId",
       "title",
       "description",
