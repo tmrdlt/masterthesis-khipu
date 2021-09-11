@@ -25,14 +25,16 @@ object WorkScheduleUtil {
 
   private def getWorkingDate(localDateTime: LocalDateTime): WorkingDate = WorkingDate(localDateTime.withSecond(0).withNano(0))
 
+  @tailrec
   def getStartDateWithinWorkSchedule(workSchedule: WorkSchedule, startDate: LocalDateTime): LocalDateTime = {
     val workingDate = getWorkingDate(startDate)
+
     if (!workingDate.isAtWorkDay(workSchedule)) {
-      workingDate.getNextStartDate(workSchedule)
+      getStartDateWithinWorkSchedule(workSchedule, workingDate.getNextStartDate(workSchedule))
     } else if (workingDate.isAfterOrAtStopHour(workSchedule)) {
-      workingDate.getNextStartDate(workSchedule)
+      getStartDateWithinWorkSchedule(workSchedule, workingDate.getNextStartDate(workSchedule))
     } else if (workingDate.isBeforeStartHour(workSchedule)) {
-      workingDate.getStartDate(workSchedule)
+      getStartDateWithinWorkSchedule(workSchedule, workingDate.getStartDate(workSchedule))
     } else {
       startDate
     }
@@ -52,7 +54,6 @@ object WorkScheduleUtil {
       val minutesThatCanBeWorkedToday = ChronoUnit.MINUTES.between(workingDate.date, workingDate.getStopDate(workSchedule))
       val actualMinutesWorked = Math.min(durationInMinutes, minutesThatCanBeWorkedToday)
       val minutesRemaining = durationInMinutes - actualMinutesWorked
-      //log.info("startWorkAt: " + startWorkAt.toString + " stopWorkAt: " + stopWorkAt.toString + " Minutes that can be worked today: " + minutesThatCanBeWorkedToday.toString + " Actual minutes worked: " + actualMinutesWorked.toString + " Minutes remaining: " + minutesRemaining.toString)
       if (minutesRemaining > 0) {
         getFinishDateRecursive(workSchedule, workingDate.date.plusMinutes(actualMinutesWorked), minutesRemaining)
       } else {
