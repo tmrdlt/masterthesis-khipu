@@ -27,7 +27,13 @@ class SchedulingService extends SimpleNameLogger {
     val solverJob: SolverJob[TaskSchedule, UUID] = solverManager.solve(UUID.randomUUID(), TaskSchedule(assignees, tasks))
     val solution: TaskSchedule = solverJob.getFinalBestSolution
 
-    val res = solution.tasks.asScala.toSeq.sortBy(_._startedAt).zipWithIndex.map {
+    var seq: Seq[Task] = Seq.empty
+    var nextTask = solution.assignees.asScala.head._nextTask;
+    while (nextTask != null) {
+      seq = seq ++ Seq(nextTask)
+      nextTask = nextTask._nextTask
+    }
+    val res = seq.zipWithIndex.map {
       case (task: Task, index: Int) => task.toTaskPlanningSolution(index)
     }
     res.foreach(task =>
