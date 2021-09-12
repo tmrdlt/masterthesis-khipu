@@ -27,7 +27,6 @@ object HealthActor {
 
   val name = "HealthActor"
 
-
   case object DoHealthCheck
 
 }

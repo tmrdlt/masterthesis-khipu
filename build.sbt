@@ -1,6 +1,6 @@
 addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.13" cross CrossVersion.full)
 Compile / compile / wartremoverErrors += Wart.OptionPartial
-Compile / compile / wartremoverErrors += Wart.TraversableOps
+// Compile / compile / wartremoverErrors += Wart.TraversableOps TODO maybe enable later on
 
 lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
@@ -45,7 +45,7 @@ libraryDependencies ++= {
 
     "org.postgresql" % "postgresql" % postgresVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
-
+    "org.optaplanner" % "optaplanner-core" % "8.10.0.Final",
 
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test",

@@ -1,6 +1,6 @@
 package de.tmrdlt.database
 
-import com.github.tminglei.slickpg.{ExPostgresProfile, PgDate2Support, PgEnumSupport}
+import com.github.tminglei.slickpg.{ExPostgresProfile, PgArraySupport, PgDate2Support, PgEnumSupport}
 import de.tmrdlt.models._
 import de.tmrdlt.utils.SimpleNameLogger
 import slick.util.SlickLogger
@@ -9,14 +9,15 @@ trait MyPostgresProfile
   extends SimpleNameLogger // Must be first so log is already there for ExPostgresProfile
     with ExPostgresProfile
     with PgDate2Support
-    with PgEnumSupport {
+    with PgEnumSupport
+    with PgArraySupport {
 
   override val api: MyPostgresApi.type = MyPostgresApi
   override lazy val logger: SlickLogger = new SlickLogger(log)
 
   object MyPostgresApi
     extends API
-      with DateTimeImplicits {
+      with DateTimeImplicits with ArrayImplicits {
     implicit val workflowListTypeTypeMapper = createEnumJdbcType("list_type", WorkflowListType)
     implicit val workflowListTypeListTypeMapper = createEnumListJdbcType("list_type", WorkflowListType)
     implicit val workflowListTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListType)
@@ -36,6 +37,8 @@ trait MyPostgresProfile
     implicit val eventTypeTypeMapper = createEnumJdbcType("event_type", EventType)
     implicit val eventTypeListTypeMapper = createEnumListJdbcType("event_type", EventType)
     implicit val eventTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(EventType)
+
+    implicit val strListTypeMapper = new SimpleArrayJdbcType[String]("text").to(_.toList)
   }
 
 }

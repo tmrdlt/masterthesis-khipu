@@ -3,13 +3,11 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
-import de.tmrdlt.database.user.User
-import de.tmrdlt.database.workflowlistresource.{NumericResource, TemporalResource, TextualResource, UserResource}
 import de.tmrdlt.models.WorkflowListDataSource.WorkflowListDataSource
 import de.tmrdlt.models.WorkflowListState.WorkflowListState
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models.WorkflowListUseCase.WorkflowListUseCase
-import de.tmrdlt.models.{WorkflowListEntity, WorkflowListSimpleEntity}
+import de.tmrdlt.models.{WorkflowListEntity, WorkflowListSimpleEntity, WorkflowListsData}
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
 
@@ -49,13 +47,9 @@ case class WorkflowList(id: Long,
 
   def toWorkflowListEntity(children: Seq[WorkflowListEntity],
                            level: Long,
-                           workflowLists: Seq[WorkflowList],
-                           temporalResources: Seq[TemporalResource],
-                           numericResources: Seq[NumericResource],
-                           textualResources: Seq[TextualResource],
-                           userResources: Seq[UserResource],
-                           users: Seq[User]): WorkflowListEntity = {
+                           workflowListsData: WorkflowListsData): WorkflowListEntity = {
     WorkflowListEntity(
+      id = id,
       apiId = apiId,
       title = title,
       description = description,
@@ -64,10 +58,10 @@ case class WorkflowList(id: Long,
       level = level,
       position = position,
       isTemporalConstraintBoard = isTemporalConstraintBoard.getOrElse(false),
-      temporalResource = temporalResources.find(_.workflowListId == id).map(_.toTemporalResourceEntity),
-      userResource = userResources.find(_.workflowListId == id).map(ur => ur.toUserResourceEntity(users.find(u => ur.userId.contains(u.id)).map(_.username))),
-      numericResources = numericResources.filter(_.workflowListId == id).map(_.toNumericResourceEntity),
-      textualResources = textualResources.filter(_.workflowListId == id).map(_.toTextualResourceEntity),
+      temporalResource = workflowListsData.temporalResources.find(_.workflowListId == id).map(_.toTemporalResourceEntity),
+      userResource = workflowListsData.userResources.find(_.workflowListId == id).map(ur => ur.toUserResourceEntity(workflowListsData.users.find(u => ur.userId.contains(u.id)).map(_.username))),
+      numericResources = workflowListsData.numericResources.filter(_.workflowListId == id).map(_.toNumericResourceEntity),
+      textualResources = workflowListsData.textualResources.filter(_.workflowListId == id).map(_.toTextualResourceEntity),
       createdAt = createdAt,
       updatedAt = updatedAt
     )
