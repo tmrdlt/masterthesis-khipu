@@ -1,6 +1,6 @@
 addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.16" cross CrossVersion.full)
 Compile / compile / wartremoverErrors += Wart.OptionPartial
-Compile / compile / wartremoverErrors += Wart.TraversableOps
+//Compile / compile / wartremoverErrors += Wart.TraversableOps
 
 lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
