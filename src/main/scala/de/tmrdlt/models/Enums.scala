@@ -54,5 +54,5 @@ object WorkflowListType extends Enumeration {
 
 object EventType extends Enumeration {
   type EventType = Value
-  val createWorkflowList, deleteWorkflowList, moveToNewParent = Value
+  val createWorkflowList, deleteWorkflowList, changeWorkflowList, reorder, convert, moveToNewParent, temporalQuery, updateResourceNumeric, updateResourceTextual, updateResourceTemporal, updateResourceUser = Value
 }
