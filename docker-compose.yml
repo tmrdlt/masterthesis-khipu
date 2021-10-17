@@ -14,29 +14,29 @@ services:
       default:
         aliases:
           - workflowdb
-  workflowdbtest:
-    image: postgres:13
-    container_name: workflowdbtest
-    volumes:
-      - ./init_db_devtest.sh:/docker-entrypoint-initdb.d/init.sh
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_PASSWORD: postgres
-    networks:
-      default:
-        aliases:
-          - workflowdbtest
-
-  jupyter-almond:
-    image: almondsh/almond:0.10.9
-    container_name: jupyter-almond
-    ports:
-      - "8888:8888"
-    volumes:
-      - ./notebooks/:/home/jovyan/notebooks
-      - ./target/scala-2.13/masterthesis-khipu-assembly-0.1.jar:/home/jovyan/jar/masterthesis-khipu-assembly-0.1.jar
-    working_dir: /home/jovyan/
+#  workflowdbtest:
+#    image: postgres:13
+#    container_name: workflowdbtest
+#    volumes:
+#      - ./init_db_devtest.sh:/docker-entrypoint-initdb.d/init.sh
+#    ports:
+#      - "5433:5432"
+#    environment:
+#      POSTGRES_PASSWORD: postgres
+#    networks:
+#      default:
+#        aliases:
+#          - workflowdbtest
+#
+#  jupyter-almond:
+#    image: almondsh/almond:0.10.9
+#    container_name: jupyter-almond
+#    ports:
+#      - "8888:8888"
+#    volumes:
+#      - ./notebooks/:/home/jovyan/notebooks
+#      - ./target/scala-2.13/masterthesis-khipu-assembly-0.1.jar:/home/jovyan/jar/masterthesis-khipu-assembly-0.1.jar
+#    working_dir: /home/jovyan/
 
 volumes:
   workflowdb:

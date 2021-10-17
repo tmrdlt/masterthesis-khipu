@@ -1,5 +1,6 @@
 package de.tmrdlt.models
 
+import de.tmrdlt.constants.AssumedDurationForTasksWithoutDuration
 import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
@@ -7,7 +8,9 @@ import java.time.LocalDateTime
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalResourceEntity(startDate: Option[LocalDateTime],
                                   endDate: Option[LocalDateTime],
-                                  durationInMinutes: Option[Long])
+                                  durationInMinutes: Option[Long]) {
+  def getDuration: Long = durationInMinutes.getOrElse(AssumedDurationForTasksWithoutDuration.value)
+}
 
 case class NumericResourceEntity(label: String,
                                  value: Float)

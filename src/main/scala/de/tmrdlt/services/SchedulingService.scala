@@ -43,6 +43,7 @@ class SchedulingService extends SimpleNameLogger {
   }
 
   // Don't use this: Complexity is O(n!)
+  @deprecated
   def scheduleTasksNaive(now: LocalDateTime, workSchedule: WorkSchedule, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
 
     object WorkflowListsExecutionResult {

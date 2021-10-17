@@ -1,10 +1,10 @@
 package de.tmrdlt.components.workflowlist.id.query
 
+import de.tmrdlt.constants.WorkflowListColumnType
 import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
-import de.tmrdlt.constants.{AssumedDurationForTasksWithoutDuration, WorkflowListColumnType}
 import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.database.workschedule.{WorkSchedule, WorkScheduleDB}
-import de.tmrdlt.models.{TaskPlanningSolution, TemporalQueryResultEntity, WorkflowListEntity, WorkflowListTemporal}
+import de.tmrdlt.models._
 import de.tmrdlt.services.{SchedulingService, WorkflowListService}
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger, WorkScheduleUtil}
 
@@ -41,12 +41,15 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
     } yield {
       // OPEN column is first column
       val openColumn = board.children.head
+      val openWorkflowLists = openColumn.children.map(wl => (WorkflowListColumnType.OPEN, wl))
       // IN_PROGRESS columns are all columns between first and last column of board
       val inProgressColumns = board.children.drop(1).dropRight(1)
+      val inProgressWorkflowLists = inProgressColumns.flatMap(_.children.map(wl => (WorkflowListColumnType.IN_PROGRESS, wl)))
 
-      val allWorkflowListTemporals = recursiveGetAllWorkflowListsWithTemporalResource(Seq(openColumn), WorkflowListColumnType.OPEN) ++
-        recursiveGetAllWorkflowListsWithTemporalResource(inProgressColumns, WorkflowListColumnType.IN_PROGRESS)
-          .map(wl => getRemainingDuration(now, workSchedule, wl, openColumn.apiId, inProgressColumns.map(_.apiId), events))
+      // Convert to workflowListTemporal (sum up sublists)
+      val allWorkflowListTemporals = (openWorkflowLists ++ inProgressWorkflowLists)
+        .flatMap(x => workflowListToTemporal(x._2, x._1))
+        .map(wl => getRemainingDuration(now, workSchedule, wl, openColumn.apiId, inProgressColumns.map(_.apiId), events))
 
       val scheduling = schedulingService.scheduleTasks(now, workSchedule, allWorkflowListTemporals)
 
@@ -69,23 +72,44 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
     }
   }
 
-  private def recursiveGetAllWorkflowListsWithTemporalResource(workflowLists: Seq[WorkflowListEntity],
-                                                               columnType: WorkflowListColumnType): Seq[WorkflowListTemporal] = {
-    workflowLists.filter(_.temporalResource.isDefined).map { wl =>
-      val tempEntity = wl.temporalResource.getOrException("Something impossible happened")
-      val duration = tempEntity.durationInMinutes.getOrElse(AssumedDurationForTasksWithoutDuration.value)
-      WorkflowListTemporal(
-        id = wl.id,
-        apiId = wl.apiId,
-        title = wl.title,
-        workflowListType = wl.usageType,
-        startDate = tempEntity.startDate,
-        dueDate = tempEntity.endDate,
-        duration = duration,
-        remainingDuration = duration,
-        inColumn = columnType
-      )
-    } ++ workflowLists.flatMap(wl => recursiveGetAllWorkflowListsWithTemporalResource(wl.children, columnType))
+  private def workflowListToTemporal(workflowList: WorkflowListEntity,
+                                     columnType: WorkflowListColumnType): Option[WorkflowListTemporal] = {
+
+    if (workflowList.usageType == WorkflowListType.ITEM) {
+      workflowList.temporalResource.map { tempEntity =>
+        WorkflowListTemporal(
+          id = workflowList.id,
+          apiId = workflowList.apiId,
+          title = workflowList.title,
+          workflowListType = workflowList.usageType,
+          startDate = tempEntity.startDate,
+          dueDate = tempEntity.endDate,
+          duration = tempEntity.getDuration,
+          remainingDuration = tempEntity.getDuration,
+          inColumn = columnType
+        )
+      }
+    } else {
+      def getAllTemporalResources(lists: Seq[WorkflowListEntity]): Seq[Option[TemporalResourceEntity]] =
+        lists.flatMap(wl => Seq(wl.temporalResource) ++ getAllTemporalResources(wl.children))
+
+      val allTemporalResources = getAllTemporalResources(workflowList.children).flatten
+      if (allTemporalResources.nonEmpty) {
+        val duration = allTemporalResources.map(_.getDuration).sum
+        Some(WorkflowListTemporal(
+          id = workflowList.id,
+          apiId = workflowList.apiId,
+          title = workflowList.title,
+          workflowListType = workflowList.usageType,
+          startDate = allTemporalResources.flatMap(_.startDate).maxOption, // TODO does this make sense?
+          dueDate = allTemporalResources.flatMap(_.endDate).minOption, // TODO does this make sense?
+          duration = duration,
+          remainingDuration = duration,
+          inColumn = columnType
+        ))
+      } else None
+    }
+
   }
 
   private def getRemainingDuration(now: LocalDateTime,
