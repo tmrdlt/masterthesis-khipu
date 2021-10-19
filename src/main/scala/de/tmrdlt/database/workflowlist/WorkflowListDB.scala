@@ -66,7 +66,7 @@ class WorkflowListDB
             state = Some(WorkflowListState.OPEN),
             dataSource = WorkflowListDataSource.Khipu,
             useCase = None,
-            isTemporalConstraintBoard = None,
+            isTemporalConstraintBoard = cwle.isTemporalConstraintBoard,
             ownerApiId = Some(cwle.userApiId),
             createdAt = now,
             updatedAt = now

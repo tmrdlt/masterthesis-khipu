@@ -67,7 +67,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           dueDateKept = !board.getEndDate.exists(_ < boardFinishedAt),
           index = 0
         ),
-        tasksResult = scheduling
+        tasksResult = scheduling,
+        workSchedule = workSchedule
       )
     }
   }

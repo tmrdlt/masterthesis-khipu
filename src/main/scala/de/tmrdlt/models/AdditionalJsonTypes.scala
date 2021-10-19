@@ -6,7 +6,7 @@ import spray.json._
 
 import java.net.InetAddress
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, OffsetDateTime, ZoneOffset}
+import java.time._
 import java.util.UUID
 import scala.util.{Failure, Success, Try}
 
@@ -87,6 +87,15 @@ trait AdditionalJsonTypes extends DefaultJsonProtocol {
           RemoteAddress(InetAddress.getByName(remoteAddress))
         }
       case _ => deserializationError("Cannot parse remoteAddress from string: " + value)
+    }
+  }
+
+  implicit object DayOfWeekFormat extends RootJsonFormat[DayOfWeek] {
+    override def write(obj: DayOfWeek): JsValue = JsString(obj.toString)
+
+    override def read(jsonValue: JsValue): DayOfWeek = jsonValue match {
+      case JsString(stringObj) => DayOfWeek.valueOf(stringObj)
+      case otherValue => throw DeserializationException(s"DayOfWeek not found in ${otherValue.toString}")
     }
   }
 }

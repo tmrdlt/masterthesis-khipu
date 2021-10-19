@@ -1,7 +1,7 @@
 package de.tmrdlt.models
 
 import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
-import de.tmrdlt.database.workschedule.WorkSchedule
+import de.tmrdlt.database.workschedule.{WorkSchedule, WorkScheduleJsonSupport}
 import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.services.scheduling.domain.Task
 import spray.json.RootJsonFormat
@@ -43,11 +43,12 @@ case class TaskPlanningSolution(id: Long,
 
 
 case class TemporalQueryResultEntity(boardResult: TaskPlanningSolution,
-                                     tasksResult: Seq[TaskPlanningSolution])
+                                     tasksResult: Seq[TaskPlanningSolution],
+                                     workSchedule: WorkSchedule)
 
 
-trait WorkflowListQueryJsonSupport extends JsonSupport {
+trait WorkflowListQueryJsonSupport extends JsonSupport with WorkScheduleJsonSupport {
   implicit val taskPlanningSolutionFormat: RootJsonFormat[TaskPlanningSolution] = jsonFormat10(TaskPlanningSolution)
-  implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat2(TemporalQueryResultEntity)
+  implicit val temporalQueryResultEntityFormat: RootJsonFormat[TemporalQueryResultEntity] = jsonFormat3(TemporalQueryResultEntity)
 
 }

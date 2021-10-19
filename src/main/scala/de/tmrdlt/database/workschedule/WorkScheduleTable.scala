@@ -2,10 +2,16 @@ package de.tmrdlt.database.workschedule
 
 import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.models.JsonSupport
 import slick.lifted.{ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.NotNull
+import spray.json.RootJsonFormat
 
 import java.time.DayOfWeek
+
+trait WorkScheduleJsonSupport extends JsonSupport {
+  implicit val workScheduleFormat: RootJsonFormat[WorkSchedule] = jsonFormat3(WorkSchedule)
+}
 
 case class WorkSchedule(startWorkAtHour: Int,
                         stopWorkAtHour: Int,

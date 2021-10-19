@@ -25,7 +25,7 @@ class WorkflowListRoute(controller: WorkflowListController)
       post {
         entity(as[CreateWorkflowListEntity]) { createWorkFlowListEntity =>
           onComplete(controller.createWorkflowList(createWorkFlowListEntity)) {
-            case Success(_) => complete(OK)
+            case Success(apiId) => complete(OK -> apiId)
             case Failure(exception) => complete(exception.toResponseMarshallable)
           }
         }
