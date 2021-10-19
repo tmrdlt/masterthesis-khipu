@@ -42,8 +42,7 @@ class SchedulingService extends SimpleNameLogger {
     res
   }
 
-  // Don't use this: Complexity is O(n!)
-  @deprecated
+  @deprecated("Complexity is O(n!), don't use it!", "01-10-2021")
   def scheduleTasksNaive(now: LocalDateTime, workSchedule: WorkSchedule, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
 
     object WorkflowListsExecutionResult {

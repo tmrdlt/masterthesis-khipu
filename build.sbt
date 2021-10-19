@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
   organization := "de.tmrdlt",
   version := "0.1",
   scalaVersion := "2.13.6",
-  scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
+  scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 )
 
 mainClass := Some("de.tmrdlt.Main")
