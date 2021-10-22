@@ -32,8 +32,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
     for {
       board <- boardFuture.map { wl =>
-        if (wl.children.size < 2) {
-          throw new Exception("Board doesnt have required columns to perform temporal query")
+        if (wl.children.size <= 1) {
+          throw new Exception("Board needs at least two columns to perform temporal query")
         } else wl
       }
       events <- eventsFuture
@@ -131,18 +131,18 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           e.oldParentApiId.contains(openApiId) &&
           inProgressApiIds.contains(e.newParentApiId.getOrElse("")))
         // Only use the newest event
-        .sortBy(_.date).reverse
+        .sortBy(_.createdAt).reverse
         .headOption
-        .map(_.date)
+        .map(_.createdAt)
 
       val createdAtInProgressDateOption = events
         .filter(e => e.workflowListApiId == workflowListApiId &&
           e.parentApiId.contains(openApiId) &&
           inProgressApiIds.contains(e.newParentApiId.getOrElse("")))
         // Only use the newest event
-        .sortBy(_.date).reverse
+        .sortBy(_.createdAt).reverse
         .headOption
-        .map(_.date)
+        .map(_.createdAt)
 
       // Time in inProgress: Time passed since moved to IN_PROGRESS OR time passed since created in IN_PROGRESS
       (movedToInProgressDateOption, createdAtInProgressDateOption) match {

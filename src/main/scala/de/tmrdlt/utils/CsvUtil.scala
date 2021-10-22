@@ -45,7 +45,7 @@ object CsvUtil {
         a.oldParentApiId.getOrElse(""),
         a.newParentApiId.getOrElse(""),
         a.userApiId,
-        a.date.toString,
+        a.createdAt.toString,
         a.dataSource.toString,
       )
     )

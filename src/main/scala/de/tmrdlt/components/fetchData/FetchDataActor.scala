@@ -1,13 +1,13 @@
 package de.tmrdlt.components.fetchData
 
 import akka.actor.{Actor, ActorLogging, Props}
-import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataTrello, FetchDataGitHub}
+import de.tmrdlt.components.fetchData.FetchDataActor.{FetchDataGitHub, FetchDataTrello}
 import de.tmrdlt.connectors.{GitHubApi, TrelloApi}
 import de.tmrdlt.database.event.{Event, EventDB}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.WorkflowListState.getWorkflowListState
 import de.tmrdlt.models._
-import de.tmrdlt.utils.{CsvUtil, DateUtil, FutureUtil, OptionExtensions}
+import de.tmrdlt.utils.{DateUtil, FutureUtil, OptionExtensions}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -122,7 +122,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                 if (trelloAction.isMoveCardToNewColumnAction) Some(trelloAction.data.listAfter.getOrException("Could not get oldListApiId").getId)
                 else None,
               userApiId = trelloAction.idMemberCreator,
-              date = trelloAction.date,
+              createdAt = trelloAction.date,
               dataSource = WorkflowListDataSource.Trello
             )
           })
@@ -283,7 +283,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                   )
                 else None,
               userApiId = gitHubIssueEvent.actor.map(_.id).getOrElse("0").toString,
-              date = gitHubIssueEvent.created_at,
+              createdAt = gitHubIssueEvent.created_at,
               dataSource = WorkflowListDataSource.GitHub
             )
           })

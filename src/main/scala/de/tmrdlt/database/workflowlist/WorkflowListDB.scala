@@ -76,14 +76,11 @@ class WorkflowListDB
           Event(
             id = 0L,
             apiId = java.util.UUID.randomUUID.toString,
-            eventType = EventType.createWorkflowList.toString,
+            eventType = EventType.CREATE.toString,
             workflowListApiId = workflowList.apiId,
-            boardApiId = None,
             parentApiId = cwle.parentApiId,
-            oldParentApiId = None,
-            newParentApiId = None,
             userApiId = cwle.userApiId,
-            date = now,
+            createdAt = now,
             dataSource = WorkflowListDataSource.Khipu
           )
         }
@@ -98,16 +95,29 @@ class WorkflowListDB
         workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
         updated <- workflowListOption match {
           case Some(workflowList) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.title, wl.description, wl.isTemporalConstraintBoard, wl.updatedAt))
-              .update((uwle.newTitle, uwle.newDescription, uwle.isTemporalConstraintBoard, LocalDateTime.now()))
+            for {
+              updated <- workflowListQuery
+                .filter(_.id === workflowList.id)
+                .map(wl => (wl.title, wl.description, wl.isTemporalConstraintBoard, wl.updatedAt))
+                .update((uwle.newTitle, uwle.newDescription, uwle.isTemporalConstraintBoard, LocalDateTime.now()))
+              _ <- (eventQuery returning eventQuery) += {
+                Event(
+                  id = 0L,
+                  apiId = java.util.UUID.randomUUID.toString,
+                  eventType = EventType.UPDATE.toString,
+                  workflowListApiId = workflowListApiId,
+                  userApiId = "Tmrdlt", // TODO use real user id
+                  createdAt = LocalDateTime.now(),
+                  dataSource = WorkflowListDataSource.Khipu
+                )
+              }
+            } yield updated
           case _ =>
             DBIO.failed(new Exception(s"Cannot update workflow list. No list for apiId ${workflowListApiId} found"))
         }
       } yield updated
 
-    db.run(query)
+    db.run(query.transactionally)
   }
 
   def deleteWorkflowList(workflowListApiId: String): Future[Int] = {
@@ -128,14 +138,11 @@ class WorkflowListDB
                 Event(
                   id = 0L,
                   apiId = java.util.UUID.randomUUID.toString,
-                  eventType = EventType.deleteWorkflowList.toString,
+                  eventType = EventType.DELETE.toString,
                   workflowListApiId = workflowList.apiId,
-                  boardApiId = None,
                   parentApiId = parentOption.map(_.apiId),
-                  oldParentApiId = None,
-                  newParentApiId = None,
-                  userApiId = "Tmrdlt", // TODO change when we have a user model
-                  date = now,
+                  userApiId = "Tmrdlt", // TODO use real user id
+                  createdAt = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )
               } // TODO what about the cascade delete? I would probably want an action for every deleted child then
@@ -155,16 +162,30 @@ class WorkflowListDB
         workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
         updated <- workflowListOption match {
           case Some(workflowList) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.listType, wl.updatedAt))
-              .update((cwle.newListType, LocalDateTime.now()))
+            for {
+              updated <- workflowListQuery
+                .filter(_.id === workflowList.id)
+                .map(wl => (wl.listType, wl.updatedAt))
+                .update((cwle.newListType, LocalDateTime.now()))
+              _ <- (eventQuery returning eventQuery) += {
+                Event(
+                  id = 0L,
+                  apiId = java.util.UUID.randomUUID.toString,
+                  eventType = EventType.CONVERT.toString,
+                  workflowListApiId = workflowListApiId,
+                  newType = Some(cwle.newListType),
+                  userApiId = "Tmrdlt", // TODO use real user id
+                  createdAt = LocalDateTime.now(),
+                  dataSource = WorkflowListDataSource.Khipu
+                )
+              }
+            } yield updated
           case _ =>
             DBIO.failed(new Exception(s"Cannot convert workflow list. No list for apiId ${workflowListApiId}"))
         }
       } yield updated
 
-    db.run(query)
+    db.run(query.transactionally)
   }
 
   def moveWorkflowList(workflowListApiId: String, mwle: MoveWorkflowListEntity): Future[Int] = {
@@ -196,14 +217,12 @@ class WorkflowListDB
                 Event(
                   id = 0L,
                   apiId = java.util.UUID.randomUUID.toString,
-                  eventType = EventType.moveToNewParent.toString,
+                  eventType = EventType.MOVE.toString,
                   workflowListApiId = workflowList.apiId,
-                  boardApiId = None,
-                  parentApiId = None,
                   oldParentApiId = oldParentOption.map(_.apiId),
                   newParentApiId = newParentOption.map(_.apiId),
                   userApiId = mwle.userApiId,
-                  date = now,
+                  createdAt = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )
               }
@@ -234,6 +253,19 @@ class WorkflowListDB
                 .filter(_.id === workflowList.id)
                 .map(wl => (wl.position, wl.updatedAt))
                 .update((rwle.newPosition, LocalDateTime.now()))
+              _ <- (eventQuery returning eventQuery) += {
+                Event(
+                  id = 0L,
+                  apiId = java.util.UUID.randomUUID.toString,
+                  eventType = EventType.CONVERT.toString,
+                  workflowListApiId = workflowListApiId,
+                  oldPosition = Some(workflowList.position),
+                  newPosition = Some(rwle.newPosition),
+                  userApiId = "Tmrdlt", // TODO use real user id
+                  createdAt = LocalDateTime.now(),
+                  dataSource = WorkflowListDataSource.Khipu
+                )
+              }
             } yield {
               neighboursUpdated.sum + elementUpdated
             }
@@ -252,10 +284,23 @@ class WorkflowListDB
         workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
         updated <- workflowListOption match {
           case Some(workflowList) =>
-            workflowListQuery
-              .filter(_.id === workflowList.id)
-              .map(wl => (wl.isTemporalConstraintBoard, wl.updatedAt))
-              .update((Some(isTemporalConstraintBoard), LocalDateTime.now()))
+            for {
+              updated <- workflowListQuery
+                .filter(_.id === workflowList.id)
+                .map(wl => (wl.isTemporalConstraintBoard, wl.updatedAt))
+                .update((Some(isTemporalConstraintBoard), LocalDateTime.now()))
+              _ <- (eventQuery returning eventQuery) += {
+                Event(
+                  id = 0L,
+                  apiId = java.util.UUID.randomUUID.toString,
+                  eventType = EventType.UPDATE.toString,
+                  workflowListApiId = workflowListApiId,
+                  userApiId = "Tmrdlt", // TODO use real user id
+                  createdAt = LocalDateTime.now(),
+                  dataSource = WorkflowListDataSource.Khipu
+                )
+              }
+            } yield updated
           case _ =>
             DBIO.failed(new Exception(s"Cannot update workflow list. No list for apiId ${workflowListApiId} found"))
         }

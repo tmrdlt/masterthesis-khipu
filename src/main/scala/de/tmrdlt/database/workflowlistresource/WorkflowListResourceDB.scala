@@ -2,8 +2,9 @@ package de.tmrdlt.database.workflowlistresource
 
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
+import de.tmrdlt.database.event.Event
 import de.tmrdlt.database.user.UserDB
-import de.tmrdlt.models.WorkflowListResourceEntity
+import de.tmrdlt.models.{EventType, WorkflowListDataSource, WorkflowListResourceEntity}
 import slick.dbio.Effect
 import slick.sql.SqlAction
 
@@ -107,7 +108,22 @@ class WorkflowListResourceDB {
       textualsInserted <- textualQuery
       temporalInserted <- temporalQuery
       userInserted <- userQuery
-    } yield numericsInserted + textualsInserted + temporalInserted + userInserted
+      inserted = numericsInserted + textualsInserted + temporalInserted + userInserted
+      _ <- if (inserted > 0) {
+        (eventQuery returning eventQuery) += {
+          Event(
+            id = 0L,
+            apiId = java.util.UUID.randomUUID.toString,
+            eventType = EventType.UPDATE_RESOURCES.toString,
+            workflowListApiId = workflowListId.toString,
+            resourcesUpdated = Some(inserted),
+            userApiId = "Tmrdlt", // TODO use real user id
+            createdAt = LocalDateTime.now(),
+            dataSource = WorkflowListDataSource.Khipu
+          )
+        }
+      } else DBIO.successful(0)
+    } yield inserted
 
     db.run(query.transactionally)
   }
