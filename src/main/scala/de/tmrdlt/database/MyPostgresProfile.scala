@@ -1,6 +1,6 @@
 package de.tmrdlt.database
 
-import com.github.tminglei.slickpg.{ExPostgresProfile, PgArraySupport, PgDate2Support, PgEnumSupport}
+import com.github.tminglei.slickpg._
 import de.tmrdlt.models._
 import de.tmrdlt.utils.SimpleNameLogger
 import slick.util.SlickLogger
@@ -10,14 +10,19 @@ trait MyPostgresProfile
     with ExPostgresProfile
     with PgDate2Support
     with PgEnumSupport
-    with PgArraySupport {
+    with PgArraySupport
+    with PgSprayJsonSupport {
 
   override val api: MyPostgresApi.type = MyPostgresApi
   override lazy val logger: SlickLogger = new SlickLogger(log)
 
+  def pgjson: String = "json"
+
   object MyPostgresApi
     extends API
-      with DateTimeImplicits with ArrayImplicits {
+      with DateTimeImplicits
+      with ArrayImplicits
+      with SprayJsonImplicits {
     implicit val workflowListTypeTypeMapper = createEnumJdbcType("list_type", WorkflowListType)
     implicit val workflowListTypeListTypeMapper = createEnumListJdbcType("list_type", WorkflowListType)
     implicit val workflowListTypeOptionColumnExtensionMethodsBuilder = createEnumOptionColumnExtensionMethodsBuilder(WorkflowListType)

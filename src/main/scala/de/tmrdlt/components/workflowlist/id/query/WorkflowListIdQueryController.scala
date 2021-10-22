@@ -30,7 +30,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
     val eventsFuture = eventDB.getEvents
     val workScheduleFuture = workScheduleDB.getWorkSchedule
 
-    for {
+    (for {
       board <- boardFuture.map { wl =>
         if (wl.children.size <= 1) {
           throw new Exception("Board needs at least two columns to perform temporal query")
@@ -70,7 +70,18 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         tasksResult = scheduling,
         workSchedule = workSchedule
       )
-    }
+    }).flatMap(result => for {
+      _ <- eventDB.insertEvent(Event(
+        id = 0L,
+        apiId = java.util.UUID.randomUUID.toString,
+        eventType = EventType.TEMPORAL_QUERY.toString,
+        workflowListApiId = workflowListApiId,
+        temporalQueryResult = Some(result),
+        userApiId = "Tmrdlt", // TODO use real user id
+        createdAt = now,
+        dataSource = WorkflowListDataSource.Khipu
+      ))
+    } yield result)
   }
 
   private def workflowListToTemporal(workflowList: WorkflowListEntity,
