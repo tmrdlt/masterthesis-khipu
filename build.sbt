@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
   organization := "de.tmrdlt",
   version := "0.1",
   scalaVersion := "2.13.6",
-  scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
+  scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
 
 mainClass := Some("de.tmrdlt.Main")
@@ -16,7 +16,7 @@ libraryDependencies ++= {
   val logbackVersion = "1.2.6"
   val slickPgVersion = "0.19.7"
   val scalaCsvVersion = "1.3.8"
-  val akkaVersion = "2.6.16"
+  val akkaVersion = "2.6.17"
   val akkaHttpVersion = "10.2.6"
   val slickVersion = "3.3.3"
   val mongoDbVersion = "4.3.3"

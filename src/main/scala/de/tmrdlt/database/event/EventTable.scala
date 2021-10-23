@@ -87,7 +87,6 @@ class EventTable(tag: Tag) extends BaseTableLong[Event](tag, "event") with Event
 
   def dataSource: Rep[WorkflowListDataSource] = column[WorkflowListDataSource]("data_source", NotNull)
 
-  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def * : ProvenShape[Event] = (
     id,
     apiId,

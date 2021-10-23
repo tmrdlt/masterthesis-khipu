@@ -7,6 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import java.time.{DayOfWeek, LocalDateTime}
+import scala.annotation.nowarn
 
 class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
@@ -66,6 +67,7 @@ class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
   "scheduleTasksNaive" should {
     "schedule tasks correctly" in {
+      @nowarn
       val result = schedulingService.scheduleTasksNaive(now, workSchedule, tasks)
       result.map(_.id) shouldBe Seq(2L, 3L, 1L, 4L)
       result.last.finishedAt shouldBe LocalDateTime.of(2021, 6, 3, 16, 0)

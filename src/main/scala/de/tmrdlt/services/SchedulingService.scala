@@ -57,7 +57,6 @@ class SchedulingService extends SimpleNameLogger {
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
       var endDate = now
       var numberOfDueDatesFailed = 0
-      // TODO make recursive function
       val result = tasksPermutation.zipWithIndex.map {
         case (wl: WorkflowListTemporal, index: Int) =>
           val startedAt = wl.startDate match {
