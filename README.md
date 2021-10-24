@@ -4,7 +4,9 @@ Khipu is a workflow management tool developed by Timo Erdelt for his _Masters Th
 Ludwig-Maximilian University of Munich. Its backend is written in the Scala Programming Language. Its frontend can be found [here](https://github.com/tmrdlt/masterthesis-khipu-frontend).
 
 ## Requirements
-- At least Java 8 (e.g. AdoptOpenJDK8: `brew install adoptopenjdk8`)
+- At least Java 11 (e.g. temurin):
+    - `brew tap homebrew/cask-versions`
+    - `install --cask temurin11`)
 - scala (`brew install scala`)
 - sbt (`brew install sbt`)
 - docker (`brew install docker`)
