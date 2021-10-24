@@ -5,7 +5,6 @@ import de.tmrdlt.database.workflowlist.WorkflowListDB
 import de.tmrdlt.database.workflowlistresource.WorkflowListResourceDB
 import de.tmrdlt.models.WorkflowListResourceEntity
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -15,11 +14,11 @@ class WorkflowListIdResourceController(workflowListDB: WorkflowListDB,
                                        userDB: UserDB) {
 
   def updateWorkflowListResource(workflowListApiId: String,
-                                 entity: WorkflowListResourceEntity): Future[Int] = {
-    val now = LocalDateTime.now()
+                                 entity: WorkflowListResourceEntity,
+                                 userApiId: String): Future[Int] = {
     for {
       workflowList <- workflowListDB.getWorkflowList(workflowListApiId)
-      inserted <- workflowListResourceDB.insertOrUpdateWorkflowListResource(now, workflowList.id, entity, userDB)
+      inserted <- workflowListResourceDB.insertOrUpdateWorkflowListResource(workflowList.id, entity, userApiId, userDB)
     } yield {
       inserted
     }

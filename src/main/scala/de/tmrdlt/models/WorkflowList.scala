@@ -48,7 +48,6 @@ case class CreateWorkflowListEntity(title: String,
                                     description: Option[String],
                                     listType: WorkflowListType,
                                     parentApiId: Option[String],
-                                    userApiId: String,
                                     isTemporalConstraintBoard: Option[Boolean])
 
 case class UpdateWorkflowListEntity(newTitle: String,
@@ -58,8 +57,7 @@ case class UpdateWorkflowListEntity(newTitle: String,
 case class ConvertWorkflowListEntity(newListType: WorkflowListType)
 
 case class MoveWorkflowListEntity(newParentApiId: Option[String],
-                                  newPosition: Option[Long],
-                                  userApiId: String)
+                                  newPosition: Option[Long])
 
 case class ReorderWorkflowListEntity(newPosition: Long)
 
@@ -86,10 +84,10 @@ trait WorkflowListJsonSupport extends JsonSupport with EnumJsonSupport with Work
       "textualResources",
       "createdAt",
       "updatedAt")))
-  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat6(CreateWorkflowListEntity)
+  implicit val createWorkflowListEntityFormat: RootJsonFormat[CreateWorkflowListEntity] = jsonFormat5(CreateWorkflowListEntity)
   implicit val updateWorkflowListEntityFormat: RootJsonFormat[UpdateWorkflowListEntity] = jsonFormat3(UpdateWorkflowListEntity)
   implicit val convertWorkflowListEntityFormat: RootJsonFormat[ConvertWorkflowListEntity] = jsonFormat1(ConvertWorkflowListEntity)
-  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat3(MoveWorkflowListEntity)
+  implicit val moveWorkflowListEntityFormat: RootJsonFormat[MoveWorkflowListEntity] = jsonFormat2(MoveWorkflowListEntity)
   implicit val reorderWorkflowListEntityFormat: RootJsonFormat[ReorderWorkflowListEntity] = jsonFormat1(ReorderWorkflowListEntity)
 
 }

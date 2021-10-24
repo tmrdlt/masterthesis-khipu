@@ -26,7 +26,11 @@ class WorkflowListResourceDB {
   def getUserResources(workflowListIds: Seq[Long]): Future[Seq[UserResource]] =
     db.run(userResourceQuery.filter(_.workflowListId inSet workflowListIds).result)
 
-  def insertOrUpdateWorkflowListResource(now: LocalDateTime, workflowListId: Long, wlr: WorkflowListResourceEntity, userDB: UserDB): Future[Int] = {
+  def insertOrUpdateWorkflowListResource(workflowListId: Long,
+                                         wlr: WorkflowListResourceEntity,
+                                         userApiId: String,
+                                         userDB: UserDB): Future[Int] = {
+    val now = LocalDateTime.now()
     val numericQuery = wlr.numeric match {
       case Some(numeric) => for {
         existingResources <- DBIO.sequence(numeric.map(entity => getNumericResourceSqlAction(workflowListId, entity.label)))
@@ -117,7 +121,7 @@ class WorkflowListResourceDB {
             eventType = EventType.UPDATE_RESOURCES.toString,
             workflowListApiId = workflowListId.toString,
             resourcesUpdated = Some(inserted),
-            userApiId = "Tmrdlt", // TODO use real user id
+            userApiId = userApiId,
             createdAt = LocalDateTime.now(),
             dataSource = WorkflowListDataSource.Khipu
           )

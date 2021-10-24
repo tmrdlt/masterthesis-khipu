@@ -3,13 +3,14 @@ package de.tmrdlt.components.workflowlist.id
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{as, complete, concat, delete, entity, onComplete, patch}
 import akka.http.scaladsl.server.Route
+import de.tmrdlt.directives.AuthorizationDirective
 import de.tmrdlt.models.{ApiErrorJsonSupport, UpdateWorkflowListEntity, WorkflowListJsonSupport}
 import de.tmrdlt.utils.SimpleNameLogger
 
-import java.util.UUID
 import scala.util.{Failure, Success}
 
-class WorkflowListIdRoute(controller: WorkflowListIdController)
+class WorkflowListIdRoute(controller: WorkflowListIdController,
+                          directive: AuthorizationDirective)
   extends ApiErrorJsonSupport
     with WorkflowListJsonSupport
     with SimpleNameLogger {
@@ -17,17 +18,21 @@ class WorkflowListIdRoute(controller: WorkflowListIdController)
   def route(workflowListApiId: String): Route = {
     concat(
       patch {
-        entity(as[UpdateWorkflowListEntity]) { updateWorkflowListEntity =>
-          onComplete(controller.updateWorkflowList(workflowListApiId, updateWorkflowListEntity)) {
-            case Success(_) => complete(OK)
-            case Failure(exception) => complete(exception.toResponseMarshallable)
+        directive.authorizeUser { userApiId =>
+          entity(as[UpdateWorkflowListEntity]) { entity =>
+            onComplete(controller.updateWorkflowList(workflowListApiId, entity, userApiId)) {
+              case Success(_) => complete(OK)
+              case Failure(exception) => complete(exception.toResponseMarshallable)
+            }
           }
         }
       },
       delete {
-        onComplete(controller.deleteWorkflowList(workflowListApiId)) {
-          case Success(_) => complete(OK)
-          case Failure(exception) => complete(exception.toResponseMarshallable)
+        directive.authorizeUser { userApiId =>
+          onComplete(controller.deleteWorkflowList(workflowListApiId, userApiId)) {
+            case Success(_) => complete(OK)
+            case Failure(exception) => complete(exception.toResponseMarshallable)
+          }
         }
       }
     )

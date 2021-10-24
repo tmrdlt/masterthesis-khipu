@@ -23,7 +23,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
                                     workScheduleDB: WorkScheduleDB) extends SimpleNameLogger with OptionExtensions {
 
 
-  def performTemporalQuery(workflowListApiId: String): Future[TemporalQueryResultEntity] = {
+  def performTemporalQuery(workflowListApiId: String, userApiId: String): Future[TemporalQueryResultEntity] = {
     val now = LocalDateTime.now()
 
     val boardFuture = workflowListService.getWorkflowListEntityForId(workflowListApiId)
@@ -77,7 +77,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         eventType = EventType.TEMPORAL_QUERY.toString,
         workflowListApiId = workflowListApiId,
         temporalQueryResult = Some(result),
-        userApiId = "Tmrdlt", // TODO use real user id
+        userApiId = userApiId,
         createdAt = now,
         dataSource = WorkflowListDataSource.Khipu
       ))

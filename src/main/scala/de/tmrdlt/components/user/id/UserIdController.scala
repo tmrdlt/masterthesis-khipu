@@ -9,6 +9,8 @@ import scala.concurrent.Future
 class UserIdController(userDB: UserDB) {
 
   def getUser(userApiId: String): Future[UserEntity] =
-    userDB.getActiveUser(userApiId).map(_.toUserEntity)
-
+    userDB.getActiveUser(userApiId).map {
+      case Some(user) => user.toUserEntity
+      case _ => throw new Exception(s"No active user for userApiId $userApiId found")
+    }
 }

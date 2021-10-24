@@ -8,9 +8,10 @@ import scala.concurrent.Future
 class WorkflowListIdController(workflowListDB: WorkflowListDB) {
 
   def updateWorkflowList(workflowListApiId: String,
-                         updateWorkflowListEntity: UpdateWorkflowListEntity): Future[Int] =
-    workflowListDB.updateWorkflowList(workflowListApiId, updateWorkflowListEntity)
+                         updateWorkflowListEntity: UpdateWorkflowListEntity,
+                         userApiId: String): Future[Int] =
+    workflowListDB.updateWorkflowList(workflowListApiId, updateWorkflowListEntity, userApiId)
 
-  def deleteWorkflowList(workflowListApiId: String): Future[Int] =
-    workflowListDB.deleteWorkflowList(workflowListApiId)
+  def deleteWorkflowList(workflowListApiId: String, userApiId: String): Future[Int] =
+    workflowListDB.deleteWorkflowList(workflowListApiId, userApiId)
 }

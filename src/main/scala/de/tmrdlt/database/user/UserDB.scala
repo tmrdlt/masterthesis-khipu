@@ -13,11 +13,8 @@ class UserDB {
     db.run(userQuery.result)
   }
 
-  def getActiveUser(userApiId: String): Future[User] =
-    db.run(userQuery.filter(_.isActive).filter(_.apiId === userApiId).result.headOption map {
-      case Some(user) => user
-      case _ => throw new Exception(s"No active user for userApiId $userApiId found")
-    })
+  def getActiveUser(userApiId: String): Future[Option[User]] =
+    db.run(userQuery.filter(_.isActive).filter(_.apiId === userApiId).result.headOption)
 
   def getActiveUserByUserNameSqlAction(username: String): DBIOAction[User, NoStream, Effect.Read] =
     userQuery.filter(_.isActive).filter(_.username === username).result.headOption map {

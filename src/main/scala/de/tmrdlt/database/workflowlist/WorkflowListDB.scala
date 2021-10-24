@@ -39,7 +39,7 @@ class WorkflowListDB
   def insertWorkflowLists(workflowLists: Seq[WorkflowList]): Future[Seq[WorkflowList]] =
     db.run(workflowListQuery returning workflowListQuery ++= workflowLists)
 
-  def createWorkflowList(cwle: CreateWorkflowListEntity): Future[WorkflowList] = {
+  def createWorkflowList(cwle: CreateWorkflowListEntity, userApiId: String): Future[WorkflowList] = {
     val now = LocalDateTime.now()
     val query =
       for {
@@ -67,7 +67,7 @@ class WorkflowListDB
             dataSource = WorkflowListDataSource.Khipu,
             useCase = None,
             isTemporalConstraintBoard = cwle.isTemporalConstraintBoard,
-            ownerApiId = Some(cwle.userApiId),
+            ownerApiId = Some(userApiId),
             createdAt = now,
             updatedAt = now
           )
@@ -79,7 +79,7 @@ class WorkflowListDB
             eventType = EventType.CREATE.toString,
             workflowListApiId = workflowList.apiId,
             parentApiId = cwle.parentApiId,
-            userApiId = cwle.userApiId,
+            userApiId = userApiId,
             createdAt = now,
             dataSource = WorkflowListDataSource.Khipu
           )
@@ -89,7 +89,7 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def updateWorkflowList(workflowListApiId: String, uwle: UpdateWorkflowListEntity): Future[Int] = {
+  def updateWorkflowList(workflowListApiId: String, uwle: UpdateWorkflowListEntity, userApiId: String): Future[Int] = {
     val query =
       for {
         workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
@@ -106,7 +106,7 @@ class WorkflowListDB
                   apiId = java.util.UUID.randomUUID.toString,
                   eventType = EventType.UPDATE.toString,
                   workflowListApiId = workflowListApiId,
-                  userApiId = "Tmrdlt", // TODO use real user id
+                  userApiId = userApiId,
                   createdAt = LocalDateTime.now(),
                   dataSource = WorkflowListDataSource.Khipu
                 )
@@ -120,7 +120,7 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def deleteWorkflowList(workflowListApiId: String): Future[Int] = {
+  def deleteWorkflowList(workflowListApiId: String, userApiId: String): Future[Int] = {
     val now = LocalDateTime.now()
     val query =
       for {
@@ -141,7 +141,7 @@ class WorkflowListDB
                   eventType = EventType.DELETE.toString,
                   workflowListApiId = workflowList.apiId,
                   parentApiId = parentOption.map(_.apiId),
-                  userApiId = "Tmrdlt", // TODO use real user id
+                  userApiId = userApiId,
                   createdAt = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )
@@ -156,7 +156,7 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def convertWorkflowList(workflowListApiId: String, cwle: ConvertWorkflowListEntity): Future[Int] = {
+  def convertWorkflowList(workflowListApiId: String, cwle: ConvertWorkflowListEntity, userApiId: String): Future[Int] = {
     val query =
       for {
         workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
@@ -174,7 +174,7 @@ class WorkflowListDB
                   eventType = EventType.CONVERT.toString,
                   workflowListApiId = workflowListApiId,
                   newType = Some(cwle.newListType),
-                  userApiId = "Tmrdlt", // TODO use real user id
+                  userApiId = userApiId,
                   createdAt = LocalDateTime.now(),
                   dataSource = WorkflowListDataSource.Khipu
                 )
@@ -188,7 +188,7 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def moveWorkflowList(workflowListApiId: String, mwle: MoveWorkflowListEntity): Future[Int] = {
+  def moveWorkflowList(workflowListApiId: String, mwle: MoveWorkflowListEntity, userApiId: String): Future[Int] = {
     val now = LocalDateTime.now()
     val query =
       for {
@@ -221,7 +221,7 @@ class WorkflowListDB
                   workflowListApiId = workflowList.apiId,
                   oldParentApiId = oldParentOption.map(_.apiId),
                   newParentApiId = newParentOption.map(_.apiId),
-                  userApiId = mwle.userApiId,
+                  userApiId = userApiId,
                   createdAt = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )
@@ -237,7 +237,7 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def reorderWorkflowList(workflowListApiId: String, rwle: ReorderWorkflowListEntity): Future[Int] = {
+  def reorderWorkflowList(workflowListApiId: String, rwle: ReorderWorkflowListEntity, userApiId: String): Future[Int] = {
     val query =
       for {
         // ToDo check if illegal newOrderIndex (higher as count of collections)
@@ -257,11 +257,11 @@ class WorkflowListDB
                 Event(
                   id = 0L,
                   apiId = java.util.UUID.randomUUID.toString,
-                  eventType = EventType.CONVERT.toString,
+                  eventType = EventType.REORDER.toString,
                   workflowListApiId = workflowListApiId,
                   oldPosition = Some(workflowList.position),
                   newPosition = Some(rwle.newPosition),
-                  userApiId = "Tmrdlt", // TODO use real user id
+                  userApiId = userApiId,
                   createdAt = LocalDateTime.now(),
                   dataSource = WorkflowListDataSource.Khipu
                 )
@@ -278,7 +278,8 @@ class WorkflowListDB
   }
 
   def updateWorkflowListIsTemporalConstraintBoard(workflowListApiId: String,
-                                                  isTemporalConstraintBoard: Boolean): Future[Int] = {
+                                                  isTemporalConstraintBoard: Boolean,
+                                                  userApiId: String): Future[Int] = {
     val query =
       for {
         workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
@@ -295,7 +296,7 @@ class WorkflowListDB
                   apiId = java.util.UUID.randomUUID.toString,
                   eventType = EventType.UPDATE.toString,
                   workflowListApiId = workflowListApiId,
-                  userApiId = "Tmrdlt", // TODO use real user id
+                  userApiId = userApiId,
                   createdAt = LocalDateTime.now(),
                   dataSource = WorkflowListDataSource.Khipu
                 )

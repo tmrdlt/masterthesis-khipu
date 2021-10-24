@@ -11,8 +11,8 @@ import scala.concurrent.Future
 class WorkflowListController(workflowListDB: WorkflowListDB,
                              workflowListService: WorkflowListService) {
 
-  def createWorkflowList(createWorkflowListEntity: CreateWorkflowListEntity): Future[String] = {
-    workflowListDB.createWorkflowList(createWorkflowListEntity).map(_.apiId)
+  def createWorkflowList(createWorkflowListEntity: CreateWorkflowListEntity, userApiId: String): Future[String] = {
+    workflowListDB.createWorkflowList(createWorkflowListEntity, userApiId).map(_.apiId)
   }
 
   def getWorkflowListEntities(userApiIdOption: Option[String]): Future[Seq[WorkflowListEntity]] =
