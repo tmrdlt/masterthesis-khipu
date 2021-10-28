@@ -53,7 +53,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
       val scheduling = schedulingService.scheduleTasks(now, workSchedule, allWorkflowListTemporals)
 
-      val boardFinishedAt = scheduling.lastOption.getOrException("No tasks were planned").finishedAt
+      val boardFinishedAt = scheduling.lastOption.map(_.finishedAt).getOrElse(now)
       TemporalQueryResultEntity(
         boardResult = TaskPlanningSolution(
           id = board.id,
@@ -62,7 +62,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           startDate = None,
           dueDate = board.getEndDate,
           duration = allWorkflowListTemporals.map(_.remainingDuration).sum,
-          startedAt = scheduling.headOption.getOrException("No tasks were planned").startedAt,
+          startedAt = scheduling.headOption.map(_.startedAt).getOrElse(now),
           finishedAt = boardFinishedAt,
           dueDateKept = !board.getEndDate.exists(_ < boardFinishedAt),
           index = 0
