@@ -9,7 +9,7 @@ import scala.concurrent.Future
 class UserController(userDB: UserDB) {
 
   def getUsers: Future[Seq[UserEntity]] =
-    userDB.getUsers.map(_.map(_.toUserEntity))
+    userDB.getUsers.map(_.sortBy(_.id).map(_.toUserEntity))
 
   def createUser(createUserEntity: CreateUserEntity): Future[UserEntity] =
     userDB.createUser(createUserEntity.username).map(_.toUserEntity)
