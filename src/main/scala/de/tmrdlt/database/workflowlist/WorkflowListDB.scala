@@ -39,6 +39,52 @@ class WorkflowListDB
   def insertWorkflowLists(workflowLists: Seq[WorkflowList]): Future[Seq[WorkflowList]] =
     db.run(workflowListQuery returning workflowListQuery ++= workflowLists)
 
+  def createWorkflowListBatch(cwles: Seq[CreateWorkflowListEntity],
+                              startingPosition: Long,
+                              parentIdOption: Option[Long],
+                              parentApiIdOption: Option[String],
+                              userApiId: String): Future[Seq[WorkflowList]] = {
+    val now = LocalDateTime.now()
+    val query =
+      DBIO.sequence(cwles.zipWithIndex.map {
+        case (cwle, index) =>
+          for {
+            workflowList <- (workflowListQuery returning workflowListQuery) += {
+              WorkflowList(
+                id = 0L,
+                apiId = java.util.UUID.randomUUID.toString,
+                title = cwle.title,
+                description = cwle.description,
+                parentId = parentIdOption,
+                position = startingPosition + index,
+                listType = cwle.listType,
+                state = Some(WorkflowListState.OPEN),
+                dataSource = WorkflowListDataSource.Khipu,
+                useCase = None,
+                isTemporalConstraintBoard = cwle.isTemporalConstraintBoard,
+                ownerApiId = Some(userApiId),
+                createdAt = now,
+                updatedAt = now
+              )
+            }
+            _ <- (eventQuery returning eventQuery) += {
+              Event(
+                id = 0L,
+                apiId = java.util.UUID.randomUUID.toString,
+                eventType = EventType.CREATE.toString,
+                workflowListApiId = workflowList.apiId,
+                parentApiId = parentApiIdOption,
+                userApiId = userApiId,
+                createdAt = now,
+                dataSource = WorkflowListDataSource.Khipu
+              )
+            }
+          } yield workflowList
+      })
+    db.run(query.transactionally)
+  }
+
+
   def createWorkflowList(cwle: CreateWorkflowListEntity, userApiId: String): Future[WorkflowList] = {
     val now = LocalDateTime.now()
     val query =

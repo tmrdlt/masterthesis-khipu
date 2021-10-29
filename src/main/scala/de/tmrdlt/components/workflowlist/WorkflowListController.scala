@@ -12,7 +12,10 @@ class WorkflowListController(workflowListDB: WorkflowListDB,
                              workflowListService: WorkflowListService) {
 
   def createWorkflowList(createWorkflowListEntity: CreateWorkflowListEntity, userApiId: String): Future[String] = {
-    workflowListDB.createWorkflowList(createWorkflowListEntity, userApiId).map(_.apiId)
+    for {
+      workflowList <- workflowListDB.createWorkflowList(createWorkflowListEntity, userApiId)
+      _ <- workflowListDB.createWorkflowListBatch(createWorkflowListEntity.children, 0L, Some(workflowList.id), Some(workflowList.apiId), userApiId)
+    } yield workflowList.apiId
   }
 
   def getWorkflowListEntities(userApiIdOption: Option[String]): Future[Seq[WorkflowListEntity]] =
