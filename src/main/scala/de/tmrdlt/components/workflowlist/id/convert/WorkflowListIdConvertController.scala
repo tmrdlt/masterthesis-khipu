@@ -23,7 +23,7 @@ class WorkflowListIdConvertController(workflowListDB: WorkflowListDB, workflowLi
         }
         case (_, WorkflowListType.ITEM) => for {
           workflowListEntity <- workflowListService.getWorkflowListEntityForId(workflowList.apiId)
-          updated <- workflowListDB.convertHigherToItem(workflowList, s"${workflowList.description.getOrElse("")}${higherToItem(workflowListEntity)}", userApiId)
+          updated <- workflowListDB.convertHigherToItem(workflowList, s"${workflowList.description.getOrElse("")}${higherToItem(workflowListEntity)}".trim(), userApiId)
         } yield updated
         case _ => throw new Exception("invalid convert action")
       }
