@@ -45,7 +45,7 @@ class WorkflowListIdConvertController(workflowListDB: WorkflowListDB, workflowLi
             isTemporalConstraintBoard = Some(false),
             children = Seq.empty
           )).toSeq
-        val newDescr = pattern.replaceAllIn(descr, "").trim()
+        val newDescr = pattern.replaceAllIn(descr, "").trim() + "\n"
         (items, Some(newDescr))
       }
     }

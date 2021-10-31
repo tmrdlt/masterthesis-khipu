@@ -379,24 +379,10 @@ class WorkflowListDB
   }
 
   private def updateDescriptionAction(workflowList: WorkflowList, newDescription: Option[String], userApiId: String): DBIOAction[Int, NoStream, Effect.Write] = {
-    val now = LocalDateTime.now()
-    for {
-      updated <- workflowListQuery
-        .filter(_.id === workflowList.id)
-        .map(wl => (wl.description, wl.updatedAt))
-        .update((newDescription, now))
-      _ <- (eventQuery returning eventQuery) += {
-        Event(
-          id = 0L,
-          apiId = java.util.UUID.randomUUID.toString,
-          eventType = EventType.UPDATE.toString,
-          workflowListApiId = workflowList.apiId,
-          userApiId = userApiId,
-          createdAt = now,
-          dataSource = WorkflowListDataSource.Khipu
-        )
-      }
-    } yield updated
+    workflowListQuery
+      .filter(_.id === workflowList.id)
+      .map(wl => (wl.description, wl.updatedAt))
+      .update((newDescription, LocalDateTime.now()))
   }
 
   private def getWorkflowListByIdSqlAction(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =
