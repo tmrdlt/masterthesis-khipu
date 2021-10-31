@@ -3,9 +3,11 @@ package de.tmrdlt.database.workflowlist
 import de.tmrdlt.database.MyDB._
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.event.Event
+import de.tmrdlt.models.WorkflowListType.WorkflowListType
 import de.tmrdlt.models._
 import de.tmrdlt.utils.{OptionExtensions, SimpleNameLogger}
-import slick.sql.SqlAction
+import slick.dbio.Effect
+import slick.sql.{FixedSqlAction, SqlAction}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -44,46 +46,27 @@ class WorkflowListDB
                               parentIdOption: Option[Long],
                               parentApiIdOption: Option[String],
                               userApiId: String): Future[Seq[WorkflowList]] = {
-    val now = LocalDateTime.now()
-    val query =
-      DBIO.sequence(cwles.zipWithIndex.map {
-        case (cwle, index) =>
-          for {
-            workflowList <- (workflowListQuery returning workflowListQuery) += {
-              WorkflowList(
-                id = 0L,
-                apiId = java.util.UUID.randomUUID.toString,
-                title = cwle.title,
-                description = cwle.description,
-                parentId = parentIdOption,
-                position = startingPosition + index,
-                listType = cwle.listType,
-                state = Some(WorkflowListState.OPEN),
-                dataSource = WorkflowListDataSource.Khipu,
-                useCase = None,
-                isTemporalConstraintBoard = cwle.isTemporalConstraintBoard,
-                ownerApiId = Some(userApiId),
-                createdAt = now,
-                updatedAt = now
-              )
-            }
-            _ <- (eventQuery returning eventQuery) += {
-              Event(
-                id = 0L,
-                apiId = java.util.UUID.randomUUID.toString,
-                eventType = EventType.CREATE.toString,
-                workflowListApiId = workflowList.apiId,
-                parentApiId = parentApiIdOption,
-                userApiId = userApiId,
-                createdAt = now,
-                dataSource = WorkflowListDataSource.Khipu
-              )
-            }
-          } yield workflowList
-      })
+    db.run(createWorkflowListBatchAction(cwles, startingPosition, parentIdOption, parentApiIdOption, userApiId).transactionally)
+  }
+
+  def convertItemToHigher(workflowList: WorkflowList, cwles: Seq[CreateWorkflowListEntity], newDescription: Option[String], newListType: WorkflowListType, userApiId: String): Future[Int] = {
+    val query = for {
+      workflowListConverted <- convertWorkflowListAction(workflowList, newListType, userApiId)
+      workflowListUpdated <- updateDescriptionAction(workflowList, newDescription, userApiId)
+      startingPosition <- getHighestPositionByParentIdSqlAction(Some(workflowList.id))
+      itemsInserted <- createWorkflowListBatchAction(cwles, startingPosition.map(pos => pos + 1).getOrElse(0), Some(workflowList.id), Some(workflowList.apiId), userApiId)
+    } yield workflowListConverted + workflowListUpdated + itemsInserted.length
     db.run(query.transactionally)
   }
 
+  def convertHigherToItem(workflowList: WorkflowList, newDescription: String, userApiId: String): Future[Int] = {
+    val query = for {
+      workflowListConverted <- convertWorkflowListAction(workflowList, WorkflowListType.ITEM, userApiId)
+      workflowListUpdated <- updateDescriptionAction(workflowList, Some(newDescription), userApiId)
+      workflowListsDeleted <- batchDeleteWorkflowListAction(Some(workflowList.id))
+    } yield workflowListConverted + workflowListUpdated + workflowListsDeleted
+    db.run(query.transactionally)
+  }
 
   def createWorkflowList(cwle: CreateWorkflowListEntity, userApiId: String): Future[WorkflowList] = {
     val now = LocalDateTime.now()
@@ -202,36 +185,28 @@ class WorkflowListDB
     db.run(query.transactionally)
   }
 
-  def convertWorkflowList(workflowListApiId: String, cwle: ConvertWorkflowListEntity, userApiId: String): Future[Int] = {
-    val query =
-      for {
-        workflowListOption <- getWorkflowListByApiIdSqlAction(workflowListApiId)
-        updated <- workflowListOption match {
-          case Some(workflowList) =>
-            for {
-              updated <- workflowListQuery
-                .filter(_.id === workflowList.id)
-                .map(wl => (wl.listType, wl.updatedAt))
-                .update((cwle.newListType, LocalDateTime.now()))
-              _ <- (eventQuery returning eventQuery) += {
-                Event(
-                  id = 0L,
-                  apiId = java.util.UUID.randomUUID.toString,
-                  eventType = EventType.CONVERT.toString,
-                  workflowListApiId = workflowListApiId,
-                  newType = Some(cwle.newListType),
-                  userApiId = userApiId,
-                  createdAt = LocalDateTime.now(),
-                  dataSource = WorkflowListDataSource.Khipu
-                )
-              }
-            } yield updated
-          case _ =>
-            DBIO.failed(new Exception(s"Cannot convert workflow list. No list for apiId ${workflowListApiId}"))
-        }
-      } yield updated
+  def convertWorkflowList(workflowList: WorkflowList, newListType: WorkflowListType, userApiId: String): Future[Int] =
+    db.run(convertWorkflowListAction(workflowList, newListType, userApiId).transactionally)
 
-    db.run(query.transactionally)
+  def convertWorkflowListAction(workflowList: WorkflowList, newListType: WorkflowListType, userApiId: String): DBIOAction[Int, NoStream, Effect.Write] = {
+    for {
+      updated <- workflowListQuery
+        .filter(_.id === workflowList.id)
+        .map(wl => (wl.listType, wl.updatedAt))
+        .update((newListType, LocalDateTime.now()))
+      _ <- (eventQuery returning eventQuery) += {
+        Event(
+          id = 0L,
+          apiId = java.util.UUID.randomUUID.toString,
+          eventType = EventType.CONVERT.toString,
+          workflowListApiId = workflowList.apiId,
+          newType = Some(newListType),
+          userApiId = userApiId,
+          createdAt = LocalDateTime.now(),
+          dataSource = WorkflowListDataSource.Khipu
+        )
+      }
+    } yield updated
   }
 
   def moveWorkflowList(workflowListApiId: String, mwle: MoveWorkflowListEntity, userApiId: String): Future[Int] = {
@@ -354,6 +329,74 @@ class WorkflowListDB
       } yield updated
 
     db.run(query)
+  }
+
+  private def batchDeleteWorkflowListAction(parentId: Option[Long]): FixedSqlAction[Int, NoStream, Effect.Write] =
+    workflowListQuery.filter(_.parentId === parentId).delete
+
+
+  private def createWorkflowListBatchAction(cwles: Seq[CreateWorkflowListEntity],
+                                            startingPosition: Long,
+                                            parentIdOption: Option[Long],
+                                            parentApiIdOption: Option[String],
+                                            userApiId: String): DBIOAction[Seq[WorkflowList], NoStream, Effect.Write] = {
+    val now = LocalDateTime.now()
+    DBIO.sequence(cwles.zipWithIndex.map {
+      case (cwle, index) =>
+        for {
+          workflowList <- (workflowListQuery returning workflowListQuery) += {
+            WorkflowList(
+              id = 0L,
+              apiId = java.util.UUID.randomUUID.toString,
+              title = cwle.title,
+              description = cwle.description,
+              parentId = parentIdOption,
+              position = startingPosition + index,
+              listType = cwle.listType,
+              state = Some(WorkflowListState.OPEN),
+              dataSource = WorkflowListDataSource.Khipu,
+              useCase = None,
+              isTemporalConstraintBoard = cwle.isTemporalConstraintBoard,
+              ownerApiId = Some(userApiId),
+              createdAt = now,
+              updatedAt = now
+            )
+          }
+          _ <- (eventQuery returning eventQuery) += {
+            Event(
+              id = 0L,
+              apiId = java.util.UUID.randomUUID.toString,
+              eventType = EventType.CREATE.toString,
+              workflowListApiId = workflowList.apiId,
+              parentApiId = parentApiIdOption,
+              userApiId = userApiId,
+              createdAt = now,
+              dataSource = WorkflowListDataSource.Khipu
+            )
+          }
+        } yield workflowList
+    })
+  }
+
+  private def updateDescriptionAction(workflowList: WorkflowList, newDescription: Option[String], userApiId: String): DBIOAction[Int, NoStream, Effect.Write] = {
+    val now = LocalDateTime.now()
+    for {
+      updated <- workflowListQuery
+        .filter(_.id === workflowList.id)
+        .map(wl => (wl.description, wl.updatedAt))
+        .update((newDescription, now))
+      _ <- (eventQuery returning eventQuery) += {
+        Event(
+          id = 0L,
+          apiId = java.util.UUID.randomUUID.toString,
+          eventType = EventType.UPDATE.toString,
+          workflowListApiId = workflowList.apiId,
+          userApiId = userApiId,
+          createdAt = now,
+          dataSource = WorkflowListDataSource.Khipu
+        )
+      }
+    } yield updated
   }
 
   private def getWorkflowListByIdSqlAction(workflowListId: Long): SqlAction[Option[WorkflowList], NoStream, Effect.Read] =

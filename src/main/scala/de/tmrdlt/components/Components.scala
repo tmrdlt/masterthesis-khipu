@@ -38,7 +38,8 @@ class Components(system: ActorSystem) {
     directives.authorizationDirective
   )
   val workflowListIdConvert = new WorkflowListIdConvertRoute(
-    new WorkflowListIdConvertController(dbs.workflowListDB),
+
+    new WorkflowListIdConvertController(dbs.workflowListDB, services.workflowListService),
     directives.authorizationDirective
   )
   val workflowListIdMove = new WorkflowListIdMoveRoute(
