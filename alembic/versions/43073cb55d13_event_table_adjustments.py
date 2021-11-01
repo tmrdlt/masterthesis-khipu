@@ -49,7 +49,6 @@ def downgrade():
     op.drop_column(column_name='new_type', table_name='event', schema='workflow')
     op.drop_column(column_name='resources_updated', table_name='event', schema='workflow')
     op.drop_column(column_name='temporal_query_result', table_name='event', schema='workflow')
-    op.drop_table(table_name='temporal_query_result', schema='workflow')
     op.alter_column(table_name='event',
                     column_name='created_at',
                     new_column_name='date', schema='workflow')
