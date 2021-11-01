@@ -24,8 +24,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
 
   def performTemporalQuery(workflowListApiId: String, userApiId: String): Future[TemporalQueryResultEntity] = {
-    val now = LocalDateTime.now()
-
+    //val now = LocalDateTime.now()
+    val now = LocalDateTime.of(2021, 11, 1, 10, 0)
     val boardFuture = workflowListService.getWorkflowListEntityForId(workflowListApiId)
     val eventsFuture = eventDB.getEvents
     val workScheduleFuture = workScheduleDB.getWorkSchedule

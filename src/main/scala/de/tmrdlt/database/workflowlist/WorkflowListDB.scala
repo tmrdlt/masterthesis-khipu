@@ -54,7 +54,7 @@ class WorkflowListDB
       workflowListConverted <- convertWorkflowListAction(workflowList, newListType, userApiId)
       workflowListUpdated <- updateDescriptionAction(workflowList, newDescription, userApiId)
       startingPosition <- getHighestPositionByParentIdSqlAction(Some(workflowList.id))
-      itemsInserted <- createWorkflowListBatchAction(cwles, startingPosition.map(pos => pos + 1).getOrElse(0), Some(workflowList.id), Some(workflowList.apiId), userApiId)
+      itemsInserted <- createWorkflowListBatchAction(cwles, startingPosition.map(pos => pos + 1).getOrElse(0), Some(workflowList.id), Some(workflowList.apiId), userApiId, insertEvent = false)
     } yield workflowListConverted + workflowListUpdated + itemsInserted.length
     db.run(query.transactionally)
   }
@@ -339,7 +339,8 @@ class WorkflowListDB
                                             startingPosition: Long,
                                             parentIdOption: Option[Long],
                                             parentApiIdOption: Option[String],
-                                            userApiId: String): DBIOAction[Seq[WorkflowList], NoStream, Effect.Write] = {
+                                            userApiId: String,
+                                            insertEvent: Boolean = true): DBIOAction[Seq[WorkflowList], NoStream, Effect.Write] = {
     val now = LocalDateTime.now()
     DBIO.sequence(cwles.zipWithIndex.map {
       case (cwle, index) =>
@@ -362,18 +363,20 @@ class WorkflowListDB
               updatedAt = now
             )
           }
-          _ <- (eventQuery returning eventQuery) += {
-            Event(
-              id = 0L,
-              apiId = java.util.UUID.randomUUID.toString,
-              eventType = EventType.CREATE.toString,
-              workflowListApiId = workflowList.apiId,
-              parentApiId = parentApiIdOption,
-              userApiId = userApiId,
-              createdAt = now,
-              dataSource = WorkflowListDataSource.Khipu
-            )
-          }
+          _ <- if (insertEvent) {
+            (eventQuery returning eventQuery) += {
+              Event(
+                id = 0L,
+                apiId = java.util.UUID.randomUUID.toString,
+                eventType = EventType.CREATE.toString,
+                workflowListApiId = workflowList.apiId,
+                parentApiId = parentApiIdOption,
+                userApiId = userApiId,
+                createdAt = now,
+                dataSource = WorkflowListDataSource.Khipu
+              )
+            }
+          } else DBIO.successful(0)
         } yield workflowList
     })
   }
