@@ -31,10 +31,10 @@ class WorkflowListIdConvertController(workflowListDB: WorkflowListDB, workflowLi
   }
 
 
-  private def itemToHigher(workflowList: WorkflowList): (Seq[CreateWorkflowListEntity], Option[String]) = {
+  private def itemToHigher(workflowList: WorkflowList): (Seq[CreateWorkflowListEntity], String) = {
     val pattern = """(?m)(?:^\-[ ])(.*)""".r
     workflowList.description match {
-      case None => (Seq.empty, None)
+      case None => (Seq.empty, "")
       case Some(descr) => {
         val items = pattern.findAllMatchIn(descr).map(res =>
           CreateWorkflowListEntity(
@@ -45,8 +45,8 @@ class WorkflowListIdConvertController(workflowListDB: WorkflowListDB, workflowLi
             isTemporalConstraintBoard = Some(false),
             children = Seq.empty
           )).toSeq
-        val newDescr = pattern.replaceAllIn(descr, "").trim() + "\n"
-        (items, Some(newDescr))
+        val newDescr = pattern.replaceAllIn(descr, "").trim()
+        (items, newDescr)
       }
     }
   }

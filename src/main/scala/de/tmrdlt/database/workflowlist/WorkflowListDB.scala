@@ -49,10 +49,11 @@ class WorkflowListDB
     db.run(createWorkflowListBatchAction(cwles, startingPosition, parentIdOption, parentApiIdOption, userApiId).transactionally)
   }
 
-  def convertItemToHigher(workflowList: WorkflowList, cwles: Seq[CreateWorkflowListEntity], newDescription: Option[String], newListType: WorkflowListType, userApiId: String): Future[Int] = {
+  def convertItemToHigher(workflowList: WorkflowList, cwles: Seq[CreateWorkflowListEntity], newDescription: String, newListType: WorkflowListType, userApiId: String): Future[Int] = {
+    val newDescrOption = if (newDescription == "") None else Some(newDescription)
     val query = for {
       workflowListConverted <- convertWorkflowListAction(workflowList, newListType, userApiId)
-      workflowListUpdated <- updateDescriptionAction(workflowList, newDescription, userApiId)
+      workflowListUpdated <- updateDescriptionAction(workflowList, newDescrOption, userApiId)
       startingPosition <- getHighestPositionByParentIdSqlAction(Some(workflowList.id))
       itemsInserted <- createWorkflowListBatchAction(cwles, startingPosition.map(pos => pos + 1).getOrElse(0), Some(workflowList.id), Some(workflowList.apiId), userApiId, insertEvent = false)
     } yield workflowListConverted + workflowListUpdated + itemsInserted.length
@@ -60,9 +61,10 @@ class WorkflowListDB
   }
 
   def convertHigherToItem(workflowList: WorkflowList, newDescription: String, userApiId: String): Future[Int] = {
+    val newDescrOption = if (newDescription == "") None else Some(newDescription)
     val query = for {
       workflowListConverted <- convertWorkflowListAction(workflowList, WorkflowListType.ITEM, userApiId)
-      workflowListUpdated <- updateDescriptionAction(workflowList, Some(newDescription), userApiId)
+      workflowListUpdated <- updateDescriptionAction(workflowList, newDescrOption, userApiId)
       workflowListsDeleted <- batchDeleteWorkflowListAction(Some(workflowList.id))
     } yield workflowListConverted + workflowListUpdated + workflowListsDeleted
     db.run(query.transactionally)
