@@ -51,7 +51,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
       .filter((task: Task) => task.dueDate.exists(dueDate => task.finishedAt > dueDate))
       // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("When tasks due date failed, exceeding the due dates should be minimized", HardMediumSoftScore.ONE_SOFT,
-        (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.dueDate.get, task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
+        (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.dueDate.getOrElse(throw new Exception("Due date is not defined altough it should be.")), task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
       )
 
   private def doInProgressTasksFirst(constraintFactory: ConstraintFactory): Constraint =
