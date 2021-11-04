@@ -18,7 +18,8 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
       finishBeforeDueDate(constraintFactory),
       // Soft constraints
       minimizeTotalFinishDate(constraintFactory),
-      doInProgressTasksFirst(constraintFactory)
+      doInProgressTasksFirst(constraintFactory),
+      minimizeExceedingOfDueDates(constraintFactory)
       //doAsManyTasksAsPossible(constraintFactory)
       // TODO maybe add prefer longer tasks constraint...
     )
@@ -42,6 +43,15 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
       // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("The final FinishTime should be minimized", HardMediumSoftScore.ONE_SOFT,
         (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
+      )
+
+  private def minimizeExceedingOfDueDates(constraintFactory: ConstraintFactory): Constraint =
+    constraintFactory
+      .from(classOf[Task])
+      .filter((task: Task) => task.dueDate.exists(dueDate => task.finishedAt > dueDate))
+      // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
+      .penalize("When tasks due date failed, exceeding the due dates should be minimized", HardMediumSoftScore.ONE_SOFT,
+        (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.dueDate.get, task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
       )
 
   private def doInProgressTasksFirst(constraintFactory: ConstraintFactory): Constraint =
