@@ -30,18 +30,18 @@ values  (1, 'b903d414-26fe-4944-92a6-2e0e19e78f56', 'Funding application restaur
         (4, 'ba4fde8f-6f68-4a48-8131-6c7860f633d0', 'Done', null, 1, 2, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-01 14:48:09.236468', '2021-11-01 14:48:09.236468', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (5, '0a6dc9c9-fe86-4575-abac-ea37537f983c', 'Gather details about the application', null, 4, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 14:48:29.236084', '2021-11-04 11:07:27.957626', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (6, 'e5d08d9e-38df-4958-ae26-38bf779fc229', 'Write down tasks', null, 4, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 14:48:37.455277', '2021-11-01 14:48:44.782625', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (8, '5e85ddee-40e4-4e28-92c5-1b0746ea3deb', 'Your task', 'You are applying for funding for a restaurant.
+        (8, '5e85ddee-40e4-4e28-92c5-1b0746ea3deb', 'Your task', 'You found out about an organisation that founds creative restaurant concepts. Because you were thinking about opening up a restaurant for a long time, you decided to give it a try and apply for this funding.
 The application consists of a presentation and a submission that takes place beforehand.
 
-These things are expected for the submission:
-• Business plan
-• Design concept
+Expected for the submission are:
+• A business plan
+• A concept including design
 
-These things are expected to be presented:
-• Design concept
-• Food example
+Expected to be presented are:
+• The submitted concept
+• A food example
 
-You already wrote down tasks and ideas that came to you when you were thinking about the project. They are in the list "ToDo" and are currently without any order.', null, 1, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 14:49:03.476484', '2021-11-04 13:05:28.235405', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+You already wrote down tasks that came to you when you were thinking about the project. They are in the list "ToDo" and are currently without any order.', null, 1, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 14:49:03.476484', '2021-11-04 19:53:34.660206', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (9, '5cdcdbc2-5428-4e62-ba04-36ebf08ba169', 'Do', 'Reorganize the tasks in the "ToDo" list. Try to arrange them in a way that makes the most sense for you and helps you get an overview of the project.
 
 If you want, you can
@@ -130,73 +130,78 @@ Due dates missed:', 102, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17
         (127, '10c111c0-a0ac-4b60-9eb4-4369135d590d', 'ToDo', null, 10, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:08:42.251288', '2021-11-04 11:25:11.909358', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (128, 'f59af0f7-7bb6-45ff-a3ab-07510247d0f7', 'ToDo', null, 14, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:09:51.570206', '2021-11-04 11:23:00.394015', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (129, '8c397ba0-04f2-4d5d-90ea-35b749e97e72', 'ToDo', null, 19, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:09:59.762880', '2021-11-04 11:25:19.163360', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (202, '26f8cbc7-371a-429c-a16c-b026dafcd9e1', 'Gather inspiration for general concept', null, 128, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:00.399540', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (203, '1f27d258-d6e8-490b-997f-3f0142693ed2', 'What kind of food should my restaurant offer?', null, 128, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:00.399540', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (204, '533760bd-483d-46fc-8566-cfcc91e19a2a', 'Create design concept', null, 128, 2, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:41.567717', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (205, '723e94de-f799-4a29-a227-bf521ccf3347', 'Create interior design', null, 204, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:43.882385', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (206, 'a3351da9-5253-4f0c-8d8f-1aac7ff67b36', 'Create logo', null, 204, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:48.237506', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (202, '26f8cbc7-371a-429c-a16c-b026dafcd9e1', 'Gather inspiration for concept', null, 289, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 19:41:58.513440', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (203, '1f27d258-d6e8-490b-997f-3f0142693ed2', 'Decide which food the restaurant should offer', null, 289, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 19:52:38.118764', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (204, '533760bd-483d-46fc-8566-cfcc91e19a2a', 'Create design concept', null, 128, 1, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:41.567717', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (206, 'a3351da9-5253-4f0c-8d8f-1aac7ff67b36', 'Create logo', null, 204, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:48.237506', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (207, '7f3bf91a-3d9c-4790-97f6-e2b81afa2f9b', 'Read how to make a business plan', null, 209, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:37.779568', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (208, 'cbc4e164-5bb1-4a75-a165-b08efd7befe3', 'Calculate estimated income and expanses', null, 209, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:32.980546', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (209, 'd3620509-9a0b-4a6a-8e26-9fe2a171b6a5', 'Create business plan', null, 128, 3, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:29.620101', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (209, 'd3620509-9a0b-4a6a-8e26-9fe2a171b6a5', 'Create business plan', null, 128, 2, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:23:29.620101', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (210, 'fd15f097-726f-4797-ab8e-b8efcd101e59', 'Prepare food example', null, 128, 4, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:24:21.136100', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (211, '14f2478d-73f3-4488-a61a-7455c9a0a220', 'Get recipe and buy ingredients a cake', null, 210, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:24:35.919556', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (212, '421bd5f9-f743-449d-b615-e245d130e5b6', 'Bake a cake', null, 210, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:24:38.439020', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (213, '570c2339-0003-41ef-97f5-aaeb25d41f1d', 'Prepare presentation', null, 128, 5, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:24:46.267565', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (214, 'b6e2e0cb-3081-43e8-960f-b11bfe30a6a9', 'Present concept', null, 213, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 11:24:49.095787', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (215, '196893ac-b495-4895-a97b-c8cff83c6968', 'Gather inspiration for general concept', null, 127, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (216, 'e52f45fe-6e5b-458e-9f08-831c88c4b971', 'What kind of food should my restaurant offer?', null, 127, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (211, '14f2478d-73f3-4488-a61a-7455c9a0a220', 'Find recipe and buy ingredients for cake', null, 210, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 19:55:25.754081', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (212, '421bd5f9-f743-449d-b615-e245d130e5b6', 'Bake cake', null, 210, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 19:55:34.774511', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (213, '570c2339-0003-41ef-97f5-aaeb25d41f1d', 'Prepare presentation', null, 214, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 19:37:30.493056', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (214, 'b6e2e0cb-3081-43e8-960f-b11bfe30a6a9', 'Hold presentation', null, 128, 5, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:23:00.399540', '2021-11-04 19:37:25.071360', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (215, '196893ac-b495-4895-a97b-c8cff83c6968', 'Gather inspiration for concept', null, 127, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 19:40:48.941809', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (216, 'e52f45fe-6e5b-458e-9f08-831c88c4b971', 'Decide which food the restaurant should offer', null, 127, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 19:52:46.322850', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (217, 'ff957d01-f0f4-4273-b6f3-d90c58b3753d', 'Create design concept', null, 127, 2, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (218, 'b0df8527-c4c0-4b56-9b29-e69586df87ac', 'Create interior design', null, 127, 3, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (219, '4d5f7384-cff1-4be9-be43-5410bd1a4ba0', 'Create logo', null, 127, 4, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (219, '4d5f7384-cff1-4be9-be43-5410bd1a4ba0', 'Create logo', null, 127, 3, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (220, 'dd7cb864-eefe-433d-93d7-b81f8e5d3616', 'Read how to make a business plan', null, 127, 5, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (221, '24ed80aa-054e-409c-ae11-85aa42bc7d69', 'Calculate estimated income and expanses', null, 127, 6, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (222, 'a8a2d926-eb0a-46e7-8f4f-915cda941589', 'Create business plan', null, 127, 7, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (223, '2f3abfa1-834f-4b00-856f-4f24cd0185e8', 'Prepare food example', null, 127, 8, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (224, '9133159d-8aab-4129-89e2-bbd801966787', 'Get recipe and buy ingredients a cake', null, 127, 9, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (225, '259bbee0-382e-4c42-b27b-44ef45f41d82', 'Bake a cake', null, 127, 10, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (226, '5bbce91f-c7d3-4d55-9a47-ccfd0a231eb7', 'Prepare presentation', null, 127, 11, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (227, '591d0da1-6f34-4f93-b475-7454816960c8', 'Present concept', null, 127, 12, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (223, '2f3abfa1-834f-4b00-856f-4f24cd0185e8', 'Prepare food example', null, 127, 9, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (224, '9133159d-8aab-4129-89e2-bbd801966787', 'Find recipe and buy ingredients for cake', null, 127, 10, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 19:54:47.054101', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (225, '259bbee0-382e-4c42-b27b-44ef45f41d82', 'Bake cake', null, 127, 11, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 19:55:11.600023', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (226, '5bbce91f-c7d3-4d55-9a47-ccfd0a231eb7', 'Prepare presentation', null, 127, 12, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 11:25:11.916595', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (227, '591d0da1-6f34-4f93-b475-7454816960c8', 'Hold presentation', null, 127, 13, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:11.916595', '2021-11-04 19:34:11.067368', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (228, '349ffcc6-f29d-4e32-82c9-18e86f95e1f5', 'Gather inspiration for general concept', null, 244, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:30:08.096571', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (229, '3858e6ef-4160-4825-bdad-2a8c92acf2a3', 'What kind of food should my restaurant offer?', null, 244, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:30:33.883975', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (230, 'd780e46a-54dd-4a84-8cb8-2013fff2e936', 'Create design concept', null, 245, 2, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:30:25.868442', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (231, 'eeb9222d-646e-4bed-a47c-cc34825095f4', 'Create interior design', null, 245, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:30:20.288419', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (229, '3858e6ef-4160-4825-bdad-2a8c92acf2a3', 'Decide which food the restaurant should offer', null, 244, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 19:53:12.474068', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (230, 'd780e46a-54dd-4a84-8cb8-2013fff2e936', 'Create design concept', null, 245, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:30:25.868442', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (232, '62fc727b-7093-45a9-87ff-93c0c7a714e8', 'Create logo', null, 245, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:30:15.585539', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (233, '187deacf-4dd9-4569-aabb-adae13ce7b98', 'Read how to make a business plan', null, 247, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:31:39.963542', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (234, '701be219-3fb4-4be6-9f9c-6b7738ce0b63', 'Calculate estimated income and expanses', null, 247, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:31:43.190662', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (235, '52c4d3a6-7f2d-467a-87c9-79645259f192', 'Create business plan', null, 243, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:31:10.330958', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (236, '143a10c4-60f3-444f-affd-5ce99de2e75d', 'Prepare food example', null, 246, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:29:31.387776', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (237, '474934ac-c859-4868-bc71-7c5676ec5f4d', 'Get recipe and buy ingredients a cake', null, 236, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:29:35.922164', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (238, '5d0ae860-910d-4dd2-847d-fa45ce7fc80e', 'Bake a cake', null, 236, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:29:39.234482', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (237, '474934ac-c859-4868-bc71-7c5676ec5f4d', 'Find recipe and buy ingredients for cake', null, 236, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 19:56:10.752239', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (238, '5d0ae860-910d-4dd2-847d-fa45ce7fc80e', 'Bake cake', null, 236, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 19:56:18.742332', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (239, 'c296eacf-04d3-45e7-869b-8f716acd7f09', 'Prepare presentation', null, 246, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:29:52.841113', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (240, '05a5c92a-d91e-4f25-a1ac-b084c5206426', 'Present concept', null, 242, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 11:28:14.748094', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (241, '43362086-ceff-4ceb-a14e-5982daaa02bb', 'Concept', '', 129, 0, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:36.884270', '2021-11-04 11:25:36.884270', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (242, '5ae8a1eb-17fc-4dbe-8524-9b33e22fc283', 'Presentation', null, 129, 2, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:50.833481', '2021-11-04 11:27:48.460508', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (243, '257781e0-69da-4b0c-a6cc-4747da75ff0e', 'Business plan', null, 129, 1, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 11:26:01.111100', '2021-11-04 11:31:57.951034', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (240, '05a5c92a-d91e-4f25-a1ac-b084c5206426', 'Hold presentation', null, 242, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:19.168077', '2021-11-04 19:36:11.288044', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (241, '43362086-ceff-4ceb-a14e-5982daaa02bb', 'Concept', '', 286, 0, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:36.884270', '2021-11-04 19:37:47.544564', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (242, '5ae8a1eb-17fc-4dbe-8524-9b33e22fc283', 'Presentation', null, 129, 1, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 11:25:50.833481', '2021-11-04 11:27:48.460508', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (243, '257781e0-69da-4b0c-a6cc-4747da75ff0e', 'Business plan', null, 286, 1, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 11:26:01.111100', '2021-11-04 19:37:55.911274', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (244, '492f84a3-4f03-476e-aa17-bd15ff4d68c6', 'Research and Ideation', '', 241, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:26:28.562604', '2021-11-04 11:26:28.562604', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (245, 'a3b4d9b1-e891-4d46-b505-2341b5573d3a', 'Important things', null, 241, 1, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:26:36.223655', '2021-11-04 13:09:32.278178', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (245, 'a3b4d9b1-e891-4d46-b505-2341b5573d3a', 'Design', null, 241, 2, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:26:36.223655', '2021-11-04 19:43:12.555296', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (246, '651be268-9a0d-48b4-838f-b62bd010dbb7', 'Preparation', null, 242, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:28:49.101375', '2021-11-04 11:29:43.728426', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (247, '93577383-4458-49f9-987f-211ddfae6692', 'Preperation', '', 243, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 11:31:35.720930', '2021-11-04 11:31:46.269682', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (248, 'db07eb48-684c-4cfa-a715-79722ecf2380', 'Gather inspiration for general concept', null, 126, 6, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:28.002065', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (249, 'ba034ac1-438a-41b6-892f-f557b43617cc', 'What kind of food should my restaurant offer?', null, 126, 3, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:32.721711', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (250, '37674450-769e-4678-b6c5-c69145cedaff', 'Create design concept', null, 126, 5, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:30.852386', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (251, '981f3c91-661e-4351-bf5c-debb8ad66a95', 'Create interior design', null, 126, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:06.854304', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (248, 'db07eb48-684c-4cfa-a715-79722ecf2380', 'Gather inspiration for concept', null, 126, 6, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 19:40:21.946836', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (249, 'ba034ac1-438a-41b6-892f-f557b43617cc', 'Decide which food the restaurant should offer', null, 126, 2, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 19:53:24.061882', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (250, '37674450-769e-4678-b6c5-c69145cedaff', 'Create design concept', null, 126, 4, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:30.852386', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (252, '303b8f59-ca68-4717-a3d9-09093ec63ed6', 'Create logo', null, 126, 10, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:22.932967', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (253, 'c799098c-b56e-4ff3-abca-93f2b75401b6', 'Read how to make a business plan', null, 126, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:13.638996', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (254, 'e39f2731-6412-48e2-ac61-b8582b355ca3', 'Calculate estimated income and expanses', null, 126, 7, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:06.854304', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (255, '8bfbd525-f2a0-4e24-b6d4-bf57d418f5b3', 'Create business plan', null, 126, 8, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 13:12:46.846978', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (256, '5a9f289d-09f4-43e5-a1db-cd6bb522f506', 'Prepare food example', null, 126, 11, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:06.854304', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (257, '06c5270d-64a9-4dd7-8fba-dbbd61e8cc1d', 'Get recipe and buy ingredients a cake', null, 126, 9, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:20.588398', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (258, 'fd43455e-fbae-4fad-bb37-52de42f4f09c', 'Bake a cake', null, 126, 4, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:24.730810', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (259, '6a937b68-df4e-4a90-b948-7a5147d785ba', 'Prepare presentation', null, 126, 12, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:06.854304', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (260, 'a79a2cab-deb6-451b-ac84-2776cd343368', 'Present concept', null, 126, 2, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:34.111575', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (254, 'e39f2731-6412-48e2-ac61-b8582b355ca3', 'Calculate estimated income and expanses', null, 126, 11, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 19:49:46.348534', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (255, '8bfbd525-f2a0-4e24-b6d4-bf57d418f5b3', 'Create business plan', null, 126, 8, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 19:49:44.007532', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (256, '5a9f289d-09f4-43e5-a1db-cd6bb522f506', 'Prepare food example', null, 126, 12, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:06.854304', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (257, '06c5270d-64a9-4dd7-8fba-dbbd61e8cc1d', 'Find recipe and buy ingredients for the cake', null, 126, 9, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 19:30:03.984944', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (258, 'fd43455e-fbae-4fad-bb37-52de42f4f09c', 'Bake a cake', null, 126, 3, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:24.730810', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (259, '6a937b68-df4e-4a90-b948-7a5147d785ba', 'Prepare presentation', null, 126, 13, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 11:33:06.854304', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (260, 'a79a2cab-deb6-451b-ac84-2776cd343368', 'Hold presentation', null, 126, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 11:33:06.854304', '2021-11-04 19:33:30.367413', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (261, 'bcfc9571-04f0-4973-8a6d-b10bc22213ec', 'Experiment 4', '', 106, 7, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 12:40:01.309505', '2021-11-04 12:40:01.309505', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (262, '18f03bf7-1ee5-4c04-bf08-93a4b5ce6496', 'Experiment 5', '', 106, 8, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 12:40:07.110720', '2021-11-04 12:40:07.110720', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (263, 'e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b', 'Experiment 6', '', 106, 9, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 12:40:15.388257', '2021-11-04 12:40:15.388257', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
-        (264, '7783ceb5-8658-48e2-9175-c434aecbab1a', 'You task', 'Below you see three boards (A, B, C) that represent different possible arrangements of the tasks from the previous task.', null, 0, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 13:06:44.313137', '2021-11-04 13:08:17.666681', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (264, '7783ceb5-8658-48e2-9175-c434aecbab1a', 'Your task', 'Below you see three boards (A, B, C) that represent different possible arrangements of the tasks from the previous task.', null, 0, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-04 13:06:44.313137', '2021-11-04 19:58:33.051253', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (265, 'c32c0a0d-32cf-4fae-8c87-0bc491127b75', 'Do', 'Look at the boards for a moment. Which representation of the project do you like the most?
  
-Time limit: 5 minutes', 264, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 13:08:58.024274', '2021-11-04 13:13:35.210154', '5b0d62ba-a40a-4ca7-975d-63197de32642');
-""")
+Time limit: 5 minutes', 264, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 13:08:58.024274', '2021-11-04 13:13:35.210154', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (284, 'ddeb3fdc-a3fb-4bca-8048-1ef9b3172261', 'Submit things for submission', '', 126, 5, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 19:33:49.668457', '2021-11-04 19:33:54.642524', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (285, '6bfe5eef-dc1d-4125-97eb-f54adc11e575', 'Submit things for submission', '', 127, 8, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 19:34:29.715019', '2021-11-04 19:34:37.263323', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (286, '75fcf875-06cb-45bd-91b0-78d8c1c7e2a8', 'Submit things for submission', '', 129, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 19:36:40.949609', '2021-11-04 19:38:09.408591', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (287, '4609d127-dd08-4cb3-9329-461c09bd45bc', 'Submit things for submission', '', 128, 3, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 19:36:55.844933', '2021-11-04 19:37:08.070456', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (288, 'ab8206e2-c71c-4458-a12f-9ed56bbad3de', 'Create concept', '', 126, 7, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 19:41:31.917822', '2021-11-04 19:41:35.490109', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
+        (289, 'f691fb43-dbaa-4839-8674-2c0d07ec5039', 'Create concept', '', 128, 0, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 19:41:44.044928', '2021-11-04 19:41:53.958927', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (290, '2804a2d6-f634-477b-969e-c9ba8bcea21a', 'Create concept', '', 291, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 19:42:39.761231', '2021-11-04 19:43:26.580993', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (291, 'a4f64156-181e-40ec-b47f-81b5f4f29c28', 'General', '', 241, 1, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-04 19:43:18.472238', '2021-11-04 19:43:35.999964', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
+        (292, '7e8f8669-45e3-490b-8235-a3ec68bb982e', 'Create concept', '', 127, 4, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-04 19:51:13.211573', '2021-11-04 19:51:23.678992', '5b0d62ba-a40a-4ca7-975d-63197de32642');
+        """)
 
     # TEMPORAL CONSTRAINTS
     op.execute("""insert into workflow.temporal_resource (id, workflow_list_id, start_date, end_date, duration_in_minutes, created_at, updated_at) values
