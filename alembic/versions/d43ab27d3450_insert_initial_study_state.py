@@ -72,7 +72,7 @@ Time limit: 10 minutes', 8, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01
 
 Time limit: 3 minutes', 90, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 16:15:21.073165', '2021-11-04 13:11:19.455571', 'f9815865-6a34-4ec7-89ec-7fa2311cc00d'),
         (90, 'de3a8251-1fdf-400a-875a-e5318daab7cf', 'Your task', 'It is Monday, 01.11., 10 am. 
-You are working from home while also having to organize your houshold.
+You are working from home while also having to organize your household.
 Below you see a board representing your open ToDos for today.
 
 You try to keep as many due dates as possible while finishing the last task as early as possible.
@@ -82,7 +82,7 @@ Assume the following:
 • You only work on tasks Monday to Friday between 10 am and 6 pm.
 • You can process only ONE task at a time.
 • Once you start a task you have to finish it first before you can start the next task.
-• If tasks have a start date assigned, they can not be started before that time.', null, 6, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 16:26:33.499253', '2021-11-04 10:53:03.718905', 'f9815865-6a34-4ec7-89ec-7fa2311cc00d'),
+• If tasks have a start date assigned, this is earliest date that they can be started, not before.', null, 6, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 16:26:33.499253', '2021-11-05 10:31:58.041418', 'f9815865-6a34-4ec7-89ec-7fa2311cc00d'),
         (91, 'a9d8b166-12b7-4b39-9bc0-2ae32b12de3d', 'Estimation', 'Estimated finish date:
 Due dates missed:', 90, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 16:26:44.914026', '2021-11-04 13:11:09.085447', 'f9815865-6a34-4ec7-89ec-7fa2311cc00d'),
         (92, '6ff93009-2cc4-49de-a08b-9ebc85cfdd2a', 'Tasks for the week', null, 120, 0, 'BOARD', 'OPEN', 'Khipu', null, true, '2021-11-01 16:27:31.576032', '2021-11-04 09:42:01.705318', 'f9815865-6a34-4ec7-89ec-7fa2311cc00d'),
@@ -103,7 +103,7 @@ Assume the following:
 • You only work on tasks Monday to Friday between 10 am and 6 pm.
 • You can process only ONE task at a time.
 • Once you start a task you have to finish it first before you can start the next task.
-• If tasks have a start date assigned, they can not be started before that time.', null, 7, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 17:01:02.606189', '2021-11-04 10:52:49.005393', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
+• If tasks have a start date assigned, this is earliest date that they can be started, not before. ', null, 7, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 17:01:02.606189', '2021-11-05 10:30:45.418894', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (103, 'c86eb34b-6254-4030-9350-7acd5a99ae79', 'Do', '1. Sort all tasks in the "ToDo" list to what you think is the best order.
 2. Write your estimate of the finish date into the "Estimation" item
 3. Write down how many due dates you think you missed into the "Estimation" item
@@ -116,7 +116,7 @@ Due dates missed:', 102, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17
         (107, '5f5919c8-b807-4f97-b830-2cf1d34301d2', 'Done', null, 105, 1, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-01 17:01:45.165649', '2021-11-01 17:01:45.165649', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (109, 'd484be85-2c6c-46d1-a77b-91be4270025b', 'Experiment 1', '• Perform tests
 • Deliver results', 106, 4, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17:05:01.829538', '2021-11-04 10:50:43.010674', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
-        (111, 'e59d256c-e18b-4166-9f6f-23732e320ad7', 'Check results of colleagues ', 'Results will come in on friday', 106, 2, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17:05:17.398434', '2021-11-04 10:33:37.719765', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
+        (111, 'e59d256c-e18b-4166-9f6f-23732e320ad7', 'Check results of colleagues ', 'Results will come in on wednesday', 106, 2, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17:05:17.398434', '2021-11-05 10:31:01.566866', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (112, 'e67eb392-b6d9-4652-81f3-87c2e0548a56', 'Order probes for next week', null, 106, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17:05:25.220662', '2021-11-04 10:09:28.677668', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (113, '90f073d1-7bb2-425b-b15b-d8bba8e4ccaa', 'Read newest edition of Bio-Magazine', null, 106, 3, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17:05:32.419987', '2021-11-04 10:15:54.885487', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
         (115, 'b5a28df1-1065-4468-9878-46cf21595a9a', 'Experiment 3', '• Perform tests
