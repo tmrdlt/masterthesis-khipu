@@ -30,7 +30,7 @@ values  (1, 'b903d414-26fe-4944-92a6-2e0e19e78f56', 'Funding application restaur
         (4, 'ba4fde8f-6f68-4a48-8131-6c7860f633d0', 'Done', null, 1, 2, 'LIST', 'OPEN', 'Khipu', null, false, '2021-11-01 14:48:09.236468', '2021-11-01 14:48:09.236468', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (5, '0a6dc9c9-fe86-4575-abac-ea37537f983c', 'Gather details about the application', null, 4, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 14:48:29.236084', '2021-11-04 11:07:27.957626', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
         (6, 'e5d08d9e-38df-4958-ae26-38bf779fc229', 'Write down tasks', null, 4, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 14:48:37.455277', '2021-11-01 14:48:44.782625', '8594e3a1-06e6-453a-97a6-2d8d239faf58'),
-        (8, '5e85ddee-40e4-4e28-92c5-1b0746ea3deb', 'Your task', 'You found out about an organisation that founds creative restaurant concepts. Because you were thinking about opening up a restaurant for a long time, you decided to give it a try and apply for this funding.
+        (8, '5e85ddee-40e4-4e28-92c5-1b0746ea3deb', 'Your task', 'You found out about an organisation that funds creative restaurant concepts. Because you were thinking about opening up a restaurant for a long time, you decided to give it a try and apply for this funding.
 The application consists of a presentation and a submission that takes place beforehand.
 
 Expected for the submission are:
@@ -66,8 +66,8 @@ Time limit: 10 minutes', 8, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01
         (26, '811595f8-8b4c-43f8-9e78-7b718b216f84', 'Write down tasks ', null, 13, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 15:11:10.201574', '2021-11-01 15:11:10.201574', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (27, 'd938cc11-21e1-4610-9e65-f163bbed3c42', 'Write down tasks', null, 17, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 15:11:13.522619', '2021-11-01 15:11:13.522619', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
         (28, 'fd63ad24-3c6b-4240-9d85-65e6a2be330c', 'Write down tasks', null, 22, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 15:11:17.425793', '2021-11-01 15:11:17.425793', '5b0d62ba-a40a-4ca7-975d-63197de32642'),
-        (89, 'bf865efa-7548-4a34-8eba-ec2d07c2f3a1', 'Do', '1. Sort all tasks in the "ToDo" list to what you think is the best order.
-2. Write your estimate of the finish date into the "Estimation" item
+        (89, 'bf865efa-7548-4a34-8eba-ec2d07c2f3a1', 'Do', '1. Sort all tasks in the "ToDo" list to what you think is the best execution order.
+2. Write your estimate of the projects finish date into the "Estimation" item
 3. Write down how many due dates you think you missed into the "Estimation" item
 
 Time limit: 3 minutes', 90, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 16:15:21.073165', '2021-11-04 13:11:19.455571', 'f9815865-6a34-4ec7-89ec-7fa2311cc00d'),
@@ -75,7 +75,7 @@ Time limit: 3 minutes', 90, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01
 You are working from home while also having to organize your household.
 Below you see a board representing your open ToDos for today.
 
-You try to keep as many due dates as possible while finishing the last task as early as possible.
+You try to keep as many due dates as possible while finishing the project as early as possible.
 In which order should you process the tasks? 
 
 Assume the following: 
@@ -96,7 +96,7 @@ Due dates missed:', 90, 1, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 16:
 You are working in a laboratory.
 Below you see a board representing your open ToDos for this week.
 
-You try to keep as many due dates as possible while finishing the last task as early as possible.
+You try to keep as many due dates as possible while finishing the project as early as possible.
 In which order should you process the tasks? 
 
 Assume the following: 
@@ -104,8 +104,8 @@ Assume the following:
 • You can process only ONE task at a time.
 • Once you start a task you have to finish it first before you can start the next task.
 • If tasks have a start date assigned, this is earliest date that they can be started, not before. ', null, 7, 'BOARD', 'OPEN', 'Khipu', null, false, '2021-11-01 17:01:02.606189', '2021-11-05 10:30:45.418894', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
-        (103, 'c86eb34b-6254-4030-9350-7acd5a99ae79', 'Do', '1. Sort all tasks in the "ToDo" list to what you think is the best order.
-2. Write your estimate of the finish date into the "Estimation" item
+        (103, 'c86eb34b-6254-4030-9350-7acd5a99ae79', 'Do', '1. Sort all tasks in the "ToDo" list to what you think is the best execution order.
+2. Write your estimate of the projects finish date into the "Estimation" item
 3. Write down how many due dates you think you missed into the "Estimation" item
 
 Time limit: 6 minutes', 102, 0, 'ITEM', 'OPEN', 'Khipu', null, false, '2021-11-01 17:01:03.411270', '2021-11-04 13:11:49.027020', 'f81e8919-6a23-4813-810d-55b9fd6c7057'),
