@@ -18,39 +18,44 @@ def upgrade():
     import os
     script_dir = os.path.dirname(__file__)
 
+    userId = "user02"
+
     # Read user.sql
-    user_path = os.path.join(script_dir, "sql/user.sql")
+    user_path = os.path.join(script_dir, "sql/initial_user.sql")
     fd = open(user_path, 'r')
     user = fd.read()
     fd.close()
     op.execute(user)
-    op.execute("SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.user', 'id'), MAX(id)) FROM workflow.user;")
+    op.execute(
+        """SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.user', 'id'), MAX(id)) FROM workflow.user;""")
 
     # Read workflow_list.sql
-    workflow_list_path = os.path.join(script_dir, "sql/workflow_list.sql")
+    workflow_list_path = os.path.join(script_dir, "sql/initial_workflow_list.sql")
+    # workflow_list_path = os.path.join(script_dir, "sql/" + userId + "_workflow_list.sql")
     fd = open(workflow_list_path, 'r')
     workflow_list = fd.read()
     fd.close()
     op.execute(workflow_list)
     op.execute(
-        "SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.workflow_list', 'id'), MAX(id)) FROM workflow.workflow_list;")
+        """SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.workflow_list', 'id'), MAX(id)) FROM workflow.workflow_list;""")
 
     # Read temporal_resource.sql
-    temporal_resource_path = os.path.join(script_dir, "sql/temporal_resource.sql")
+    temporal_resource_path = os.path.join(script_dir, "sql/initial_temporal_resource.sql")
     fd = open(temporal_resource_path, 'r')
     temporal_resource = fd.read()
     fd.close()
     op.execute(temporal_resource)
     op.execute(
-        "SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.temporal_resource', 'id'), MAX(id)) FROM workflow.temporal_resource;")
+        """SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.temporal_resource', 'id'), MAX(id)) FROM workflow.temporal_resource;""")
 
-    # '# Read event.sql
-    # event_path = os.path.join(script_dir, "sql/event.sql")
+    # Read event.sql
+    # event_path = os.path.join(script_dir, "sql/" + userId + "_event.sql")
     # fd = open(event_path, 'r')
     # event = fd.read()
     # fd.close()
     # op.execute(event)
-    # op.execute("SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.event', 'id'), MAX(id)) FROM workflow.event;")
+    # op.execute(
+    #    """SELECT pg_catalog.setval(pg_get_serial_sequence('workflow.event', 'id'), MAX(id)) FROM workflow.event;""")
 
 
 def downgrade():
