@@ -1,0 +1,3109 @@
+[
+  {
+    "participantId": 2,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-03T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 261,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 263,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T14:00",
+            "id": 262,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 118,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-02T14:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 112,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-04T17:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 3,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T15:00",
+            "id": 101,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 119,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T15:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-02T17:00",
+            "id": 118,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T18:00",
+            "id": 263,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T17:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 262,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-03T10:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 261,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 112,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-04T17:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 4,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 261,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 262,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T14:00",
+            "id": 263,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 118,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-02T14:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 112,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T11:00",
+            "id": 113,
+            "index": 8,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-04T17:00",
+            "title": "Read newest edition of Bio-Magazine"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 124,
+            "index": 9,
+            "startDate": null,
+            "startedAt": "2021-11-05T11:00",
+            "title": "Experiment 2"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 5,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 263,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 262,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 118,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 261,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-04T18:00",
+            "id": 113,
+            "index": 7,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-04T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-05T11:00",
+            "id": 112,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-05T10:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 124,
+            "index": 9,
+            "startDate": null,
+            "startedAt": "2021-11-05T11:00",
+            "title": "Experiment 2"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 6,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T15:00",
+            "id": 101,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 119,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T15:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T17:00",
+            "id": 100,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Vacuum the living room"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 95,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:00",
+            "title": "Clean the kitchen"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 262,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 112,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T14:00",
+            "id": 261,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 118,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-02T14:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 263,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-04T17:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 7,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T17:00",
+            "id": 100,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Vacuum the living room"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 95,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:00",
+            "title": "Clean the kitchen"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-02T17:00",
+            "id": 118,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T18:00",
+            "id": 263,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T17:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 262,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-03T10:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 261,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-04T18:00",
+            "id": 113,
+            "index": 7,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-04T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-05T11:00",
+            "id": 112,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-05T10:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 124,
+            "index": 9,
+            "startDate": null,
+            "startedAt": "2021-11-05T11:00",
+            "title": "Experiment 2"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 8,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-02T17:00",
+            "id": 118,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T18:00",
+            "id": 261,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T17:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 263,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-03T10:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 112,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-04T18:00",
+            "id": 113,
+            "index": 7,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-04T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T17:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-05T10:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 262,
+            "index": 9,
+            "startDate": null,
+            "startedAt": "2021-11-05T17:00",
+            "title": "Experiment 5"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 9,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 262,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 261,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T14:00",
+            "id": 112,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 118,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-02T14:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 263,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T11:00",
+            "id": 113,
+            "index": 8,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-04T17:00",
+            "title": "Read newest edition of Bio-Magazine"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 124,
+            "index": 9,
+            "startDate": null,
+            "startedAt": "2021-11-05T11:00",
+            "title": "Experiment 2"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 10,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T15:00",
+            "id": 101,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 119,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T15:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 261,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 263,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T14:00",
+            "id": 262,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 118,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-02T14:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 112,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-04T17:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 11,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T15:00",
+            "id": 101,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 119,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T15:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T17:00",
+            "id": 100,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Vacuum the living room"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 95,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:00",
+            "title": "Clean the kitchen"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-02T18:00",
+            "id": 124,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 263,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-03T10:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 261,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 4,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-04T13:00",
+            "id": 118,
+            "index": 5,
+            "startDate": null,
+            "startedAt": "2021-11-03T15:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-05T14:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-04T13:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-05T15:00",
+            "id": 112,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-05T14:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 262,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-05T15:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 12,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-02T17:00",
+            "id": 118,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T18:00",
+            "id": 112,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T17:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 261,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-03T10:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 263,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-04T18:00",
+            "id": 113,
+            "index": 7,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-04T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T17:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-05T10:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 262,
+            "index": 9,
+            "startDate": null,
+            "startedAt": "2021-11-05T17:00",
+            "title": "Experiment 5"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 13,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T11:00",
+            "id": 119,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 101,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T11:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T17:00",
+            "id": 100,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Vacuum the living room"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 95,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:00",
+            "title": "Clean the kitchen"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T12:00",
+            "id": 262,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T13:00",
+            "id": 261,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T12:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T14:00",
+            "id": 112,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-02T13:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 118,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-02T14:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 263,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-04T17:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "participantId": 14,
+    "results": [
+      {
+        "boardResult": {
+          "apiId": "6ff93009-2cc4-49de-a08b-9ebc85cfdd2a",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 480,
+          "finishedAt": "2021-11-01T18:00",
+          "id": 92,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for the week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "20c1038f-6c0f-4774-9d79-3db65c576948",
+            "dueDate": "2021-11-01T16:00",
+            "dueDateKept": true,
+            "duration": 300,
+            "finishedAt": "2021-11-01T15:00",
+            "id": 101,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Monday work"
+          },
+          {
+            "apiId": "25497d8a-5cfc-4f89-8599-d36097723f78",
+            "dueDate": "2021-11-01T17:00",
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T16:00",
+            "id": 119,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-01T15:00",
+            "title": "Bake birthday cake"
+          },
+          {
+            "apiId": "8c054cc3-8a77-41d7-89c9-fe92572393ee",
+            "dueDate": "2021-11-01T16:30",
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T16:30",
+            "id": 97,
+            "index": 2,
+            "startDate": "2021-11-01T16:00",
+            "startedAt": "2021-11-01T16:00",
+            "title": "Pick up son from the kindergarden"
+          },
+          {
+            "apiId": "05da36a7-a676-4fc3-9bf0-727194dc35ae",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-01T17:30",
+            "id": 95,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-01T16:30",
+            "title": "Clean the kitchen"
+          },
+          {
+            "apiId": "7922d5b4-72d6-4f40-adf0-69376f784ca1",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 30,
+            "finishedAt": "2021-11-01T18:00",
+            "id": 100,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-01T17:30",
+            "title": "Vacuum the living room"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      },
+      {
+        "boardResult": {
+          "apiId": "73266b7f-8b59-4ac4-bd29-fb5d7ada51fb",
+          "dueDate": null,
+          "dueDateKept": true,
+          "duration": 2400,
+          "finishedAt": "2021-11-05T18:00",
+          "id": 105,
+          "index": 0,
+          "startDate": null,
+          "startedAt": "2021-11-01T10:00",
+          "title": "Tasks for this week"
+        },
+        "tasksResult": [
+          {
+            "apiId": "d484be85-2c6c-46d1-a77b-91be4270025b",
+            "dueDate": "2021-11-02T10:00",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-02T11:00",
+            "id": 109,
+            "index": 0,
+            "startDate": null,
+            "startedAt": "2021-11-01T10:00",
+            "title": "Experiment 1"
+          },
+          {
+            "apiId": "ffe04b87-d464-4591-94b2-32dbb6b41fdf",
+            "dueDate": "2021-11-04T18:00",
+            "dueDateKept": true,
+            "duration": 360,
+            "finishedAt": "2021-11-02T17:00",
+            "id": 118,
+            "index": 1,
+            "startDate": null,
+            "startedAt": "2021-11-02T11:00",
+            "title": "Finish writing paper"
+          },
+          {
+            "apiId": "e106100e-7fd0-4ad0-8ea0-ba7d9c7f957b",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-02T18:00",
+            "id": 263,
+            "index": 2,
+            "startDate": null,
+            "startedAt": "2021-11-02T17:00",
+            "title": "Experiment 6"
+          },
+          {
+            "apiId": "bcfc9571-04f0-4973-8a6d-b10bc22213ec",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T11:00",
+            "id": 261,
+            "index": 3,
+            "startDate": null,
+            "startedAt": "2021-11-03T10:00",
+            "title": "Experiment 4"
+          },
+          {
+            "apiId": "e67eb392-b6d9-4652-81f3-87c2e0548a56",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-03T12:00",
+            "id": 112,
+            "index": 4,
+            "startDate": null,
+            "startedAt": "2021-11-03T11:00",
+            "title": "Order probes for next week"
+          },
+          {
+            "apiId": "e59d256c-e18b-4166-9f6f-23732e320ad7",
+            "dueDate": "2021-11-03T18:00",
+            "dueDateKept": true,
+            "duration": 180,
+            "finishedAt": "2021-11-03T15:00",
+            "id": 111,
+            "index": 5,
+            "startDate": "2021-11-03T12:00",
+            "startedAt": "2021-11-03T12:00",
+            "title": "Check results of colleagues "
+          },
+          {
+            "apiId": "b5a28df1-1065-4468-9878-46cf21595a9a",
+            "dueDate": "2021-11-04T10:30",
+            "dueDateKept": false,
+            "duration": 540,
+            "finishedAt": "2021-11-04T16:00",
+            "id": 115,
+            "index": 6,
+            "startDate": "2021-11-02T17:00",
+            "startedAt": "2021-11-03T15:00",
+            "title": "Experiment 3"
+          },
+          {
+            "apiId": "18f03bf7-1ee5-4c04-bf08-93a4b5ce6496",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 60,
+            "finishedAt": "2021-11-04T17:00",
+            "id": 262,
+            "index": 7,
+            "startDate": null,
+            "startedAt": "2021-11-04T16:00",
+            "title": "Experiment 5"
+          },
+          {
+            "apiId": "74fa7d38-765f-4374-8903-0f2c66b516f0",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 420,
+            "finishedAt": "2021-11-05T16:00",
+            "id": 124,
+            "index": 8,
+            "startDate": null,
+            "startedAt": "2021-11-04T17:00",
+            "title": "Experiment 2"
+          },
+          {
+            "apiId": "90f073d1-7bb2-425b-b15b-d8bba8e4ccaa",
+            "dueDate": null,
+            "dueDateKept": true,
+            "duration": 120,
+            "finishedAt": "2021-11-05T18:00",
+            "id": 113,
+            "index": 9,
+            "startDate": "2021-11-04T10:00",
+            "startedAt": "2021-11-05T16:00",
+            "title": "Read newest edition of Bio-Magazine"
+          }
+        ],
+        "workSchedule": {
+          "startWorkAtHour": 10,
+          "stopWorkAtHour": 18,
+          "workingDaysOfWeek": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY"
+          ]
+        }
+      }
+    ]
+  }
+]
