@@ -25,7 +25,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
   def performTemporalQuery(workflowListApiId: String, userApiId: String): Future[TemporalQueryResultEntity] = {
     //val now = LocalDateTime.now()
-    val now = LocalDateTime.of(2021, 11, 1, 10, 0)
+    val now = LocalDateTime.of(2021, 11, 1, 10, 0) // FOR USER STUDY
     val boardFuture = workflowListService.getWorkflowListEntityForId(workflowListApiId)
     val eventsFuture = eventDB.getEvents
     val workScheduleFuture = workScheduleDB.getWorkSchedule
@@ -54,7 +54,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
       val scheduling = schedulingService.scheduleTasks(now, workSchedule, allWorkflowListTemporals)
 
       val boardFinishedAt = scheduling.lastOption.map(_.finishedAt).getOrElse(now)
-      TemporalQueryResultEntity(
+
+      val result = TemporalQueryResultEntity(
         boardResult = TaskPlanningSolution(
           id = board.id,
           apiId = board.apiId,
@@ -70,6 +71,9 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         tasksResult = scheduling,
         workSchedule = workSchedule
       )
+      // ONLY FOR STUDY EVALUATION
+      evaluateCurrentOrder(now, workSchedule, allWorkflowListTemporals, result)
+      result
     }).flatMap(result => for {
       _ <- eventDB.insertEvent(Event(
         id = 0L,
@@ -171,6 +175,16 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         // done so predicted duration = 0
         workflowList.copy(remainingDuration = Seq(workflowList.remainingDuration - getMinutesInProgress(workflowList.apiId, openApiId, inProgressApiIds, events, now), 0).max)
     }
+  }
+
+  private def evaluateCurrentOrder(now: LocalDateTime,
+                                   workSchedule: WorkSchedule,
+                                   workflowLists: Seq[WorkflowListTemporal],
+                                   temporalQueryResult: TemporalQueryResultEntity): Unit = {
+    val evaluation = schedulingService.evaluatePlanningOrder(now, workSchedule, workflowLists)
+    log.info(s"FinishDate current order: ${evaluation._1}, FinishDate optimal order: ${temporalQueryResult.boardResult.finishedAt}")
+    log.info(s"DueDates failed current order: ${evaluation._2}, DueDates failed optimal order: ${temporalQueryResult.tasksResult.count(x => !x.dueDateKept)}")
+    log.info(s"Current order: ${workflowLists.map(_.id)}")
   }
 }
 

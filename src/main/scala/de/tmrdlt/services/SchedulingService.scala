@@ -44,43 +44,55 @@ class SchedulingService extends SimpleNameLogger {
 
   @deprecated("Complexity is O(n!), don't use it!", "01-10-2021")
   def scheduleTasksNaive(now: LocalDateTime, workSchedule: WorkSchedule, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
-
-    object WorkflowListsExecutionResult {
-      implicit def ordering[A <: WorkflowListsExecutionResult]: Ordering[A] =
-        Ordering.by(t => (t.numberOfDueDatesFailed, t.totalEndDate))
-    }
-
-    case class WorkflowListsExecutionResult(executionOrder: Seq[TaskPlanningSolution],
-                                            totalEndDate: LocalDateTime,
-                                            numberOfDueDatesFailed: Int)
-
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
-      var endDate = now
-      var numberOfDueDatesFailed = 0
-      val result = tasksPermutation.zipWithIndex.map {
-        case (wl: WorkflowListTemporal, index: Int) =>
-          val startedAt = wl.startDate match {
-            case Some(date) => Seq(date, endDate).max
-            case _ => endDate
-          }
-          endDate = WorkScheduleUtil.getFinishDateRecursive(workSchedule, startedAt, wl.remainingDuration)
-          if (wl.dueDate.exists(_ < endDate)) {
-            numberOfDueDatesFailed = numberOfDueDatesFailed + 1
-          }
-          TaskPlanningSolution(
-            id = wl.id,
-            apiId = wl.apiId,
-            title = wl.title,
-            startDate = wl.startDate,
-            dueDate = wl.dueDate,
-            duration = wl.remainingDuration,
-            startedAt = startedAt,
-            finishedAt = endDate,
-            dueDateKept = !wl.dueDate.exists(_ < endDate),
-            index = index
-          )
-      }
-      WorkflowListsExecutionResult(result, endDate, numberOfDueDatesFailed)
+      evaluateTasksPermutation(now, workSchedule, tasksPermutation)
     }.toSeq.min.executionOrder
+  }
+
+  def evaluatePlanningOrder(now: LocalDateTime,
+                            workSchedule: WorkSchedule,
+                            workflowLists: Seq[WorkflowListTemporal]): (LocalDateTime, Int) = {
+    val evaluation = evaluateTasksPermutation(now, workSchedule, workflowLists)
+    (evaluation.totalEndDate, evaluation.numberOfDueDatesFailed)
+  }
+
+  private object WorkflowListsExecutionResult {
+    implicit def ordering[A <: WorkflowListsExecutionResult]: Ordering[A] =
+      Ordering.by(t => (t.numberOfDueDatesFailed, t.totalEndDate))
+  }
+
+  private case class WorkflowListsExecutionResult(executionOrder: Seq[TaskPlanningSolution],
+                                                  totalEndDate: LocalDateTime,
+                                                  numberOfDueDatesFailed: Int)
+
+  private def evaluateTasksPermutation(now: LocalDateTime,
+                                       workSchedule: WorkSchedule,
+                                       workflowLists: Seq[WorkflowListTemporal]): WorkflowListsExecutionResult = {
+    var endDate = now
+    var numberOfDueDatesFailed = 0
+    val result = workflowLists.zipWithIndex.map {
+      case (wl: WorkflowListTemporal, index: Int) =>
+        val startedAt = wl.startDate match {
+          case Some(date) => Seq(date, endDate).max
+          case _ => endDate
+        }
+        endDate = WorkScheduleUtil.getFinishDateRecursive(workSchedule, startedAt, wl.remainingDuration)
+        if (wl.dueDate.exists(_ < endDate)) {
+          numberOfDueDatesFailed = numberOfDueDatesFailed + 1
+        }
+        TaskPlanningSolution(
+          id = wl.id,
+          apiId = wl.apiId,
+          title = wl.title,
+          startDate = wl.startDate,
+          dueDate = wl.dueDate,
+          duration = wl.remainingDuration,
+          startedAt = startedAt,
+          finishedAt = endDate,
+          dueDateKept = !wl.dueDate.exists(_ < endDate),
+          index = index
+        )
+    }
+    WorkflowListsExecutionResult(result, endDate, numberOfDueDatesFailed)
   }
 }
