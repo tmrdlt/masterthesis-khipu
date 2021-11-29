@@ -22,9 +22,9 @@ class Components(system: ActorSystem) {
 
   private val dbs = new DBs()
   private val apis = new Apis(system)
-  private val actors = new Actors(system, dbs, apis)
-  private val directives = new Directives(dbs)
   private val services = new Services(dbs)
+  private val actors = new Actors(system, dbs, apis, services)
+  private val directives = new Directives(dbs)
 
   val health = new HealthRoute(new HealthController(actors.healthActor))
   val fetchDataGitHub = new FetchDataGitHubRoute(new FetchDataGitHubController(actors.fetchDataActor))
@@ -47,7 +47,7 @@ class Components(system: ActorSystem) {
     directives.authorizationDirective
   )
   val workflowListIdQuery = new WorkflowListIdQueryRoute(
-    new WorkflowListIdQueryController(services.workflowListService, services.schedulingService, dbs.eventDB, dbs.workScheduleDB),
+    new WorkflowListIdQueryController(services.workflowListService, services.schedulingService, dbs.eventDB, dbs.workScheduleDB, actors.allBestSolutionsActor),
     directives.authorizationDirective
   )
   val workflowListIdReorder = new WorkflowListIdReorderRoute(

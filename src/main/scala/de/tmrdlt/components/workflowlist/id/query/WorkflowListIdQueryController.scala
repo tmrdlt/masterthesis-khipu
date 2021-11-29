@@ -1,5 +1,6 @@
 package de.tmrdlt.components.workflowlist.id.query
 
+import akka.actor.ActorRef
 import de.tmrdlt.constants.WorkflowListColumnType
 import de.tmrdlt.constants.WorkflowListColumnType.WorkflowListColumnType
 import de.tmrdlt.database.event.{Event, EventDB}
@@ -20,7 +21,8 @@ case class ExecutionOrderWl(apiId: String,
 class WorkflowListIdQueryController(workflowListService: WorkflowListService,
                                     schedulingService: SchedulingService,
                                     eventDB: EventDB,
-                                    workScheduleDB: WorkScheduleDB) extends SimpleNameLogger with OptionExtensions {
+                                    workScheduleDB: WorkScheduleDB,
+                                    allBestSolutionsActor: ActorRef) extends SimpleNameLogger with OptionExtensions {
 
 
   def performTemporalQuery(workflowListApiId: String, userApiId: String): Future[TemporalQueryResultEntity] = {

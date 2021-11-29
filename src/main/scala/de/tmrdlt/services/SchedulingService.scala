@@ -42,13 +42,24 @@ class SchedulingService extends SimpleNameLogger {
     res
   }
 
-  @deprecated("Complexity is O(n!), don't use it!", "01-10-2021")
+  @deprecated("Complexity is O(n!), do not use in production!", "01-10-2021")
   def scheduleTasksNaive(now: LocalDateTime, workSchedule: WorkSchedule, workflowLists: Seq[WorkflowListTemporal]): Seq[TaskPlanningSolution] = {
     workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
       evaluateTasksPermutation(now, workSchedule, tasksPermutation)
     }.toSeq.min.executionOrder
   }
 
+  // For evaluation of user study
+  def getAllBestSolutions(now: LocalDateTime, workSchedule: WorkSchedule, workflowLists: Seq[WorkflowListTemporal]): Seq[Seq[TaskPlanningSolution]] = {
+    val all = workflowLists.filter(_.workflowListType == WorkflowListType.ITEM).permutations.map { tasksPermutation =>
+      log.info(s"${tasksPermutation.map(_.id)}")
+      evaluateTasksPermutation(now, workSchedule, tasksPermutation)
+    }.toSeq
+    val min = all.min
+    all.filter(res => res.totalEndDate == min.totalEndDate && res.numberOfDueDatesFailed == min.numberOfDueDatesFailed).map(_.executionOrder)
+  }
+
+  // For evaluation of user study
   def evaluatePlanningOrder(now: LocalDateTime,
                             workSchedule: WorkSchedule,
                             workflowLists: Seq[WorkflowListTemporal]): (LocalDateTime, Int) = {
