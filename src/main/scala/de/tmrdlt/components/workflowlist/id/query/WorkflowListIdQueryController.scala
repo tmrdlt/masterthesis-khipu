@@ -26,8 +26,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
 
 
   def performTemporalQuery(workflowListApiId: String, userApiId: String): Future[TemporalQueryResultEntity] = {
-    //val now = LocalDateTime.now()
-    val now = LocalDateTime.of(2021, 11, 1, 10, 0) // FOR USER STUDY
+
     val boardFuture = workflowListService.getWorkflowListEntityForId(workflowListApiId)
     val eventsFuture = eventDB.getEvents
     val workScheduleFuture = workScheduleDB.getWorkSchedule
@@ -40,6 +39,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
       }
       events <- eventsFuture
       workSchedule <- workScheduleFuture
+      now = workSchedule.schedulingStartDate.getOrElse(LocalDateTime.now())
     } yield {
       // OPEN column is first column
       val openColumn = board.children.head
@@ -84,7 +84,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
         workflowListApiId = workflowListApiId,
         temporalQueryResult = Some(result),
         userApiId = userApiId,
-        createdAt = now,
+        createdAt = LocalDateTime.now(),
         dataSource = WorkflowListDataSource.Khipu
       ))
     } yield result)

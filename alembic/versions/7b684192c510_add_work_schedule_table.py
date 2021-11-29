@@ -8,7 +8,7 @@ Create Date: 2021-09-09 18:32:33.536414
 from alembic import op
 
 from sqlalchemy import Column, VARCHAR
-from sqlalchemy.dialects.postgresql import (INTEGER, BIGINT, ARRAY)
+from sqlalchemy.dialects.postgresql import (INTEGER, BIGINT, ARRAY, TIMESTAMP)
 
 # revision identifiers, used by Alembic.
 revision = '7b684192c510'
@@ -23,6 +23,7 @@ def upgrade():
                     Column('start_work_at_hour', INTEGER, nullable=False),
                     Column('stop_work_at_hour', INTEGER, nullable=False),
                     Column('working_days_of_week', ARRAY(VARCHAR), nullable=False),
+                    Column('scheduling_start_date', TIMESTAMP, nullable=True),
                     schema='workflow')
 
     op.execute("""INSERT INTO workflow.work_schedule (start_work_at_hour, stop_work_at_hour, working_days_of_week) VALUES

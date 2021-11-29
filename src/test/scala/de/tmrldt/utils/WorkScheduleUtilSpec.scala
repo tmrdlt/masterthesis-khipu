@@ -9,7 +9,7 @@ import java.time.{DayOfWeek, LocalDateTime}
 
 class WorkScheduleUtilSpec extends AnyWordSpec with Matchers {
 
-  private val workSchedule = WorkSchedule(10, 18, List(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY))
+  private val workSchedule = WorkSchedule(10, 18, List(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY), Some(LocalDateTime.now()))
 
   private val startDate = LocalDateTime.of(2021, 7, 1, 11, 0)
   private val finishDate = LocalDateTime.of(2021, 7, 5, 11, 0)

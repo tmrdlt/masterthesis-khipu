@@ -20,6 +20,9 @@ def upgrade():
 
     userId = "user02"
 
+    # Set scheduling start date
+    op.execute("UPDATE workflow.work_schedule SET scheduling_start_date = '2021-11-01 10:00:00' where id=1")
+
     # Read user.sql
     user_path = os.path.join(script_dir, "sql/initial_user.sql")
     fd = open(user_path, 'r')

@@ -43,7 +43,7 @@ case class Task(val id: Long,
     WorkScheduleUtil.getFinishDateRecursive(workSchedule, _startedAt, duration)
   }
 
-  def this() = this(0L, "", "", LocalDateTime.now, WorkSchedule(0, 0, List()), Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0, WorkflowListColumnType.OPEN)
+  def this() = this(0L, "", "", LocalDateTime.now, WorkSchedule(0, 0, List(), Some(LocalDateTime.now())), Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0, WorkflowListColumnType.OPEN)
 
   def compareTo(other: Task): Int = internalId compareTo other.internalId
 

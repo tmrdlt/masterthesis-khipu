@@ -13,7 +13,7 @@ class SchedulingServiceSpec extends AnyWordSpec with Matchers {
 
   private val schedulingService = new SchedulingService
   private val now = LocalDateTime.of(2021, 6, 1, 8, 37)
-  private val workSchedule = WorkSchedule(10, 18, List(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY))
+  private val workSchedule = WorkSchedule(10, 18, List(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY), Some(now))
   val tasks = Seq(
     WorkflowListTemporal(
       id = 1L,
