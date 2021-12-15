@@ -26,19 +26,19 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
 
   private def startAfterStartDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[Task])
+      .forEach(classOf[Task])
       .filter((task: Task) => task.startDate.exists(startDate => task._startedAt < startDate))
       .penalize("A task cannot be started before it's StartDate", HardMediumSoftScore.ONE_HARD)
 
   private def finishBeforeDueDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[Task])
+      .forEach(classOf[Task])
       .filter((task: Task) => task.dueDate.exists(dueDate => task.finishedAt > dueDate))
       .penalize("A task should ideally be finished before it's DueDate", HardMediumSoftScore.ONE_MEDIUM)
 
   private def minimizeTotalFinishDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[Task])
+      .forEach(classOf[Task])
       .filter(task => task._nextTask == null)
       // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("The final FinishTime should be minimized", HardMediumSoftScore.ONE_SOFT,
@@ -47,7 +47,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
 
   private def minimizeExceedingOfDueDates(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[Task])
+      .forEach(classOf[Task])
       .filter((task: Task) => task.dueDate.exists(dueDate => task.finishedAt > dueDate))
       // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("When tasks due date failed, exceeding the due dates should be minimized", HardMediumSoftScore.ONE_SOFT,
@@ -56,7 +56,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
 
   private def doInProgressTasksFirst(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
-      .from(classOf[Task])
+      .forEach(classOf[Task])
       .filter(task => task.inColumn == WorkflowListColumnType.IN_PROGRESS)
       .penalize("In progress tasks should be done first", HardMediumSoftScore.ONE_SOFT,
         (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
@@ -64,7 +64,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
 
   private def doAsManyTasksAsPossible(constraintFactory: ConstraintFactory): Constraint = {
     constraintFactory
-      .from(classOf[Task])
+      .forEach(classOf[Task])
       .filter(task => task.dueDate.exists(dueDate => task.finishedAt < dueDate))
       .impact("Try to do as many tasks as possible", HardMediumSoftScore.ofSoft(1000))
   }
