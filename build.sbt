@@ -6,22 +6,22 @@ lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
   organization := "de.tmrdlt",
   version := "0.1",
-  scalaVersion := "2.13.6",
+  scalaVersion := "2.13.7",
   scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
 
 mainClass := Some("de.tmrdlt.Main")
 
 libraryDependencies ++= {
-  val logbackVersion = "1.2.6"
+  val logbackVersion = "1.2.8"
   val slickPgVersion = "0.19.7"
-  val scalaCsvVersion = "1.3.8"
+  val scalaCsvVersion = "1.3.9"
   val akkaVersion = "2.6.17"
-  val akkaHttpVersion = "10.2.6"
+  val akkaHttpVersion = "10.2.7"
   val slickVersion = "3.3.3"
-  val mongoDbVersion = "4.3.3"
-  val optaplannerVersion = "8.11.1.Final"
-  val postgresVersion = "42.2.24"
+  val mongoDbVersion = "4.4.0"
+  val optaplannerVersion = "8.14.0.Final"
+  val postgresVersion = "42.3.1"
   val scalaCheckVersion = "1.15.4"
   val scalaMockVersion = "5.1.0"
   val scalaTestVersion = "3.2.10"
