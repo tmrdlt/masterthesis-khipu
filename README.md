@@ -9,7 +9,7 @@ Ludwig-Maximilian University of Munich. Its backend is written in the Scala Prog
     - `install --cask temurin11`)
 - scala (`brew install scala`)
 - sbt (`brew install sbt`)
-- docker (`brew install docker`)
+- docker (`brew install --cask docker`)
 - python 3.x.x
 - alembic (`pip3 install alembic`)
 
