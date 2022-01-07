@@ -13,17 +13,17 @@ lazy val commonSettings = Seq(
 mainClass := Some("de.tmrdlt.Main")
 
 libraryDependencies ++= {
-  val logbackVersion = "1.2.8"
-  val slickPgVersion = "0.19.7"
-  val scalaCsvVersion = "1.3.9"
-  val akkaVersion = "2.6.17"
+  val logbackVersion = "1.2.10"
+  val slickPgVersion = "0.20.2"
+  val scalaCsvVersion = "1.3.10"
+  val akkaVersion = "2.6.18"
   val akkaHttpVersion = "10.2.7"
   val slickVersion = "3.3.3"
-  val mongoDbVersion = "4.4.0"
-  val optaplannerVersion = "8.14.0.Final"
+  val mongoDbVersion = "4.4.1"
+  val optaplannerVersion = "8.14.1.Final"
   val postgresVersion = "42.3.1"
   val scalaCheckVersion = "1.15.4"
-  val scalaMockVersion = "5.1.0"
+  val scalaMockVersion = "5.2.0"
   val scalaTestVersion = "3.2.10"
 
   Seq(
