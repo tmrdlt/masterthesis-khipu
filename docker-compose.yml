@@ -1,7 +1,7 @@
-version: '3'
+version: '3.9'
 services:
   workflowdb:
-    image: postgres:13
+    image: postgres:14
     container_name: workflowdb
     volumes:
       - ./init_db_dev.sh:/docker-entrypoint-initdb.d/init.sh
