@@ -21,9 +21,6 @@ libraryDependencies ++= {
   val slickVersion = "3.3.3"
   val mongoDbVersion = "4.4.1"
   val optaplannerVersion = "8.14.1.Final"
-  val postgresVersion = "42.3.1"
-  val scalaCheckVersion = "1.15.4"
-  val scalaMockVersion = "5.2.0"
   val scalaTestVersion = "3.2.10"
 
   Seq(
@@ -31,21 +28,18 @@ libraryDependencies ++= {
     "com.github.tminglei" %% "slick-pg" % slickPgVersion,
     "com.github.tminglei" %% "slick-pg_spray-json" % slickPgVersion,
     "com.github.tototoshi" %% "scala-csv" % scalaCsvVersion,
-    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test",
-    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
+    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+    "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion,
+    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
     "com.typesafe.slick" %% "slick" % slickVersion,
     "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
     "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion,
     "org.optaplanner" % "optaplanner-core" % optaplannerVersion,
-    "org.postgresql" % "postgresql" % postgresVersion,
-    "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
-    "org.scalamock" %% "scalamock" % scalaMockVersion % "test",
     "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
   )
 }

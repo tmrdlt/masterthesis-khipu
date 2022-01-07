@@ -32,3 +32,13 @@ Run inside `/masterthesis-khipu`
   sbt assembly
   ```
 - Access Jupyter Notebook at http://localhost:8888. The link with token is also printed by `docker-compose up`.
+
+## Libraries used
+- [Akka HTTP](https://doc.akka.io/docs/akka-http/current/index.html)
+- [Akka Actors](https://doc.akka.io/docs/akka/current/index.html)
+- [Akka Streams](https://doc.akka.io/docs/akka/current/stream/index.html)
+- [Slick](https://scala-slick.org/)
+- [slick-pg](https://github.com/tminglei/slick-pg)
+- [OptaPlanner](https://www.optaplanner.org/)
+- [scala-csv](https://github.com/tototoshi/scala-csv)
+- [ScalaTest](https://www.scalatest.org/)
