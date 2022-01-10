@@ -42,3 +42,6 @@ Run inside `/masterthesis-khipu`
 - [OptaPlanner](https://www.optaplanner.org/)
 - [scala-csv](https://github.com/tototoshi/scala-csv)
 - [ScalaTest](https://www.scalatest.org/)
+
+## API Endpoints
+See [Endpoints.md](Endpoints.md)
