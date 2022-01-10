@@ -1,4 +1,4 @@
-## Endpoints
+# Endpoints
 
 ### Check if server is healthy
 
@@ -108,6 +108,34 @@ PUT /workflowlist/{workflowlistId}/resource
 | `temporal`       | TemporalResourceEntity       | body |              |
 | `user`           | UserResourceEntity           | body |              |
 
+#### NumericResourceEntity
+
+| Name    | Type   | Description  |
+|---------|--------|--------------|
+| `label` | string | __Required__ |
+| `value` | float  | __Required__ |
+
+#### TextualResourceEntity
+
+| Name    | Type   | Description  |
+|---------|--------|--------------|
+| `label` | string | __Required__ |
+| `value` | string |              |
+
+#### UserResourceEntity
+
+| Name       | Type   | Description |
+|------------|--------|-------------|
+| `username` | string |             |
+
+#### TemporalResourceEntity
+
+| Name                | Type | Description |
+|---------------------|------|-------------|
+| `startDate`         | date |             |
+| `endDate`           | date |             |
+| `durationInMinutes` | long |             |
+
 ### Convert a workflowlist to a new type
 
 ```
@@ -148,7 +176,7 @@ PUT /workflowlist/{workflowlistId}/parent
 | `newParentApiId` | string  | body |              |
 | `newPosition`    | integer | body |              |
 
-### Retrieve a scheduling proposal for the workflowlist from the symbolic intelligence
+### Get a scheduling proposal for a workflowlist from the symbolic intelligence
 
 ```
 GET /workflowlist/{workflowlistId}/scheduling
@@ -160,3 +188,10 @@ GET /workflowlist/{workflowlistId}/scheduling
 |------------------|--------|------|--------------|
 | `workflowlistId` | string | path | __Required__ |
 
+# Enums
+### WorkflowListType
+- `ITEM`
+- `BOARD`
+- `LIST`
+
+###
