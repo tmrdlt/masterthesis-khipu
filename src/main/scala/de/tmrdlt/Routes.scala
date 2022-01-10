@@ -25,12 +25,12 @@ class Routes(components: Components)
         path("fetchdata" / "github")(components.fetchDataGitHub.route),
         path("fetchdata" / "trello")(components.fetchDataTrello.route),
         path("workflowlist")(components.workflowList.route),
-        path("workflowlist" / Segment / "convert") { workflowListApiId => components.workflowListIdConvert.route(workflowListApiId) },
-        path("workflowlist" / Segment / "move") { workflowListApiId => components.workflowListIdMove.route(workflowListApiId) },
-        path("workflowlist" / Segment / "reorder") { workflowListApiId => components.workflowListIdReorder.route(workflowListApiId) },
-        path("workflowlist" / Segment / "resource") { workflowListApiId => components.workflowListIdResource.route(workflowListApiId) },
-        path("workflowlist" / Segment / "query") { workflowListApiId => components.workflowListIdQuery.route(workflowListApiId) },
         path("workflowlist" / Segment) { workflowListApiId => components.workflowListId.route(workflowListApiId) },
+        path("workflowlist" / Segment / "resource") { workflowListApiId => components.workflowListIdResource.route(workflowListApiId) },
+        path("workflowlist" / Segment / "type") { workflowListApiId => components.workflowListIdType.route(workflowListApiId) },
+        path("workflowlist" / Segment / "position") { workflowListApiId => components.workflowListIdPosition.route(workflowListApiId) },
+        path("workflowlist" / Segment / "parent") { workflowListApiId => components.workflowListIdParent.route(workflowListApiId) },
+        path("workflowlist" / Segment / "scheduling") { workflowListApiId => components.workflowListIdScheduling.route(workflowListApiId) },
         path("user")(components.user.route),
         path("user" / Segment) { userApiId => components.userId.route(userApiId) }
       )

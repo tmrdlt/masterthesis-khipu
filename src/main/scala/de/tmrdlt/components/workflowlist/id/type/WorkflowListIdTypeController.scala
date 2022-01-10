@@ -1,4 +1,4 @@
-package de.tmrdlt.components.workflowlist.id.convert
+package de.tmrdlt.components.workflowlist.id.`type`
 
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListDB}
 import de.tmrdlt.models.{ConvertWorkflowListEntity, CreateWorkflowListEntity, WorkflowListEntity, WorkflowListType}
@@ -7,7 +7,7 @@ import de.tmrdlt.services.WorkflowListService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class WorkflowListIdConvertController(workflowListDB: WorkflowListDB, workflowListService: WorkflowListService) {
+class WorkflowListIdTypeController(workflowListDB: WorkflowListDB, workflowListService: WorkflowListService) {
 
   def convertWorkflowList(workflowListApiId: String,
                           convertWorkflowListEntity: ConvertWorkflowListEntity,

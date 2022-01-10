@@ -65,21 +65,6 @@ POST /workflowlist
 | `isTemporalConstraintBoard` | string                          | body |              |
 | `children`                  | array(CreateWorkflowListEntity) | body | __Required__ |
 
-### Update a workflowlist
-
-```
-PATCH /workflowlist/{workflowlistId}
-```
-
-#### Parameters
-
-| Name                        | Type    | In   | Description  |
-|-----------------------------|---------|------|--------------|
-| `workflowlistId`            | string  | path | __Required__ |
-| `newTitle`                  | string  | body | __Required__ |
-| `newDescription`            | string  | body |              |
-| `isTemporalConstraintBoard` | boolean | body |              |
-
 ### Delete a workflowlist
 
 ```
@@ -92,10 +77,25 @@ DELETE /workflowlist/{workflowlistId}
 |------------------|--------|------|--------------|
 | `workflowlistId` | string | path | __Required__ |
 
-### Update a workflowlist's resources
+### Update a workflowlist
 
 ```
-POST /workflowlist/{workflowlistId}/resource
+PUT /workflowlist/{workflowlistId}
+```
+
+#### Parameters
+
+| Name                        | Type    | In   | Description  |
+|-----------------------------|---------|------|--------------|
+| `workflowlistId`            | string  | path | __Required__ |
+| `newTitle`                  | string  | body | __Required__ |
+| `newDescription`            | string  | body |              |
+| `isTemporalConstraintBoard` | boolean | body |              |
+
+### Update the resources of a workflowlist
+
+```
+PUT /workflowlist/{workflowlistId}/resource
 ```
 
 #### Parameters
@@ -111,7 +111,7 @@ POST /workflowlist/{workflowlistId}/resource
 ### Convert a workflowlist to a new type
 
 ```
-POST /workflowlist/{workflowlistId}/convert
+PUT /workflowlist/{workflowlistId}/type
 ```
 
 #### Parameters
@@ -121,10 +121,23 @@ POST /workflowlist/{workflowlistId}/convert
 | `workflowlistId` | string           | path | __Required__ |
 | `newListType`    | WorkflowListType | body | __Required__ |
 
+### Change the position of a workflowlist within its parent
+
+```
+PUT /workflowlist/{workflowlistId}/position
+```
+
+#### Parameters
+
+| Name             | Type    | In   | Description  |
+|------------------|---------|------|--------------|
+| `workflowlistId` | string  | path | __Required__ |
+| `newPosition`    | integer | body | __Required__ |
+
 ### Move a workflowlist to a new parent
 
 ```
-POST /workflowlist/{workflowlistId}/move
+PUT /workflowlist/{workflowlistId}/parent
 ```
 
 #### Parameters
@@ -135,22 +148,15 @@ POST /workflowlist/{workflowlistId}/move
 | `newParentApiId` | string  | body |              |
 | `newPosition`    | integer | body |              |
 
-### Reorder a workflowlist within its parent
+### Retrieve a scheduling proposal for the workflowlist from the symbolic intelligence
 
 ```
-POST /workflowlist/{workflowlistId}/reorder
+GET /workflowlist/{workflowlistId}/scheduling
 ```
 
 #### Parameters
 
-| Name             | Type    | In   | Description  |
-|------------------|---------|------|--------------|
-| `workflowlistId` | string  | path | __Required__ |
-| `newPosition`    | integer | body | __Required__ |
-
-### Perform a temporal query on a workflowlist
-
-```
-GET /workflowlist/{workflowlistId}/query
-```
+| Name             | Type   | In   | Description  |
+|------------------|--------|------|--------------|
+| `workflowlistId` | string | path | __Required__ |
 

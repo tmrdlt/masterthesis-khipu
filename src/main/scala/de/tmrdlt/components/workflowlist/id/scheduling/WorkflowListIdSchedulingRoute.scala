@@ -1,4 +1,4 @@
-package de.tmrdlt.components.workflowlist.id.query
+package de.tmrdlt.components.workflowlist.id.scheduling
 
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives.{complete, get, onComplete}
@@ -9,8 +9,8 @@ import de.tmrdlt.utils.SimpleNameLogger
 
 import scala.util.{Failure, Success}
 
-class WorkflowListIdQueryRoute(controller: WorkflowListIdQueryController,
-                               directive: AuthorizationDirective)
+class WorkflowListIdSchedulingRoute(controller: WorkflowListIdQueryController,
+                                    directive: AuthorizationDirective)
   extends ApiErrorJsonSupport
     with SimpleNameLogger with WorkflowListQueryJsonSupport {
 

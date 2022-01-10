@@ -1,4 +1,4 @@
-package de.tmrdlt.components.workflowlist.id.query
+package de.tmrdlt.components.workflowlist.id.scheduling
 
 import akka.actor.ActorRef
 import de.tmrdlt.constants.WorkflowListColumnType

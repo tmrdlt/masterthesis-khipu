@@ -1,11 +1,11 @@
-package de.tmrdlt.components.workflowlist.id.move
+package de.tmrdlt.components.workflowlist.id.parent
 
 import de.tmrdlt.database.workflowlist.WorkflowListDB
 import de.tmrdlt.models.MoveWorkflowListEntity
 
 import scala.concurrent.Future
 
-class WorkflowListIdMoveController(workflowListDB: WorkflowListDB) {
+class WorkflowListIdParentController(workflowListDB: WorkflowListDB) {
 
   def moveWorkflowList(workflowListApiId: String,
                        moveWorkflowListEntity: MoveWorkflowListEntity,

@@ -6,10 +6,10 @@ import de.tmrdlt.components.fetchData.trello.{FetchDataTrelloController, FetchDa
 import de.tmrdlt.components.health.{HealthController, HealthRoute}
 import de.tmrdlt.components.user.id.{UserIdController, UserIdRoute}
 import de.tmrdlt.components.user.{UserController, UserRoute}
-import de.tmrdlt.components.workflowlist.id.convert.{WorkflowListIdConvertController, WorkflowListIdConvertRoute}
-import de.tmrdlt.components.workflowlist.id.move.{WorkflowListIdMoveController, WorkflowListIdMoveRoute}
-import de.tmrdlt.components.workflowlist.id.query.{WorkflowListIdQueryController, WorkflowListIdQueryRoute}
-import de.tmrdlt.components.workflowlist.id.reorder.{WorkflowListIdReorderController, WorkflowListIdReorderRoute}
+import de.tmrdlt.components.workflowlist.id.`type`.{WorkflowListIdTypeController, WorkflowListIdTypeRoute}
+import de.tmrdlt.components.workflowlist.id.parent.{WorkflowListIdParentController, WorkflowListIdParentRoute}
+import de.tmrdlt.components.workflowlist.id.scheduling.{WorkflowListIdQueryController, WorkflowListIdSchedulingRoute}
+import de.tmrdlt.components.workflowlist.id.position.{WorkflowListIdPositionController, WorkflowListIdPositionRoute}
 import de.tmrdlt.components.workflowlist.id.resource.{WorkflowListIdResourceController, WorkflowListIdResourceRoute}
 import de.tmrdlt.components.workflowlist.id.{WorkflowListIdController, WorkflowListIdRoute}
 import de.tmrdlt.components.workflowlist.{WorkflowListController, WorkflowListRoute}
@@ -37,21 +37,21 @@ class Components(system: ActorSystem) {
     new WorkflowListIdController(dbs.workflowListDB),
     directives.authorizationDirective
   )
-  val workflowListIdConvert = new WorkflowListIdConvertRoute(
+  val workflowListIdType = new WorkflowListIdTypeRoute(
 
-    new WorkflowListIdConvertController(dbs.workflowListDB, services.workflowListService),
+    new WorkflowListIdTypeController(dbs.workflowListDB, services.workflowListService),
     directives.authorizationDirective
   )
-  val workflowListIdMove = new WorkflowListIdMoveRoute(
-    new WorkflowListIdMoveController(dbs.workflowListDB),
+  val workflowListIdParent = new WorkflowListIdParentRoute(
+    new WorkflowListIdParentController(dbs.workflowListDB),
     directives.authorizationDirective
   )
-  val workflowListIdQuery = new WorkflowListIdQueryRoute(
+  val workflowListIdScheduling = new WorkflowListIdSchedulingRoute(
     new WorkflowListIdQueryController(services.workflowListService, services.schedulingService, dbs.eventDB, dbs.workScheduleDB, actors.allBestSolutionsActor),
     directives.authorizationDirective
   )
-  val workflowListIdReorder = new WorkflowListIdReorderRoute(
-    new WorkflowListIdReorderController(dbs.workflowListDB),
+  val workflowListIdPosition = new WorkflowListIdPositionRoute(
+    new WorkflowListIdPositionController(dbs.workflowListDB),
     directives.authorizationDirective
   )
   val workflowListIdResource = new WorkflowListIdResourceRoute(

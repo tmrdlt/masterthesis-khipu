@@ -1,7 +1,7 @@
 package de.tmrdlt.components.workflowlist.id
 
 import akka.http.scaladsl.model.StatusCodes.OK
-import akka.http.scaladsl.server.Directives.{as, complete, concat, delete, entity, onComplete, patch}
+import akka.http.scaladsl.server.Directives.{as, complete, concat, delete, entity, onComplete, put}
 import akka.http.scaladsl.server.Route
 import de.tmrdlt.directives.AuthorizationDirective
 import de.tmrdlt.models.{ApiErrorJsonSupport, UpdateWorkflowListEntity, WorkflowListJsonSupport}
@@ -17,7 +17,7 @@ class WorkflowListIdRoute(controller: WorkflowListIdController,
 
   def route(workflowListApiId: String): Route = {
     concat(
-      patch {
+      put {
         directive.authorizeUser { userApiId =>
           entity(as[UpdateWorkflowListEntity]) { entity =>
             onComplete(controller.updateWorkflowList(workflowListApiId, entity, userApiId)) {
