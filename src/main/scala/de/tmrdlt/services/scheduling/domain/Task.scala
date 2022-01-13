@@ -13,7 +13,6 @@ import org.optaplanner.core.api.domain.variable._
 import java.time.LocalDateTime
 import scala.math.Ordered.orderingToOrdered
 
-@PlanningEntity
 case class Task(val id: Long,
                 val apiId: String,
                 val title: String,
@@ -30,7 +29,7 @@ case class Task(val id: Long,
   @AnchorShadowVariable(sourceVariableName = "_previousTaskOrEmployee")
   var assignee: Assignee = _
 
-  @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("tasksWorkRange", "assigneeRange"))
+  @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("taskRange", "assigneeRange"))
   var _previousTaskOrEmployee: TaskOrAssignee = _
 
   @CustomShadowVariable(variableListenerClass = classOf[StartedAtUpdatingVariableListener],

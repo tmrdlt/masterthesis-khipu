@@ -14,8 +14,8 @@ case class TaskSchedule(private val _assignees: Seq[Assignee],
   @ProblemFactCollectionProperty
   var assignees: java.util.List[Assignee] = _assignees.asJava
 
+  @ValueRangeProvider(id = "taskRange")
   @PlanningEntityCollectionProperty
-  @ValueRangeProvider(id = "tasksWorkRange")
   var tasks: java.util.List[Task] = _tasks.asJava
 
   @PlanningScore
