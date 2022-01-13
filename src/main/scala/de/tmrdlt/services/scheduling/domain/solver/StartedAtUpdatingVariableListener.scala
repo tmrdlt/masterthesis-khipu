@@ -36,7 +36,7 @@ class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, T
 
 
   protected def updateStartedAt(scoreDirector: ScoreDirector[TaskSchedule], sourceTask: Task): Unit = {
-    val previous: TaskOrAssignee = sourceTask._previousTaskOrEmployee
+    val previous: TaskOrAssignee = sourceTask.previousTaskOrEmployee
     var finishedAt: LocalDateTime = if (previous == null) {
       null
     } else {
@@ -45,13 +45,13 @@ class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, T
     var shadowTask: Task = sourceTask
     var startedAt: LocalDateTime = calculateStartTime(shadowTask, finishedAt)
     while ( {
-      shadowTask != null && !Objects.equals(shadowTask._startedAt, startedAt)
+      shadowTask != null && !Objects.equals(shadowTask.startedAt, startedAt)
     }) {
-      scoreDirector.beforeVariableChanged(shadowTask, "_startedAt")
-      shadowTask._startedAt = startedAt
-      scoreDirector.afterVariableChanged(shadowTask, "_startedAt")
+      scoreDirector.beforeVariableChanged(shadowTask, "startedAt")
+      shadowTask.startedAt = startedAt
+      scoreDirector.afterVariableChanged(shadowTask, "startedAt")
       finishedAt = shadowTask.finishedAt
-      shadowTask = shadowTask._nextTask
+      shadowTask = shadowTask.nextTask
       startedAt = calculateStartTime(shadowTask, finishedAt)
     }
   }

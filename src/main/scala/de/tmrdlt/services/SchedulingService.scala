@@ -28,10 +28,10 @@ class SchedulingService extends SimpleNameLogger {
     val solution: TaskSchedule = solverJob.getFinalBestSolution
 
     var seq: Seq[Task] = Seq.empty
-    var nextTask = solution.assignees.asScala.head._nextTask;
+    var nextTask = solution.assignees.asScala.head.nextTask
     while (nextTask != null) {
       seq = seq ++ Seq(nextTask)
-      nextTask = nextTask._nextTask
+      nextTask = nextTask.nextTask
     }
     val res = seq.zipWithIndex.map {
       case (task: Task, index: Int) => task.toTaskPlanningSolution(index)

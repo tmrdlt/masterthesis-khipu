@@ -8,8 +8,8 @@ import java.time.LocalDateTime
 @PlanningEntity
 abstract class TaskOrAssignee {
 
-  @InverseRelationShadowVariable(sourceVariableName = "_previousTaskOrEmployee")
-  var _nextTask: Task = _
+  @InverseRelationShadowVariable(sourceVariableName = "previousTaskOrEmployee")
+  var nextTask: Task = _
 
   def assignee: Assignee
 

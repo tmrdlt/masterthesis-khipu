@@ -27,7 +27,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
   private def startAfterStartDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .forEach(classOf[Task])
-      .filter((task: Task) => task.startDate.exists(startDate => task._startedAt < startDate))
+      .filter((task: Task) => task.startDate.exists(startDate => task.startedAt < startDate))
       .penalize("A task cannot be started before it's StartDate", HardMediumSoftScore.ONE_HARD)
 
   private def finishBeforeDueDate(constraintFactory: ConstraintFactory): Constraint =
@@ -39,7 +39,7 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
   private def minimizeTotalFinishDate(constraintFactory: ConstraintFactory): Constraint =
     constraintFactory
       .forEach(classOf[Task])
-      .filter(task => task._nextTask == null)
+      .filter(task => task.nextTask == null)
       // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("The final FinishTime should be minimized", HardMediumSoftScore.ONE_SOFT,
         (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt

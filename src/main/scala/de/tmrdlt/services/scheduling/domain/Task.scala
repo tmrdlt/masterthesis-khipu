@@ -14,33 +14,33 @@ import java.time.LocalDateTime
 import scala.math.Ordered.orderingToOrdered
 
 @PlanningEntity
-case class Task(val id: Long,
-                val apiId: String,
-                val title: String,
-                val now: LocalDateTime,
-                val workSchedule: WorkSchedule,
-                val startDate: Option[LocalDateTime],
-                val dueDate: Option[LocalDateTime],
-                val duration: Long,
-                val inColumn: WorkflowListColumnType) extends TaskOrAssignee with Comparable[Task] {
+case class Task(id: Long,
+                apiId: String,
+                title: String,
+                now: LocalDateTime,
+                workSchedule: WorkSchedule,
+                startDate: Option[LocalDateTime],
+                dueDate: Option[LocalDateTime],
+                duration: Long,
+                inColumn: WorkflowListColumnType) extends TaskOrAssignee with Comparable[Task] {
 
   @PlanningId
   val internalId: Long = id
 
-  @AnchorShadowVariable(sourceVariableName = "_previousTaskOrEmployee")
+  @AnchorShadowVariable(sourceVariableName = "previousTaskOrEmployee")
   var assignee: Assignee = _
 
   @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = Array("taskRange", "assigneeRange"))
-  var _previousTaskOrEmployee: TaskOrAssignee = _
+  var previousTaskOrEmployee: TaskOrAssignee = _
 
   @CustomShadowVariable(variableListenerClass = classOf[StartedAtUpdatingVariableListener],
-    sources = Array(new PlanningVariableReference(variableName = "_previousTaskOrEmployee")))
-  var _startedAt: LocalDateTime = _
+    sources = Array(new PlanningVariableReference(variableName = "previousTaskOrEmployee")))
+  var startedAt: LocalDateTime = _
 
-  def finishedAt: LocalDateTime = if (_startedAt == null) {
+  def finishedAt: LocalDateTime = if (startedAt == null) {
     null
   } else {
-    WorkScheduleUtil.getFinishDateRecursive(workSchedule, _startedAt, duration)
+    WorkScheduleUtil.getFinishDateRecursive(workSchedule, startedAt, duration)
   }
 
   def this() = this(0L, "", "", LocalDateTime.now, WorkSchedule(0, 0, List(), Some(LocalDateTime.now())), Some(LocalDateTime.MIN), Some(LocalDateTime.MIN), 0, WorkflowListColumnType.OPEN)
@@ -54,7 +54,7 @@ case class Task(val id: Long,
     dueDate = dueDate,
     startDate = startDate,
     duration = duration,
-    startedAt = _startedAt,
+    startedAt = startedAt,
     finishedAt = finishedAt,
     dueDateKept = dueDate match {
       case Some(dueDate) => finishedAt <= dueDate
