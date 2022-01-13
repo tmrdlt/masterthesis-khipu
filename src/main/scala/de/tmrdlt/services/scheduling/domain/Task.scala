@@ -13,6 +13,7 @@ import org.optaplanner.core.api.domain.variable._
 import java.time.LocalDateTime
 import scala.math.Ordered.orderingToOrdered
 
+@PlanningEntity
 case class Task(val id: Long,
                 val apiId: String,
                 val title: String,
