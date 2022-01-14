@@ -188,6 +188,9 @@ GET /workflowlist/{workflowlistId}/scheduling
 |------------------|--------|------|--------------|
 | `workflowlistId` | string | path | __Required__ |
 
+# Authorization
+All requests to `/workflowlist` require the UUID of an active user as an `Authorization` header.
+Otherwise, the API will return `401 Unauthorized`.
 # Enums
 ### WorkflowListType
 - `ITEM`
