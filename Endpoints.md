@@ -3,9 +3,9 @@
 - [Authorization](#authorization)
 - [Endpoints](#endpoints)
     - [`GET` health status](#get_health)
-    - [`GET` all users](get_all_users)
+    - [`GET` all users](#get_all_users)
+    - [`GET` single user](#get_single_user)
     - [`POST` user](#post_user)
-    - [`GET` user](#get_user)
     - [`GET` all workflowlists](#get_all_workflowlists)
     - [`POST` workflowlist](#post_workflowlist)
     - [`DELETE` workflowlist](#delete_workflowlist)
@@ -16,6 +16,7 @@
     - [`PUT` workflowlist parent](#put_workflowlist_parent)
     - [`GET` workflowlist scheduling](#get_workflowlist_scheduling)
 - [Enums](#enums)
+    - [`WorkflowListType`](#workflowlisttype) 
 
 # Authorization <a name="authorization"></a>
 
@@ -24,20 +25,28 @@ return `401 Unauthorized`.
 
 # Endpoints <a name="endpoints"></a>
 
-### Check if server is healthy <a name="get_health"></a>
-
+## `GET` health status <a name="get_health"></a>
+Check if the API is healthy.
 ```
 GET /health
 ```
 
-### Get all users <a name="get_all_users"></a>
-
+## `GET` all users <a name="get_all_users"></a>
+Retrieve all users.
 ```
 GET /user
 ```
 
-### Create a new user <a name="post_user"></a>
+## `GET` single user <a name="get_single_user"></a>
 
+Retrieve a single user.
+```
+GET /user/:userApiId
+```
+
+## `POST` user <a name="post_user"></a>
+
+Create a new user.
 ```
 POST /user
 ```
@@ -48,14 +57,9 @@ POST /user
 |------------|--------|----------|-------------|
 | `username` | string | yes      |             |
 
-### Get a single user <a name="get_user"></a>
+## `GET` all workflowlists <a name="get_all_workflowlists"></a>
 
-```
-GET /user/:userApiId
-```
-
-### Get all workflowlists <a name="get_all_workflowlists"></a>
-
+Retrieve all workflow lists.
 ```
 GET /workflowlist
 ```
@@ -66,8 +70,9 @@ GET /workflowlist
 |-------------|--------|----------|----------------|
 | `userApiId` | string | no       | Filter by user |
 
-### Create a new workflowlist <a name="post_workflowlist"></a>
+## `POST` workflowlist <a name="post_workflowlist"></a>
 
+Create a new workflow list.
 ```
 POST /workflowlist
 ```
@@ -83,14 +88,16 @@ POST /workflowlist
 | `isTemporalConstraintBoard` | string                          | no       |                              |
 | `children`                  | array(CreateWorkflowListEntity) | yes      | Leave empty for no children. |
 
-### Delete a workflowlist <a name="delete_workflowlist"></a>
+## `DELETE` workflowlist <a name="delete_workflowlist"></a>
 
+Delete a workflow list.
 ```
 DELETE /workflowlist/:workflowlistApiId
 ```
 
-### Update a workflowlist <a name="put_workflowlist"></a>
+## `PUT` workflowlist <a name="put_workflowlist"></a>
 
+Update a workflow list.
 ```
 PUT /workflowlist/:workflowlistApiId
 ```
@@ -103,8 +110,9 @@ PUT /workflowlist/:workflowlistApiId
 | `newDescription`            | string  | no       |             |
 | `isTemporalConstraintBoard` | boolean | no       |             |
 
-### Update the resources of a workflowlist <a name="put_workflowlist_resource"></a>
+## `PUT` workflowlist resource <a name="put_workflowlist_resource"></a>
 
+Update the resources of a workflow list.
 ```
 PUT /workflowlist/:workflowlistApiId/resource
 ```
@@ -146,8 +154,9 @@ PUT /workflowlist/:workflowlistApiId/resource
 | `endDate`           | date | no       |             |
 | `durationInMinutes` | long | no       |             |
 
-### Convert a workflowlist to a new type <a name="put_workflowlist_type"></a>
+## `PUT` workflowlist type <a name="put_workflowlist_type"></a>
 
+Convert a workflow list to a new type.
 ```
 PUT /workflowlist/:workflowlistApiId/type
 ```
@@ -158,8 +167,9 @@ PUT /workflowlist/:workflowlistApiId/type
 |------------------|------------------|----------|-------------|
 | `newListType`    | WorkflowListType | yes      |             |
 
-### Change the position of a workflowlist within its parent <a name="put_workflowlist_position"></a>
+## `PUT` workflowlist position <a name="put_workflowlist_position"></a>
 
+Change the position of a workflow list within its parent.
 ```
 PUT /workflowlist/:workflowlistApiId/position
 ```
@@ -170,8 +180,9 @@ PUT /workflowlist/:workflowlistApiId/position
 |------------------|---------|----------|-------------|
 | `newPosition`    | integer | yes      |             |
 
-### Move a workflowlist to a new parent <a name="put_workflowlist_parent"></a>
+## `PUT` workflowlist parent <a name="put_workflowlist_parent"></a>
 
+Move a workflow list to a new parent.
 ```
 PUT /workflowlist/:workflowlistApiId/parent
 ```
@@ -183,15 +194,16 @@ PUT /workflowlist/:workflowlistApiId/parent
 | `newParentApiId` | string  | no       |              |
 | `newPosition`    | integer | no       |              |
 
-### Get a scheduling proposal for a workflowlist from the symbolic intelligence <a name="get_workflowlist_scheduling"></a>
+## `GET` workflowlist scheduling <a name="get_workflowlist_scheduling"></a>
 
+Retrieve a scheduling proposal for the workflow list from the symbolic intelligence.
 ```
 GET /workflowlist/:workflowlistApiId/scheduling
 ```
 
 # Enums <a name="enums"></a>
 
-### WorkflowListType
+### `WorkflowListType` <a name="workflowlisttype"></a>
 
 - `ITEM`
 - `BOARD`
