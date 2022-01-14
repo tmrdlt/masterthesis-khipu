@@ -2,13 +2,14 @@ package de.tmrdlt.services.scheduling.score
 
 import de.tmrdlt.constants.WorkflowListColumnType
 import de.tmrdlt.services.scheduling.domain.Task
+import de.tmrdlt.utils.OptionExtensions
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.stream.{Constraint, ConstraintFactory, ConstraintProvider}
 
 import java.time.temporal.ChronoUnit
 import scala.math.Ordered.orderingToOrdered
 
-class TaskScheduleConstraintProvider extends ConstraintProvider {
+class TaskScheduleConstraintProvider extends ConstraintProvider with OptionExtensions {
 
   override def defineConstraints(constraintFactory: ConstraintFactory): Array[Constraint] =
     Array(
@@ -40,7 +41,6 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
     constraintFactory
       .forEach(classOf[Task])
       .filter(task => task.nextTask == null)
-      // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("The final FinishTime should be minimized", HardMediumSoftScore.ONE_SOFT,
         (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
       )
@@ -49,9 +49,8 @@ class TaskScheduleConstraintProvider extends ConstraintProvider {
     constraintFactory
       .forEach(classOf[Task])
       .filter((task: Task) => task.dueDate.exists(dueDate => task.finishedAt > dueDate))
-      // penalizeLong somehow gives "Impossible state: passing long into an int impacter." Exception
       .penalize("When tasks due date failed, exceeding the due dates should be minimized", HardMediumSoftScore.ONE_SOFT,
-        (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.dueDate.getOrElse(throw new Exception("Due date is not defined altough it should be.")), task.finishedAt)).toInt * Math.abs(ChronoUnit.MINUTES.between(task.now, task.finishedAt)).toInt
+        (task: Task) => Math.abs(ChronoUnit.MINUTES.between(task.dueDate.getOrException(), task.finishedAt)).toInt
       )
 
   private def doInProgressTasksFirst(constraintFactory: ConstraintFactory): Constraint =
