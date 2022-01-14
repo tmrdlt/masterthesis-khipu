@@ -74,14 +74,14 @@ POST /workflowlist
 
 #### JSON body parameters
 
-| Name                        | Type                            | Required           | Description |
-|-----------------------------|---------------------------------|--------------------|-------------|
-| `title`                     | string                          | yes                |             |
-| `description`               | string                          | no                 |             |
-| `listType`                  | WorkflowListType                | yes                |             |
-| `parentApiId`               | boolean                         | no                 |             |
-| `isTemporalConstraintBoard` | string                          | no                 |             |
-| `children`                  | array(CreateWorkflowListEntity) | yes (can be empty) |             |
+| Name                        | Type                            | Required | Description                  |
+|-----------------------------|---------------------------------|----------|------------------------------|
+| `title`                     | string                          | yes      |                              |
+| `description`               | string                          | no       |                              |
+| `listType`                  | WorkflowListType                | yes      |                              |
+| `parentApiId`               | boolean                         | no       |                              |
+| `isTemporalConstraintBoard` | string                          | no       |                              |
+| `children`                  | array(CreateWorkflowListEntity) | yes      | Leave empty for no children. |
 
 ### Delete a workflowlist <a name="delete_workflowlist"></a>
 
