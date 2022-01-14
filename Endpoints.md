@@ -1,6 +1,7 @@
 # Table of contents
 
-1. [Endpoints](#endpoints)
+- [Authorization](#authorization)
+- [Endpoints](#endpoints)
     - [`GET` health status](#get_health)
     - [`GET` all users](get_all_users)
     - [`POST` user](#post_user)
@@ -14,8 +15,12 @@
     - [`PUT` workflowlist position](#put_workflowlist_position)
     - [`PUT` workflowlist parent](#put_workflowlist_parent)
     - [`GET` workflowlist scheduling](#get_workflowlist_scheduling)
-2. [Authorisation](#authorisation)
-3. [Enums](#enums)
+- [Enums](#enums)
+
+# Authorization <a name="authorization"></a>
+
+All requests to `/workflowlist/...` require the UUID of an active user as an `Authorization` header. Otherwise, the API will
+return `401 Unauthorized`.
 
 # Endpoints <a name="endpoints"></a>
 
@@ -37,23 +42,17 @@ GET /user
 POST /user
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name       | Type   | In   | Description  |
-|------------|--------|------|--------------|
-| `username` | string | body | __Required__ |
+| Name       | Type   | Required | Description |
+|------------|--------|----------|-------------|
+| `username` | string | yes      |             |
 
 ### Get a single user <a name="get_user"></a>
 
 ```
-GET /user/{userApiId}
+GET /user/:userApiId
 ```
-
-#### Parameters
-
-| Name        | Type   | In   | Description  |
-|-------------|--------|------|--------------|
-| `userApiId` | string | path | __Required__ |
 
 ### Get all workflowlists <a name="get_all_workflowlists"></a>
 
@@ -61,11 +60,11 @@ GET /user/{userApiId}
 GET /workflowlist
 ```
 
-#### Parameters
+#### URI parameters
 
-| Name        | Type   | In    | Description                         |
-|-------------|--------|-------|-------------------------------------|
-| `userApiId` | string | query | Only get of lists of specified user |
+| Name        | Type   | Required | Description    |
+|-------------|--------|----------|----------------|
+| `userApiId` | string | no       | Filter by user |
 
 ### Create a new workflowlist <a name="post_workflowlist"></a>
 
@@ -73,144 +72,122 @@ GET /workflowlist
 POST /workflowlist
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name                        | Type                            | In   | Description  |
-|-----------------------------|---------------------------------|------|--------------|
-| `title`                     | string                          | body | __Required__ |
-| `description`               | string                          | body |              |
-| `listType`                  | WorkflowListType                | body | __Required__ |
-| `parentApiId`               | boolean                         | body |              |
-| `isTemporalConstraintBoard` | string                          | body |              |
-| `children`                  | array(CreateWorkflowListEntity) | body | __Required__ |
+| Name                        | Type                            | Required           | Description |
+|-----------------------------|---------------------------------|--------------------|-------------|
+| `title`                     | string                          | yes                |             |
+| `description`               | string                          | no                 |             |
+| `listType`                  | WorkflowListType                | yes                |             |
+| `parentApiId`               | boolean                         | no                 |             |
+| `isTemporalConstraintBoard` | string                          | no                 |             |
+| `children`                  | array(CreateWorkflowListEntity) | yes (can be empty) |             |
 
 ### Delete a workflowlist <a name="delete_workflowlist"></a>
 
 ```
-DELETE /workflowlist/{workflowlistId}
+DELETE /workflowlist/:workflowlistApiId
 ```
-
-#### Parameters
-
-| Name             | Type   | In   | Description  |
-|------------------|--------|------|--------------|
-| `workflowlistId` | string | path | __Required__ |
 
 ### Update a workflowlist <a name="put_workflowlist"></a>
 
 ```
-PUT /workflowlist/{workflowlistId}
+PUT /workflowlist/:workflowlistApiId
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name                        | Type    | In   | Description  |
-|-----------------------------|---------|------|--------------|
-| `workflowlistId`            | string  | path | __Required__ |
-| `newTitle`                  | string  | body | __Required__ |
-| `newDescription`            | string  | body |              |
-| `isTemporalConstraintBoard` | boolean | body |              |
+| Name                        | Type    | Required | Description |
+|-----------------------------|---------|----------|-------------|
+| `newTitle`                  | string  | yes      |             |
+| `newDescription`            | string  | no       |             |
+| `isTemporalConstraintBoard` | boolean | no       |             |
 
 ### Update the resources of a workflowlist <a name="put_workflowlist_resource"></a>
 
 ```
-PUT /workflowlist/{workflowlistId}/resource
+PUT /workflowlist/:workflowlistApiId/resource
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name             | Type                         | In   | Description  |
-|------------------|------------------------------|------|--------------|
-| `workflowlistId` | string                       | path | __Required__ |
-| `numeric`        | array(NumericResourceEntity) | body |              |
-| `textual`        | array(TextualResourceEntity) | body |              |
-| `temporal`       | TemporalResourceEntity       | body |              |
-| `user`           | UserResourceEntity           | body |              |
+| Name             | Type                         | Required | Description  |
+|------------------|------------------------------|----------|--------------|
+| `numeric`        | array(NumericResourceEntity) | no       |              |
+| `textual`        | array(TextualResourceEntity) | no       |              |
+| `temporal`       | TemporalResourceEntity       | no       |              |
+| `user`           | UserResourceEntity           | no       |              |
 
 #### NumericResourceEntity
 
-| Name    | Type   | Description  |
-|---------|--------|--------------|
-| `label` | string | __Required__ |
-| `value` | float  | __Required__ |
+| Name    | Type   | Required | Description |
+|---------|--------|----------|-------------|
+| `label` | string | yes      |             |
+| `value` | float  | yes      |             |
 
 #### TextualResourceEntity
 
-| Name    | Type   | Description  |
-|---------|--------|--------------|
-| `label` | string | __Required__ |
-| `value` | string |              |
+| Name    | Type   | Required | Description |
+|---------|--------|----------|-------------|
+| `label` | string | yes      |             |
+| `value` | string | no       |             |
 
 #### UserResourceEntity
 
-| Name       | Type   | Description |
-|------------|--------|-------------|
-| `username` | string |             |
+| Name       | Type   | Required | Description |
+|------------|--------|----------|-------------|
+| `username` | string | no       |             |
 
 #### TemporalResourceEntity
 
-| Name                | Type | Description |
-|---------------------|------|-------------|
-| `startDate`         | date |             |
-| `endDate`           | date |             |
-| `durationInMinutes` | long |             |
+| Name                | Type | Required | Description |
+|---------------------|------|----------|-------------|
+| `startDate`         | date | no       |             |
+| `endDate`           | date | no       |             |
+| `durationInMinutes` | long | no       |             |
 
 ### Convert a workflowlist to a new type <a name="put_workflowlist_type"></a>
 
 ```
-PUT /workflowlist/{workflowlistId}/type
+PUT /workflowlist/:workflowlistApiId/type
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name             | Type             | In   | Description  |
-|------------------|------------------|------|--------------|
-| `workflowlistId` | string           | path | __Required__ |
-| `newListType`    | WorkflowListType | body | __Required__ |
+| Name             | Type             | Required | Description |
+|------------------|------------------|----------|-------------|
+| `newListType`    | WorkflowListType | yes      |             |
 
 ### Change the position of a workflowlist within its parent <a name="put_workflowlist_position"></a>
 
 ```
-PUT /workflowlist/{workflowlistId}/position
+PUT /workflowlist/:workflowlistApiId/position
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name             | Type    | In   | Description  |
-|------------------|---------|------|--------------|
-| `workflowlistId` | string  | path | __Required__ |
-| `newPosition`    | integer | body | __Required__ |
+| Name             | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `newPosition`    | integer | yes      |             |
 
 ### Move a workflowlist to a new parent <a name="put_workflowlist_parent"></a>
 
 ```
-PUT /workflowlist/{workflowlistId}/parent
+PUT /workflowlist/:workflowlistApiId/parent
 ```
 
-#### Parameters
+#### JSON body parameters
 
-| Name             | Type    | In   | Description  |
-|------------------|---------|------|--------------|
-| `workflowlistId` | string  | path | __Required__ |
-| `newParentApiId` | string  | body |              |
-| `newPosition`    | integer | body |              |
+| Name             | Type    | Required | Description  |
+|------------------|---------|----------|--------------|
+| `newParentApiId` | string  | no       |              |
+| `newPosition`    | integer | no       |              |
 
 ### Get a scheduling proposal for a workflowlist from the symbolic intelligence <a name="get_workflowlist_scheduling"></a>
 
 ```
-GET /workflowlist/{workflowlistId}/scheduling
+GET /workflowlist/:workflowlistApiId/scheduling
 ```
-
-#### Parameters
-
-| Name             | Type   | In   | Description  |
-|------------------|--------|------|--------------|
-| `workflowlistId` | string | path | __Required__ |
-
-# Authorization <a name="authorization"></a>
-
-All requests to `/workflowlist` require the UUID of an active user as an `Authorization` header. Otherwise, the API will
-return `401 Unauthorized`.
 
 # Enums <a name="enums"></a>
 
@@ -219,5 +196,3 @@ return `401 Unauthorized`.
 - `ITEM`
 - `BOARD`
 - `LIST`
-
-###
