@@ -20,7 +20,7 @@
 
 # Authorization <a name="authorization"></a>
 
-All requests to `/workflowlist/...` require the UUID of an active user as an `Authorization` header. Otherwise, the API will
+All requests to `/workflowlist` require the UUID of an active user as an `Authorization` header. Otherwise, the API will
 return `401 Unauthorized`.
 
 # Endpoints <a name="endpoints"></a>
@@ -77,7 +77,7 @@ Create a new workflow list.
 POST /workflowlist
 ```
 
-#### JSON body parameters
+#### JSON body parameters (CreateWorkflowListEntity)
 
 | Name                        | Type                            | Required | Description                  |
 |-----------------------------|---------------------------------|----------|------------------------------|
