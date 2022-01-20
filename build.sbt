@@ -6,7 +6,7 @@ lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
   organization := "de.tmrdlt",
   version := "0.1",
-  scalaVersion := "2.13.7",
+  scalaVersion := "2.13.8",
   scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8", "-Xfatal-warnings")
 )
 
@@ -20,7 +20,7 @@ libraryDependencies ++= {
   val akkaHttpVersion = "10.2.7"
   val slickVersion = "3.3.3"
   val mongoDbVersion = "4.4.1"
-  val optaplannerVersion = "8.14.1.Final"
+  val optaplannerVersion = "8.15.0.Final"
   val scalaTestVersion = "3.2.10"
 
   Seq(
