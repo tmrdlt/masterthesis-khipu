@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 case class TemporalResource(id: Long,
                             workflowListId: Long,
                             startDate: Option[LocalDateTime],
-                            endDate: Option[LocalDateTime],
+                            dueDate: Option[LocalDateTime],
                             durationInMinutes: Option[Long],
                             createdAt: LocalDateTime,
                             updatedAt: LocalDateTime) {
@@ -22,7 +22,7 @@ case class TemporalResource(id: Long,
   def toTemporalResourceEntity: TemporalResourceEntity =
     TemporalResourceEntity(
       startDate = startDate,
-      endDate = endDate,
+      dueDate = dueDate,
       durationInMinutes = durationInMinutes
     )
 }
@@ -34,7 +34,7 @@ class TemporalResourceTable(tag: Tag)
 
   def startDate: Rep[Option[LocalDateTime]] = column[Option[LocalDateTime]]("start_date", Nullable)
 
-  def endDate: Rep[Option[LocalDateTime]] = column[Option[LocalDateTime]]("end_date", Nullable)
+  def dueDate: Rep[Option[LocalDateTime]] = column[Option[LocalDateTime]]("due_date", Nullable)
 
   def durationInMinutes: Rep[Option[Long]] = column[Option[Long]]("duration_in_minutes", Nullable)
 
@@ -48,7 +48,7 @@ class TemporalResourceTable(tag: Tag)
   def * : ProvenShape[TemporalResource] = (
     id,
     workflowListId,
-    startDate, endDate,
+    startDate, dueDate,
     durationInMinutes,
     createdAt,
     updatedAt

@@ -101,7 +101,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           title = workflowList.title,
           workflowListType = workflowList.usageType,
           startDate = tempEntity.startDate,
-          dueDate = tempEntity.endDate,
+          dueDate = tempEntity.dueDate,
           duration = tempEntity.getDuration,
           remainingDuration = tempEntity.getDuration,
           inColumn = columnType
@@ -120,7 +120,7 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           title = workflowList.title,
           workflowListType = workflowList.usageType,
           startDate = allTemporalResources.flatMap(_.startDate).maxOption, // TODO does this make sense?
-          dueDate = allTemporalResources.flatMap(_.endDate).minOption, // TODO does this make sense?
+          dueDate = allTemporalResources.flatMap(_.dueDate).minOption, // TODO does this make sense?
           duration = duration,
           remainingDuration = duration,
           inColumn = columnType

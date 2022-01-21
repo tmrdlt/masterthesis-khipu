@@ -78,7 +78,7 @@ class WorkflowListResourceDB {
           id = temporalResourceOption.map(_.id).getOrElse(0L),
           workflowListId = workflowListId,
           startDate = temporal.startDate,
-          endDate = temporal.endDate,
+          dueDate = temporal.dueDate,
           durationInMinutes = temporal.durationInMinutes,
           createdAt = temporalResourceOption.map(_.createdAt).getOrElse(now),
           updatedAt = now

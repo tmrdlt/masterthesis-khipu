@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalResourceEntity(startDate: Option[LocalDateTime],
-                                  endDate: Option[LocalDateTime],
+                                  dueDate: Option[LocalDateTime],
                                   durationInMinutes: Option[Long]) {
   def getDuration: Long = durationInMinutes.getOrElse(AssumedDurationForTasksWithoutDuration.value)
 }

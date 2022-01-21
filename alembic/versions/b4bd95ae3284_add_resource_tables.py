@@ -22,7 +22,7 @@ def upgrade():
                     Column('id', BIGINT, primary_key=True),
                     Column('workflow_list_id', BIGINT, nullable=False, unique=True),
                     Column('start_date', TIMESTAMP, nullable=True),
-                    Column('end_date', TIMESTAMP, nullable=True),
+                    Column('due_date', TIMESTAMP, nullable=True),
                     Column('duration_in_minutes', BIGINT, nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False, server_default=func.now()),
                     Column('updated_at', TIMESTAMP, nullable=False, server_default=func.now()),

@@ -1,4 +1,4 @@
-insert into workflow.temporal_resource (id, workflow_list_id, start_date, end_date, duration_in_minutes, created_at,
+insert into workflow.temporal_resource (id, workflow_list_id, start_date, due_date, duration_in_minutes, created_at,
                                         updated_at)
 values (1, 95, null, null, 60, '2021-11-01 16:28:07.800669', '2021-11-03 18:07:06.601149'),
        (3, 97, '2021-11-01 16:00:00.000000', '2021-11-01 16:30:00.000000', 30, '2021-11-01 16:30:43.732831',

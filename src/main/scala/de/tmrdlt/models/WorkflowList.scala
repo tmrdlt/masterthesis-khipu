@@ -35,7 +35,7 @@ case class WorkflowListEntity(id: Long,
   }
 
   def getEndDate: Option[LocalDateTime] = {
-    temporalResource.flatMap(_.endDate)
+    temporalResource.flatMap(_.dueDate)
   }
 
   def getDuration: Option[Long] = {
