@@ -26,15 +26,15 @@ object WorkScheduleUtil {
   private def getWorkingDate(localDateTime: LocalDateTime): WorkingDate = WorkingDate(localDateTime.withSecond(0).withNano(0))
 
   @tailrec
-  def getStartDateWithinWorkSchedule(workSchedule: WorkSchedule, startDate: LocalDateTime): LocalDateTime = {
+  def getStartedAtWithinWorkSchedule(workSchedule: WorkSchedule, startDate: LocalDateTime): LocalDateTime = {
     val workingDate = getWorkingDate(startDate)
 
     if (!workingDate.isAtWorkDay(workSchedule)) {
-      getStartDateWithinWorkSchedule(workSchedule, workingDate.getNextStartDate(workSchedule))
+      getStartedAtWithinWorkSchedule(workSchedule, workingDate.getNextStartDate(workSchedule))
     } else if (workingDate.isAfterOrAtStopHour(workSchedule)) {
-      getStartDateWithinWorkSchedule(workSchedule, workingDate.getNextStartDate(workSchedule))
+      getStartedAtWithinWorkSchedule(workSchedule, workingDate.getNextStartDate(workSchedule))
     } else if (workingDate.isBeforeStartHour(workSchedule)) {
-      getStartDateWithinWorkSchedule(workSchedule, workingDate.getStartDate(workSchedule))
+      getStartedAtWithinWorkSchedule(workSchedule, workingDate.getStartDate(workSchedule))
     } else {
       startDate
     }

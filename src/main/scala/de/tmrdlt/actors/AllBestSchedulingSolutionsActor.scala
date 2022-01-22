@@ -10,6 +10,7 @@ import spray.json.{RootJsonFormat, enrichAny}
 import java.io.{BufferedWriter, FileWriter}
 import java.time.LocalDateTime
 
+// Used for evaluation of the user study
 class AllBestSchedulingSolutionsActor(schedulingService: SchedulingService) extends Actor with ActorLogging with JsonSupport {
 
   override def receive: PartialFunction[Any, Unit] = {
@@ -18,7 +19,7 @@ class AllBestSchedulingSolutionsActor(schedulingService: SchedulingService) exte
       case class AllBestSolutions(sols: Seq[Seq[Long]])
       implicit val allBestSolutionsFormat: RootJsonFormat[AllBestSolutions] = jsonFormat1(AllBestSolutions)
 
-      log.info("Start calulating solutions")
+      log.info("Start calculating solutions")
       val res = schedulingService.getAllBestSolutions(now, workSchedule, workflowLists)
       val solutions = AllBestSolutions(res.map(_.map(_.id)))
       val w = new BufferedWriter(new FileWriter("sols.json"))

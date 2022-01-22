@@ -59,6 +59,6 @@ class StartedAtUpdatingVariableListener extends VariableListener[TaskSchedule, T
   private def calculateStartTime(task: Task, previousFinishedAt: LocalDateTime): LocalDateTime = {
     if (task == null || previousFinishedAt == null) null
     // start at what ever is the latest: startDate of task, finishDate of previous task or the startDate of our project (which is task.now)
-    else WorkScheduleUtil.getStartDateWithinWorkSchedule(task.workSchedule, Seq(task.startDate.getOrElse(LocalDateTime.MIN), previousFinishedAt, task.now).max)
+    else WorkScheduleUtil.getStartedAtWithinWorkSchedule(task.workSchedule, Seq(task.startDate.getOrElse(LocalDateTime.MIN), previousFinishedAt, task.now).max)
   }
 }

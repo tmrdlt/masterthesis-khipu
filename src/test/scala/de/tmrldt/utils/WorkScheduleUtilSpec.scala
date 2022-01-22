@@ -19,7 +19,7 @@ class WorkScheduleUtilSpec extends AnyWordSpec with Matchers {
     "calculate correct startDate that corresponds to working schedule by given start date" in {
       val weekendStartDate = LocalDateTime.of(2021, 7, 3, 7, 0)
       val trueStartDate = LocalDateTime.of(2021, 7, 5, 10, 0)
-      WorkScheduleUtil.getStartDateWithinWorkSchedule(workSchedule, weekendStartDate) shouldBe trueStartDate
+      WorkScheduleUtil.getStartedAtWithinWorkSchedule(workSchedule, weekendStartDate) shouldBe trueStartDate
     }
   }
   "getFinishDateRecursive" should {
