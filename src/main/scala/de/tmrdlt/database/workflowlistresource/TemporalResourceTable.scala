@@ -4,7 +4,7 @@ import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListTable}
-import de.tmrdlt.models.TemporalResourceEntity
+import de.tmrdlt.models.{WorkflowListResource, TemporalResourceEntity}
 import slick.ast.ColumnOption.Unique
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
@@ -17,7 +17,7 @@ case class TemporalResource(id: Long,
                             dueDate: Option[LocalDateTime],
                             durationInMinutes: Option[Long],
                             createdAt: LocalDateTime,
-                            updatedAt: LocalDateTime) {
+                            updatedAt: LocalDateTime) extends WorkflowListResource {
 
   def toTemporalResourceEntity: TemporalResourceEntity =
     TemporalResourceEntity(

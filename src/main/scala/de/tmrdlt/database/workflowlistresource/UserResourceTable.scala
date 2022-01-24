@@ -5,7 +5,7 @@ import de.tmrdlt.database.MyDB.{userQuery, workflowListQuery}
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.user.{User, UserTable}
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListTable}
-import de.tmrdlt.models.UserResourceEntity
+import de.tmrdlt.models.{WorkflowListResource, UserResourceEntity}
 import slick.ast.ColumnOption.Unique
 import slick.lifted.{ForeignKeyQuery, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.{NotNull, Nullable}
@@ -16,7 +16,7 @@ case class UserResource(id: Long,
                         workflowListId: Long,
                         userId: Option[Long],
                         createdAt: LocalDateTime,
-                        updatedAt: LocalDateTime) {
+                        updatedAt: LocalDateTime) extends WorkflowListResource {
 
   def toUserResourceEntity(username: Option[String]): UserResourceEntity =
     UserResourceEntity(username = username)

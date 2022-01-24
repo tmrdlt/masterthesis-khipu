@@ -5,6 +5,16 @@ import spray.json.RootJsonFormat
 
 import java.time.LocalDateTime
 
+trait WorkflowListResource {
+  def id: Long
+
+  def workflowListId: Long
+
+  def createdAt: LocalDateTime
+
+  def updatedAt: LocalDateTime
+}
+
 // TODO Could lead to problems when working with frontends from different timezones as we use LocalDateTime here
 case class TemporalResourceEntity(startDate: Option[LocalDateTime],
                                   dueDate: Option[LocalDateTime],

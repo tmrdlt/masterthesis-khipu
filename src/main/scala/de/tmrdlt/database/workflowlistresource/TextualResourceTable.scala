@@ -4,7 +4,7 @@ import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListTable}
-import de.tmrdlt.models.TextualResourceEntity
+import de.tmrdlt.models.{WorkflowListResource, TextualResourceEntity}
 import slick.lifted.{ForeignKeyQuery, Index, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.NotNull
 
@@ -15,7 +15,7 @@ case class TextualResource(id: Long,
                            label: String,
                            value: Option[String],
                            createdAt: LocalDateTime,
-                           updatedAt: LocalDateTime) {
+                           updatedAt: LocalDateTime) extends WorkflowListResource {
 
   def toTextualResourceEntity: TextualResourceEntity =
     TextualResourceEntity(label = label, value = value)

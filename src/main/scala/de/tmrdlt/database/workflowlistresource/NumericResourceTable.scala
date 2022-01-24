@@ -4,7 +4,7 @@ import de.tmrdlt.database.BaseTableLong
 import de.tmrdlt.database.MyDB.workflowListQuery
 import de.tmrdlt.database.MyPostgresProfile.api._
 import de.tmrdlt.database.workflowlist.{WorkflowList, WorkflowListTable}
-import de.tmrdlt.models.NumericResourceEntity
+import de.tmrdlt.models.{NumericResourceEntity, WorkflowListResource}
 import slick.lifted.{ForeignKeyQuery, Index, ProvenShape, Rep}
 import slick.sql.SqlProfile.ColumnOption.NotNull
 
@@ -15,7 +15,7 @@ case class NumericResource(id: Long,
                            label: String,
                            value: Float,
                            createdAt: LocalDateTime,
-                           updatedAt: LocalDateTime) {
+                           updatedAt: LocalDateTime) extends WorkflowListResource {
 
   def toNumericResourceEntity: NumericResourceEntity =
     NumericResourceEntity(label = label, value = value)
