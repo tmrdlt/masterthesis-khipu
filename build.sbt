@@ -2,6 +2,9 @@ addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.16" cross CrossVersi
 Compile / compile / wartremoverErrors += Wart.OptionPartial
 //Compile / compile / wartremoverErrors += Wart.TraversableOps
 
+// Needed since sbt 1.6.1, might be fixed in future sbt versions
+fork := true
+
 lazy val commonSettings = Seq(
   name := "masterthesis-khipu",
   organization := "de.tmrdlt",
