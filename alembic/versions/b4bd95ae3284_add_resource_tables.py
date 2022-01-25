@@ -115,7 +115,7 @@ def upgrade():
                           referent_schema='workflow')
 
     op.create_unique_constraint(constraint_name='user_resource_workflow_list_id_unique_constraint',
-                                table_name='textual_resource',
+                                table_name='user_resource',
                                 columns=['workflow_list_id'],
                                 schema='workflow')
 
