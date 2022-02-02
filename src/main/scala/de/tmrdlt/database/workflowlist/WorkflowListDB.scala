@@ -54,7 +54,7 @@ class WorkflowListDB
     val query = for {
       workflowListConverted <- convertWorkflowListAction(workflowList, newListType, userApiId)
       workflowListUpdated <- updateDescriptionAction(workflowList, newDescrOption, userApiId)
-      startingPosition <- getHighestPositionByParentIdSqlAction(Some(workflowList.id))
+      startingPosition <- getHighestPositionByParentIdSqlAction(Some(workflowList.id), userApiId)
       itemsInserted <- createWorkflowListBatchAction(cwles, startingPosition.map(pos => pos + 1).getOrElse(0), Some(workflowList.id), Some(workflowList.apiId), userApiId, insertEvent = false)
     } yield workflowListConverted + workflowListUpdated + itemsInserted.length
     db.run(query.transactionally)
@@ -81,7 +81,7 @@ class WorkflowListDB
           }
           case _ => DBIO.successful(None)
         }
-        highestPositionOption <- getHighestPositionByParentIdSqlAction(parentIdOption)
+        highestPositionOption <- getHighestPositionByParentIdSqlAction(parentIdOption, userApiId)
         workflowList <- (workflowListQuery returning workflowListQuery) += {
           WorkflowList(
             id = 0L,
@@ -231,7 +231,7 @@ class WorkflowListDB
                 case Some(newOrderIndex) => updateNeighboursOnInsert(newParentOption.map(_.id), newOrderIndex)
                 case _ => DBIO.successful(Seq(0))
               }
-              elementUpdated <- updateElementOnInsert(workflowList, newParentOption.map(_.id), mwle.newPosition)
+              elementUpdated <- updateElementOnInsert(workflowList, newParentOption.map(_.id), mwle.newPosition, userApiId)
               oldParentOption <- workflowList.parentId match {
                 case Some(id) => getWorkflowListByIdSqlAction(id)
                 case _ => DBIO.successful(None)
@@ -401,8 +401,9 @@ class WorkflowListDB
       .filterIf(parentIdOption.isEmpty)(_.parentId.isEmpty)
       .filterOpt(parentIdOption)(_.parentId === _)
 
-  private def getHighestPositionByParentIdSqlAction(parentIdOption: Option[Long]): SqlAction[Option[Long], NoStream, Effect.Read] =
+  private def getHighestPositionByParentIdSqlAction(parentIdOption: Option[Long], userApiId: String): SqlAction[Option[Long], NoStream, Effect.Read] =
     getWorkflowListsByParentIdQuery(parentIdOption)
+      .filter(_.ownerApiId === userApiId)
       .sortBy(_.position.desc)
       .map(_.position)
       .result
@@ -413,7 +414,7 @@ class WorkflowListDB
   // and the update.
   // https://github[dot]com/slick/slick/issues/497
 
-  private def updateElementOnInsert(workflowList: WorkflowList, newParentId: Option[Long], maybeNewPosition: Option[Long])
+  private def updateElementOnInsert(workflowList: WorkflowList, newParentId: Option[Long], maybeNewPosition: Option[Long], userApiId: String)
   : DBIOAction[Int, NoStream, Effect.Read with Effect.Write] =
     maybeNewPosition match {
       case Some(position) => workflowListQuery
@@ -421,7 +422,7 @@ class WorkflowListDB
         .map(wl => (wl.parentId, wl.position, wl.updatedAt))
         .update(newParentId, position, LocalDateTime.now())
       case None => for {
-        highestPositionOption <- getHighestPositionByParentIdSqlAction(newParentId)
+        highestPositionOption <- getHighestPositionByParentIdSqlAction(newParentId, userApiId)
         elementUpdated <- workflowListQuery
           .filter(_.id === workflowList.id)
           .map(wl => (wl.parentId, wl.position, wl.updatedAt))
