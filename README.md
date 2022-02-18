@@ -8,6 +8,7 @@ Khipu is a Kanban board-based task management tool developed by Timo Erdelt for 
 See [Endpoints.md](Endpoints.md)
 
 ## Requirements
+_Installation instructions for macOS_
 - At least Java 11 (e.g. temurin):
     - `brew tap homebrew/cask-versions`
     - `install --cask temurin11`
@@ -16,7 +17,7 @@ See [Endpoints.md](Endpoints.md)
 - docker (`brew install --cask docker`)
 - python 3.x.x
 - alembic (`pip3 install alembic`)
-_Installation instructions for macOS_
+
 
 ## Development
 Run inside `/masterthesis-khipu`
