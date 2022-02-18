@@ -50,7 +50,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               listType = WorkflowListType.BOARD,
               state = Some(getWorkflowListState(trelloBoard.closed)),
               dataSource = WorkflowListDataSource.Trello,
-              useCase = None, // TODO Add to request
+              useCase = None,
               createdAt = DateUtil.getDateFromObjectIdString(trelloBoard.id),
               updatedAt = trelloActions
                 .filter(a => a.data.board.id == trelloBoard.id)
@@ -72,7 +72,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                 listType = WorkflowListType.LIST,
                 state = Some(getWorkflowListState(trelloList.closed)),
                 dataSource = WorkflowListDataSource.Trello,
-                useCase = None, // TODO Add to request
+                useCase = None,
                 createdAt = DateUtil.getDateFromObjectIdString(trelloList.id),
                 updatedAt = trelloActions
                   .filter(a => a.data.list.map(_.getId).contains(trelloList.id))
@@ -94,7 +94,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                 listType = WorkflowListType.ITEM,
                 state = Some(getWorkflowListState(trelloCard.closed)),
                 dataSource = WorkflowListDataSource.Trello,
-                useCase = None, // TODO Add to request
+                useCase = None,
                 createdAt = DateUtil.getDateFromObjectIdString(trelloCard.id),
                 updatedAt = trelloCard.dateLastActivity
               )
@@ -127,7 +127,6 @@ class FetchDataActor(trelloApi: TrelloApi,
             )
           })
 
-          // TODO check again when needed
           //_ <- CsvUtil.writeWorkflowListsToCsv(insertedBoard.title, Seq(insertedBoard) ++ insertedLists ++ insertedCards)
           //_ <- CsvUtil.writeEventsToCsv(insertedBoard.title, insertedEvents)
 
@@ -183,7 +182,7 @@ class FetchDataActor(trelloApi: TrelloApi,
               listType = WorkflowListType.BOARD,
               state = getWorkflowListState(gitHubProject.state),
               dataSource = WorkflowListDataSource.GitHub,
-              useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+              useCase = Some(WorkflowListUseCase.softwareDevelopment),
               createdAt = gitHubProject.created_at,
               updatedAt = gitHubProject.updated_at
             )
@@ -201,7 +200,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                 listType = WorkflowListType.LIST,
                 state = Some(WorkflowListState.OPEN), // Columns exist on GitHub only in the OPEN state
                 dataSource = WorkflowListDataSource.GitHub,
-                useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+                useCase = Some(WorkflowListUseCase.softwareDevelopment),
                 createdAt = gitHubColumn.created_at,
                 updatedAt = gitHubColumn.updated_at
               )
@@ -227,7 +226,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                     listType = WorkflowListType.ITEM,
                     state = getWorkflowListState(gitHubIssue.state),
                     dataSource = WorkflowListDataSource.GitHub,
-                    useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+                    useCase = Some(WorkflowListUseCase.softwareDevelopment),
                     createdAt = gitHubIssue.created_at,
                     updatedAt = gitHubIssue.updated_at
                   )
@@ -243,7 +242,7 @@ class FetchDataActor(trelloApi: TrelloApi,
                     listType = WorkflowListType.ITEM,
                     state = Some(WorkflowListState.OPEN), // Notes exist on GitHub only in the OPEN state
                     dataSource = WorkflowListDataSource.GitHub,
-                    useCase = Some(WorkflowListUseCase.softwareDevelopment), // TODO Add to request
+                    useCase = Some(WorkflowListUseCase.softwareDevelopment),
                     createdAt = gitHubCard.created_at,
                     updatedAt = gitHubCard.updated_at
                   )

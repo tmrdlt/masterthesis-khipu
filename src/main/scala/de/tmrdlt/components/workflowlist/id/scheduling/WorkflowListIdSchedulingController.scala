@@ -119,8 +119,8 @@ class WorkflowListIdQueryController(workflowListService: WorkflowListService,
           apiId = workflowList.apiId,
           title = workflowList.title,
           workflowListType = workflowList.usageType,
-          startDate = allTemporalResources.flatMap(_.startDate).maxOption, // TODO does this make sense?
-          dueDate = allTemporalResources.flatMap(_.dueDate).minOption, // TODO does this make sense?
+          startDate = allTemporalResources.flatMap(_.startDate).maxOption,
+          dueDate = allTemporalResources.flatMap(_.dueDate).minOption,
           duration = duration,
           remainingDuration = duration,
           inColumn = columnType

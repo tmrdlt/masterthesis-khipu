@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 case class WorkflowListTemporal(id: Long,
                                 apiId: String,
-                                title: String, //TODO not needed?
+                                title: String,
                                 workflowListType: WorkflowListType,
                                 startDate: Option[LocalDateTime],
                                 dueDate: Option[LocalDateTime],

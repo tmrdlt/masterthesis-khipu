@@ -176,7 +176,7 @@ class WorkflowListDB
                   createdAt = now,
                   dataSource = WorkflowListDataSource.Khipu
                 )
-              } // TODO what about the cascade delete? I would probably want an action for every deleted child then
+              } // TODO what about the cascade delete? Probably an event for every deleted child would be desired
             } yield {
               neighboursUpdatedOnRemove.sum + elementDeleted
             }

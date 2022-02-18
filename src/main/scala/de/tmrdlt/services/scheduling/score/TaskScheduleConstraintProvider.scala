@@ -22,7 +22,6 @@ class TaskScheduleConstraintProvider extends ConstraintProvider with OptionExten
       doInProgressTasksFirst(constraintFactory),
       minimizeExceedingOfDueDates(constraintFactory)
       //doAsManyTasksAsPossible(constraintFactory)
-      // TODO maybe add prefer longer tasks constraint...
     )
 
   private def startAfterStartDate(constraintFactory: ConstraintFactory): Constraint =

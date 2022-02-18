@@ -59,10 +59,6 @@ object WorkScheduleUtil {
       } else {
         workingDate.date.plusMinutes(actualMinutesWorked)
       }
-      // TODO MAYBE show if possible to finish today: return finish date as LocalDateTime
-      //if (startDateRounded.plusMinutes(durationInMinutes).toLocalDate == startDateRounded.toLocalDate) {
-      //  startDateRounded.plusMinutes(durationInMinutes)
-      //} else {
     }
   }
 

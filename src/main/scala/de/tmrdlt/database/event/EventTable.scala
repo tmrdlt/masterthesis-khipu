@@ -35,11 +35,11 @@ import java.time.LocalDateTime
  */
 case class Event(id: Long,
                  apiId: String,
-                 eventType: String, // TODO make Enum: Decide which actions to use
-                 workflowListApiId: String, // TODO make Long and foreign key
-                 boardApiId: Option[String] = None, //
-                 parentApiId: Option[String] = None, //  TODO make Long and foreign key
-                 oldParentApiId: Option[String] = None, // TODO make Long and foreign key
+                 eventType: String,
+                 workflowListApiId: String,
+                 boardApiId: Option[String] = None,
+                 parentApiId: Option[String] = None,
+                 oldParentApiId: Option[String] = None,
                  newParentApiId: Option[String] = None,
                  oldPosition: Option[Long] = None,
                  newPosition: Option[Long] = None,

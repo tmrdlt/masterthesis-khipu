@@ -31,15 +31,6 @@ def upgrade():
                   column=Column('owner_api_id', VARCHAR, nullable=True),
                   schema='workflow')
 
-    # ToDo maybe add later
-    # op.create_foreign_key(constraint_name='created_by_user_fk',
-    #                       source_table='workflow_list',
-    #                       referent_table='user',
-    #                       local_cols=['created_by_user_id'],
-    #                       remote_cols=['id'],
-    #                       source_schema='workflow',
-    #                       referent_schema='workflow')
-
 
 def downgrade():
     op.drop_column(table_name='workflow_list', column_name='owner_api_id', schema='workflow')

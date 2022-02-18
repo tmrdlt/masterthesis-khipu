@@ -16,7 +16,7 @@ case class WorkflowListsData(workflowLists: Seq[WorkflowList],
                              users: Seq[User])
 
 case class WorkflowListEntity(id: Long,
-                              apiId: String, // TODO add owner
+                              apiId: String,
                               title: String,
                               description: Option[String],
                               children: Seq[WorkflowListEntity],
