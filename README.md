@@ -5,6 +5,9 @@ Khipu is a Kanban board-based task management tool developed by Timo Erdelt for 
 - The frontend can be found [here](https://github.com/tmrdlt/masterthesis-khipu-frontend).
 - The tool was evaluated with a user study. The evaluation can be found [here](https://github.com/tmrdlt/masterthesis-evaluation).
 
+## API Endpoints
+See [Endpoints.md](Endpoints.md)
+
 ## Requirements
 - At least Java 11 (e.g. temurin):
     - `brew tap homebrew/cask-versions`
@@ -35,7 +38,7 @@ Run inside `/masterthesis-khipu`
   ```
 - Access Jupyter Notebook at http://localhost:8888. The link with token is also printed by `docker-compose up`.
 
-## Libraries used
+## Build with
 - [Akka HTTP](https://doc.akka.io/docs/akka-http/current/index.html)
 - [Akka Actors Classic](https://doc.akka.io/docs/akka/current/index-classic.html)
 - [Akka Streams](https://doc.akka.io/docs/akka/current/stream/index.html)
@@ -44,6 +47,3 @@ Run inside `/masterthesis-khipu`
 - [OptaPlanner](https://www.optaplanner.org/)
 - [scala-csv](https://github.com/tototoshi/scala-csv)
 - [ScalaTest](https://www.scalatest.org/)
-
-## API Endpoints
-See [Endpoints.md](Endpoints.md)
