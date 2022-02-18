@@ -23,7 +23,7 @@ Run inside `/masterthesis-khipu`
   ```
   docker-compose up
   ```
-- Run db migration:
+- Run database migration:
   ```
   alembic upgrade head
   ```
