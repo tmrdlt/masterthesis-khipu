@@ -19,7 +19,7 @@ See [Endpoints.md](Endpoints.md)
 
 ## Development
 Run inside `/masterthesis-khipu`
-- Run PostgreSQL DB & Jupyter Notebook:
+- Start PostgreSQL database
   ```
   docker-compose up
   ```
