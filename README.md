@@ -16,6 +16,7 @@ See [Endpoints.md](Endpoints.md)
 - docker (`brew install --cask docker`)
 - python 3.x.x
 - alembic (`pip3 install alembic`)
+_Installation instructions for macOS_
 
 ## Development
 Run inside `/masterthesis-khipu`
@@ -32,7 +33,7 @@ Run inside `/masterthesis-khipu`
   sbt run
   ```
 
-## Build with
+## Built with
 - [Akka HTTP](https://doc.akka.io/docs/akka-http/current/index.html)
 - [Akka Actors Classic](https://doc.akka.io/docs/akka/current/index-classic.html)
 - [Akka Streams](https://doc.akka.io/docs/akka/current/stream/index.html)
