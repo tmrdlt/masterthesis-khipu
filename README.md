@@ -10,7 +10,7 @@ See [Endpoints.md](Endpoints.md)
 ## Requirements
 - At least Java 11 (e.g. temurin):
     - `brew tap homebrew/cask-versions`
-    - `install --cask temurin11`)
+    - `install --cask temurin11`
 - scala (`brew install scala`)
 - sbt (`brew install sbt`)
 - docker (`brew install --cask docker`)
