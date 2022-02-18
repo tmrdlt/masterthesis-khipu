@@ -32,11 +32,6 @@ Run inside `/masterthesis-khipu`
   ```
   sbt run
   ```
-- Create a fat `.jar` to use inside Jupyter Notebook:
-  ```
-  sbt assembly
-  ```
-- Access Jupyter Notebook at http://localhost:8888. The link with token is also printed by `docker-compose up`.
 
 ## Build with
 - [Akka HTTP](https://doc.akka.io/docs/akka-http/current/index.html)
